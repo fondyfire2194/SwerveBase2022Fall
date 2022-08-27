@@ -4,63 +4,86 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import frc.robot.Constants.DriveConstants;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CanConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 
 public class DriveSubsystem extends SubsystemBase {
+
+  private boolean showOnShuffleboard = true;
+
+  private boolean showOnGlass = true;
+
+  public final Field2d m_field;
+
   // Robot swerve modules
-  private final SwerveModule m_frontLeft =
-      new SwerveModule(
-          DriveConstants.kFrontLeftDriveMotorPort,
-          DriveConstants.kFrontLeftTurningMotorPort,
-          DriveConstants.kFrontLeftDriveEncoderPorts,
-          DriveConstants.kFrontLeftTurningEncoderPorts,
-          DriveConstants.kFrontLeftDriveEncoderReversed,
-          DriveConstants.kFrontLeftTurningEncoderReversed);
+  public final SwerveModuleSparkMax m_frontLeft = new SwerveModuleSparkMax(
+      CanConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
+      CanConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
+      CanConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
+      // CanConstants.kFrontLeftTurningEncoderPorts,
+      DriveConstants.kFrontLeftDriveEncoderReversed,
+      DriveConstants.kFrontLeftTurningEncoderReversed);
 
-  private final SwerveModule m_rearLeft =
-      new SwerveModule(
-          DriveConstants.kRearLeftDriveMotorPort,
-          DriveConstants.kRearLeftTurningMotorPort,
-          DriveConstants.kRearLeftDriveEncoderPorts,
-          DriveConstants.kRearLeftTurningEncoderPorts,
-          DriveConstants.kRearLeftDriveEncoderReversed,
-          DriveConstants.kRearLeftTurningEncoderReversed);
+  private final SwerveModuleSparkMax m_rearLeft = new SwerveModuleSparkMax(
+      CanConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
+      CanConstants.BACK_LEFT_MODULE_STEER_MOTOR,
+      CanConstants.BACK_LEFT_MODULE_STEER_ENCODER,
+      // CanConstants.kRearLeftTurningEncoderPorts,
+      DriveConstants.kRearLeftDriveEncoderReversed,
+      DriveConstants.kRearLeftTurningEncoderReversed);
 
-  private final SwerveModule m_frontRight =
-      new SwerveModule(
-          DriveConstants.kFrontRightDriveMotorPort,
-          DriveConstants.kFrontRightTurningMotorPort,
-          DriveConstants.kFrontRightDriveEncoderPorts,
-          DriveConstants.kFrontRightTurningEncoderPorts,
-          DriveConstants.kFrontRightDriveEncoderReversed,
-          DriveConstants.kFrontRightTurningEncoderReversed);
+  private final SwerveModuleSparkMax m_frontRight = new SwerveModuleSparkMax(
+      CanConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+      CanConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
+      CanConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
+      // CanConstants.kFrontRightTurningEncoderPorts,
+      DriveConstants.kFrontRightDriveEncoderReversed,
+      DriveConstants.kFrontRightTurningEncoderReversed);
 
-  private final SwerveModule m_rearRight =
-      new SwerveModule(
-          DriveConstants.kRearRightDriveMotorPort,
-          DriveConstants.kRearRightTurningMotorPort,
-          DriveConstants.kRearRightDriveEncoderPorts,
-          DriveConstants.kRearRightTurningEncoderPorts,
-          DriveConstants.kRearRightDriveEncoderReversed,
-          DriveConstants.kRearRightTurningEncoderReversed);
+  private final SwerveModuleSparkMax m_rearRight = new SwerveModuleSparkMax(
+      CanConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
+      CanConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
+      CanConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
+      // CanConstants.kRearRightTurningEncoderPorts,
+      DriveConstants.kRearRightDriveEncoderReversed,
+      DriveConstants.kRearRightTurningEncoderReversed);
 
   // The gyro sensor
-  private final Gyro m_gyro = new ADXRS450_Gyro();
-
+  // private final Gyro m_gyro = new ADXRS450_Gyro();
+  private final AHRS m_gyro = new AHRS(SPI.Port.kMXP, (byte) 200);
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry =
-      new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
+  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
+
+  private int loopCtr;
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {}
+  public DriveSubsystem() {
+
+    m_field = new Field2d();
+
+    SmartDashboard.putData("Field", m_field);
+
+    if (showOnGlass) {
+      SmartDashboard.putData("frontleft", m_frontLeft.mech);
+      SmartDashboard.putData("frontright", m_frontRight.mech);
+      SmartDashboard.putData("rearleft", m_rearLeft.mech);
+      SmartDashboard.putData("rearright", m_rearRight.mech);
+
+    }
+
+  }
 
   @Override
   public void periodic() {
@@ -71,6 +94,34 @@ public class DriveSubsystem extends SubsystemBase {
         m_frontRight.getState(),
         m_rearLeft.getState(),
         m_rearRight.getState());
+
+    m_field.setRobotPose(getPose());
+
+    if (showOnGlass) {
+      if (loopCtr == 0) {
+        m_frontLeft.updateGlass();
+        SmartDashboard.putNumberArray("datfl", m_frontLeft.data);
+      }
+
+      if (loopCtr == 1) {
+        m_frontRight.updateGlass();
+        SmartDashboard.putNumberArray("datfr", m_frontRight.data);
+      }
+      if (loopCtr == 2) {
+        m_rearLeft.updateGlass();
+        SmartDashboard.putNumberArray("datrl", m_rearLeft.data);
+      }
+      if (loopCtr == 3) {
+        m_rearRight.updateGlass();
+        SmartDashboard.putNumberArray("datrr", m_rearRight.data);
+      }
+
+      loopCtr++;
+
+      if (loopCtr == 4)
+        loopCtr = 0;
+    }
+
   }
 
   /**
@@ -94,20 +145,20 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Method to drive the robot using joystick info.
    *
-   * @param xSpeed Speed of the robot in the x direction (forward).
-   * @param ySpeed Speed of the robot in the y direction (sideways).
-   * @param rot Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the
+   *                      field.
    */
   @SuppressWarnings("ParameterName")
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    var swerveModuleStates =
-        DriveConstants.kDriveKinematics.toSwerveModuleStates(
-            fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
-                : new ChassisSpeeds(xSpeed, ySpeed, rot));
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+        fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+            : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+        swerveModuleStates, ModuleConstants.MAX_VELOCITY_METERS_PER_SECOND);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
@@ -158,4 +209,5 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
+
 }

@@ -1,0 +1,84 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/DriveSubsystem": "Subsystem",
+      "/LiveWindow/SwerveGlass": "Subsystem",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/Shuffleboard/Field/FL Heading": "Gyro",
+      "/Shuffleboard/Field/FR Heading": "Gyro",
+      "/Shuffleboard/Field/Field": "Field2d",
+      "/Shuffleboard/Field/RL Heading": "Gyro",
+      "/Shuffleboard/Field/RR Heading": "Gyro",
+      "/Shuffleboard/SwerveModules/Field": "Field2d",
+      "/Shuffleboard/SwerveModules/pic": "Subsystem",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/frontleft": "Mechanism2d",
+      "/SmartDashboard/frontright": "Mechanism2d",
+      "/SmartDashboard/rearleft": "Mechanism2d",
+      "/SmartDashboard/rearright": "Mechanism2d"
+    },
+    "windows": {
+      "/SmartDashboard/frontleft": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/frontright": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/rearleft": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/rearright": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "Shuffleboard": {
+      "Field": {
+        "open": true
+      },
+      "SwerveModules": {
+        "Field": {
+          "open": true
+        },
+        "SwerveMods": {
+          "open": true
+        },
+        "open": true,
+        "pic": {
+          "open": true
+        }
+      },
+      "open": true
+    },
+    "SmartDashboard": {
+      "frontleft": {
+        "fl": {
+          "frontleftangle": {
+            "open": true
+          },
+          "open": true
+        }
+      },
+      "open": true
+    }
+  }
+}
