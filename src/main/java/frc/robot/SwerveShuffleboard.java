@@ -27,7 +27,7 @@ public class SwerveShuffleboard {
                 .getLayout("i", BuiltInLayouts.kList).withPosition(0, 0)
                 .withSize(2, 5).withProperties(Map.of("Label position", "TOP"));
 
-        absenc1.addString("FrontLeft", () -> drive.m_frontLeft.getState().toString());
+       // absenc1.addString("FrontLeft", () -> drive.m_frontLeft.getState().toString());
 
     }
 

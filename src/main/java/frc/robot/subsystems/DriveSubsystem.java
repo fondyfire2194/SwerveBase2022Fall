@@ -4,9 +4,18 @@
 
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -15,11 +24,67 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CTRECanCoder;
 import frc.robot.Constants.CanConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
+//import frc.robot.Constants.DriveConstants.ModulePosition;
+import frc.robot.utils.ModuleMap;
+import frc.robot.Constants.DriveConstants.*;
 
 public class DriveSubsystem extends SubsystemBase {
+
+  public SwerveDriveKinematics kSwerveKinematics = DriveConstants.kSwerveKinematics;
+
+  private final HashMap<ModulePosition, SwerveModuleSparkMax4201> m_swerveModules = new HashMap<>(
+
+      Map.of(
+
+          ModulePosition.FRONT_LEFT,
+          new SwerveModuleSparkMax4201(ModulePosition.FRONT_LEFT,
+              CanConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
+              CanConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
+              CanConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
+              DriveConstants.kRearLeftDriveEncoderReversed,
+              DriveConstants.kRearLeftTurningEncoderReversed),
+
+          ModulePosition.BACK_LEFT,
+          new SwerveModuleSparkMax4201(ModulePosition.BACK_LEFT,
+              CanConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
+              CanConstants.BACK_LEFT_MODULE_STEER_MOTOR,
+              CanConstants.BACK_LEFT_MODULE_STEER_ENCODER,
+              // CanConstants.kRearLeftTurningEncoderPorts,
+              DriveConstants.kRearLeftDriveEncoderReversed,
+              DriveConstants.kRearLeftTurningEncoderReversed),
+
+          ModulePosition.FRONT_RIGHT,
+          new SwerveModuleSparkMax4201(
+              ModulePosition.FRONT_RIGHT,
+              CanConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+              CanConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
+              CanConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
+              // CanConstants.kFrontRightTurningEncoderPorts,
+              DriveConstants.kFrontRightDriveEncoderReversed,
+              DriveConstants.kFrontRightTurningEncoderReversed),
+
+          ModulePosition.BACK_RIGHT,
+          new SwerveModuleSparkMax4201(
+              ModulePosition.BACK_RIGHT,
+              CanConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
+              CanConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
+              CanConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
+              // CanConstants.kRearRightTurningEncoderPorts,
+              DriveConstants.kRearRightDriveEncoderReversed,
+              DriveConstants.kRearRightTurningEncoderReversed)));
+
+  // private final SwerveDrivePoseEstimator m_odometry1 = new
+  // SwerveDrivePoseEstimator(
+  // getHeading(),
+  // new Pose2d(),
+  // kSwerveKinematics,
+  // VecBuilder.fill(0.1, 0.1, 0.1),
+  // VecBuilder.fill(0.05),
+  // VecBuilder.fill(0.1, 0.1, 0.1));
 
   private boolean showOnShuffleboard = true;
 
@@ -27,46 +92,15 @@ public class DriveSubsystem extends SubsystemBase {
 
   public final Field2d m_field;
 
-  // Robot swerve modules
-  public final SwerveModuleSparkMax m_frontLeft = new SwerveModuleSparkMax(
-      CanConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
-      CanConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
-      CanConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
-      // CanConstants.kFrontLeftTurningEncoderPorts,
-      DriveConstants.kFrontLeftDriveEncoderReversed,
-      DriveConstants.kFrontLeftTurningEncoderReversed);
-
-  private final SwerveModuleSparkMax m_rearLeft = new SwerveModuleSparkMax(
-      CanConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
-      CanConstants.BACK_LEFT_MODULE_STEER_MOTOR,
-      CanConstants.BACK_LEFT_MODULE_STEER_ENCODER,
-      // CanConstants.kRearLeftTurningEncoderPorts,
-      DriveConstants.kRearLeftDriveEncoderReversed,
-      DriveConstants.kRearLeftTurningEncoderReversed);
-
-  private final SwerveModuleSparkMax m_frontRight = new SwerveModuleSparkMax(
-      CanConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-      CanConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
-      CanConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
-      // CanConstants.kFrontRightTurningEncoderPorts,
-      DriveConstants.kFrontRightDriveEncoderReversed,
-      DriveConstants.kFrontRightTurningEncoderReversed);
-
-  private final SwerveModuleSparkMax m_rearRight = new SwerveModuleSparkMax(
-      CanConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
-      CanConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
-      CanConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
-      // CanConstants.kRearRightTurningEncoderPorts,
-      DriveConstants.kRearRightDriveEncoderReversed,
-      DriveConstants.kRearRightTurningEncoderReversed);
-
   // The gyro sensor
   // private final Gyro m_gyro = new ADXRS450_Gyro();
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP, (byte) 200);
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
+  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(kSwerveKinematics, m_gyro.getRotation2d());
 
   private int loopCtr;
+
+  public Map<ModulePosition, Translation2d> kModuleTranslations = DriveConstants.kModuleTranslations;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -75,53 +109,59 @@ public class DriveSubsystem extends SubsystemBase {
 
     SmartDashboard.putData("Field", m_field);
 
-    if (showOnGlass) {
-      SmartDashboard.putData("frontleft", m_frontLeft.mech);
-      SmartDashboard.putData("frontright", m_frontRight.mech);
-      SmartDashboard.putData("rearleft", m_rearLeft.mech);
-      SmartDashboard.putData("rearright", m_rearRight.mech);
+    moduleMecsShow();
 
-    }
+    moduleDataShow();
 
   }
 
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    m_odometry.update(
-        m_gyro.getRotation2d(),
-        m_frontLeft.getState(),
-        m_frontRight.getState(),
-        m_rearLeft.getState(),
-        m_rearRight.getState());
-
+    updateOdometry();
     m_field.setRobotPose(getPose());
+    moduleMecs();
+  }
+  // if (showOnGlass) {
+  // if (loopCtr == 0) {
+  // m_frontLeft.updateGlass();
+  // SmartDashboard.putNumberArray("datfl", m_frontLeft.data);
+  // }
 
-    if (showOnGlass) {
-      if (loopCtr == 0) {
-        m_frontLeft.updateGlass();
-        SmartDashboard.putNumberArray("datfl", m_frontLeft.data);
-      }
+  // if (loopCtr == 1) {
+  // m_frontRight.updateGlass();
+  // SmartDashboard.putNumberArray("datfr", m_frontRight.data);
+  // }
+  // if (loopCtr == 2) {
+  // m_rearLeft.updateGlass();
+  // SmartDashboard.putNumberArray("datrl", m_rearLeft.data);
+  // }
+  // if (loopCtr == 3) {
+  // m_rearRight.updateGlass();
+  // SmartDashboard.putNumberArray("datrr", m_rearRight.data);
+  // }
 
-      if (loopCtr == 1) {
-        m_frontRight.updateGlass();
-        SmartDashboard.putNumberArray("datfr", m_frontRight.data);
-      }
-      if (loopCtr == 2) {
-        m_rearLeft.updateGlass();
-        SmartDashboard.putNumberArray("datrl", m_rearLeft.data);
-      }
-      if (loopCtr == 3) {
-        m_rearRight.updateGlass();
-        SmartDashboard.putNumberArray("datrr", m_rearRight.data);
-      }
+  // loopCtr++;
 
-      loopCtr++;
+  // if (loopCtr == 4)
+  // loopCtr = 0;
+  // }
 
-      if (loopCtr == 4)
-        loopCtr = 0;
+  public void updateOdometry() {
+    m_odometry.update(
+        getHeadingRotation2d(),
+        ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
+
+    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules)) {
+      Translation2d modulePositionFromChassis = kModuleTranslations
+          .get(module.getModulePosition())
+          .rotateBy(getHeadingRotation2d())
+          .plus(getPoseMeters().getTranslation());
+      module.setModulePose(
+          new Pose2d(
+              modulePositionFromChassis,
+              module.getHeadingRotation2d().plus(getHeadingRotation2d())));
     }
-
   }
 
   /**
@@ -131,6 +171,22 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
+  }
+
+  public Pose2d getPoseMeters() {
+    return m_odometry.getPoseMeters();
+  }
+
+  public SwerveModuleSparkMax4201 getSwerveModule(ModulePosition modulePosition) {
+    return m_swerveModules.get(modulePosition);
+  }
+
+  public double getHeadingDegrees() {
+    return Math.IEEEremainder(m_gyro.getYaw(), 360);
+  }
+
+  public Rotation2d getHeadingRotation2d() {
+    return Rotation2d.fromDegrees(getHeadingDegrees());
   }
 
   /**
@@ -152,17 +208,37 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    */
   @SuppressWarnings("ParameterName")
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-        fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
-            : new ChassisSpeeds(xSpeed, ySpeed, rot));
+  public void drive(
+      double throttle,
+      double strafe,
+      double rotation,
+      boolean isFieldRelative,
+      boolean isOpenLoop) {
+    throttle *= DriveConstants.kMaxSpeedMetersPerSecond;
+    strafe *= DriveConstants.kMaxSpeedMetersPerSecond;
+    rotation *= DriveConstants.kaVoltSecondsSquaredPerMeter;
+
+    ChassisSpeeds chassisSpeeds = isFieldRelative
+        ? ChassisSpeeds.fromFieldRelativeSpeeds(
+            throttle, strafe, rotation, getHeadingRotation2d())
+        : new ChassisSpeeds(throttle, strafe, rotation);
+
+    Map<ModulePosition, SwerveModuleState> moduleStates = ModuleMap
+        .of(kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
+
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, ModuleConstants.MAX_VELOCITY_METERS_PER_SECOND);
-    m_frontLeft.setDesiredState(swerveModuleStates[0]);
-    m_frontRight.setDesiredState(swerveModuleStates[1]);
-    m_rearLeft.setDesiredState(swerveModuleStates[2]);
-    m_rearRight.setDesiredState(swerveModuleStates[3]);
+        ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), DriveConstants.kMaxSpeedMetersPerSecond);
+
+    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
+      module.setDesiredState(moduleStates.get(module.getModulePosition()));
+  }
+
+  public Map<ModulePosition, SwerveModuleState> getModuleStates() {
+    Map<ModulePosition, SwerveModuleState> map = new HashMap<>();
+    for (ModulePosition i : m_swerveModules.keySet()) {
+      map.put(i, m_swerveModules.get(i).getState());
+    }
+    return map;
   }
 
   /**
@@ -170,21 +246,34 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param desiredStates The desired SwerveModule states.
    */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(desiredStates[0]);
-    m_frontRight.setDesiredState(desiredStates[1]);
-    m_rearLeft.setDesiredState(desiredStates[2]);
-    m_rearRight.setDesiredState(desiredStates[3]);
+  public void setSwerveModuleStates(SwerveModuleState[] states, boolean isOpenLoop) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.kMaxSpeedMetersPerSecond);
+
+    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
+      module.setDesiredState(states[module.getModulePosition().ordinal()]);
+  }
+
+  public void moduleMecs() {
+    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
+      module.updateGlass();
+  }
+
+  public void moduleMecsShow() {
+    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
+      module.showMec();
+  }
+
+  public void moduleDataShow() {
+    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
+      module.showData();
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
   public void resetEncoders() {
-    m_frontLeft.resetEncoders();
-    m_rearLeft.resetEncoders();
-    m_frontRight.resetEncoders();
-    m_rearRight.resetEncoders();
+    // m_frontLeft.resetEncoders();
+    // m_rearLeft.resetEncoders();
+    // m_frontRight.resetEncoders();
+    // m_rearRight.resetEncoders();
   }
 
   /** Zeroes the heading of the robot. */
@@ -197,9 +286,9 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @return the robot's heading in degrees, from -180 to 180
    */
-  public double getHeading() {
-    return m_gyro.getRotation2d().getDegrees();
-  }
+  // public Rotation2d getHeading() {
+  // return m_gyro.getRotation2d();
+  // }
 
   /**
    * Returns the turn rate of the robot.

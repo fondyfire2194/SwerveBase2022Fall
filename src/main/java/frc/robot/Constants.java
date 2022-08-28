@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import java.util.Map;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.utils.ModuleMap;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -58,15 +62,25 @@ public final class Constants {
     public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final boolean kRearRightDriveEncoderReversed = true;
 
-    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5;
+    public static final double kTrackWidth = 0.5;
     // Distance between centers of right and left wheels on robot
-    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.7;
-    // Distance between front and back wheels on robot
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        new Translation2d(DRIVETRAIN_WHEELBASE_METERS / 2, DRIVETRAIN_TRACKWIDTH_METERS / 2),
-        new Translation2d(DRIVETRAIN_WHEELBASE_METERS / 2, -DRIVETRAIN_TRACKWIDTH_METERS / 2),
-        new Translation2d(-DRIVETRAIN_WHEELBASE_METERS / 2, DRIVETRAIN_TRACKWIDTH_METERS / 2),
-        new Translation2d(-DRIVETRAIN_WHEELBASE_METERS / 2, -DRIVETRAIN_TRACKWIDTH_METERS / 2));
+    public static final double kWheelBase = 0.7;
+
+    public enum ModulePosition {
+      FRONT_LEFT,
+      FRONT_RIGHT,
+      BACK_LEFT,
+      BACK_RIGHT
+    }
+
+    public static final Map<ModulePosition, Translation2d> kModuleTranslations = Map.of(
+        ModulePosition.FRONT_LEFT, new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+        ModulePosition.FRONT_RIGHT, new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+        ModulePosition.BACK_LEFT, new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+        ModulePosition.BACK_RIGHT, new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+
+    public static final SwerveDriveKinematics kSwerveKinematics = new SwerveDriveKinematics(
+        ModuleMap.orderedValues(kModuleTranslations, new Translation2d[0]));
 
     public static final boolean kGyroReversed = true;
 
@@ -86,11 +100,11 @@ public final class Constants {
   public static final class ModuleConstants {
 
     private static final double MAX_VOLTAGE = 12.0;
-    public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.14528;
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
-        Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
+    public static final double kMax = 4.14528;
+    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = Math.hypot(DriveConstants.kTrackWidth / 2.0,
+        DriveConstants.kWheelBase / 2.0);
 
-     public static final double MAX_ANGULAR_ACCEL_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI;
+    public static final double MAX_ANGULAR_ACCEL_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI;
 
     public static double NEO550_COUNTS_PER_REV = 4096;
 
@@ -100,6 +114,11 @@ public final class Constants {
     public static boolean driveMotorInverted = true;
     public static double mk4iL1TurnGearRatio = (14.0 / 50.0) * (10.0 / 60.0);// .46667
     public static boolean turningMotorInverted = false;
+    public static double ksVolts;
+    public static double kvVoltSecondsPerMeter;
+    public static double kaVoltSecondsSquaredPerMeter;
+    public static final DCMotor kDriveGearbox = DCMotor.getNEO(1);
+    public static final DCMotor kTurnGearbox = DCMotor.getNEO(1);
 
     public static final double kDriveMetersPerPulse =
 

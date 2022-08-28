@@ -21,13 +21,33 @@
       "/Shuffleboard/Field/RR Heading": "Gyro",
       "/Shuffleboard/SwerveModules/Field": "Field2d",
       "/Shuffleboard/SwerveModules/pic": "Subsystem",
-      "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/frontleft": "Mechanism2d",
-      "/SmartDashboard/frontright": "Mechanism2d",
-      "/SmartDashboard/rearleft": "Mechanism2d",
-      "/SmartDashboard/rearright": "Mechanism2d"
+      "/SmartDashboard/BACK_LEFT": "Mechanism2d",
+      "/SmartDashboard/BACK_RIGHT": "Mechanism2d",
+      "/SmartDashboard/FRONT_LEFT": "Mechanism2d",
+      "/SmartDashboard/FRONT_RIGHT": "Mechanism2d",
+      "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
+      "/SmartDashboard/BACK_LEFT": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/BACK_RIGHT": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/FRONT_LEFT": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/FRONT_RIGHT": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/frontleft": {
         "window": {
           "visible": true
