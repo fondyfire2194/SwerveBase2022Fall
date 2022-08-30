@@ -46,8 +46,12 @@
         "BACK_LEFT": {
           "open": true
         },
+        "BACK_RIGHT": {
+          "open": true
+        },
         "open": true
-      }
+      },
+      "open": true
     },
     "SmartDashboard": {
       "ResetPose": {

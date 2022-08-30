@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -138,12 +139,16 @@ public class DriveSubsystem extends SubsystemBase {
   public void simulationPeriodic() {
     ChassisSpeeds chassisSpeed = kSwerveKinematics.toChassisSpeeds(
         ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
-    double temp = chassisSpeed.omegaRadiansPerSecond * 0.02;
+    // want to simulate navX gyro changing as robot turns
+    // information available is radians per second and this happens every 20ms
+    // radians/2pi = 360 degrees so 1 degree per second is radians / 2pi
+    // increment is made every 20 ms so radian adder would be (rads/sec) *(20/1000)
+    // degree adder would be radian adder * 360/2pi
+    // so degree increment multiplier is 360/100pi = 1.1459
+    double temp = chassisSpeed.omegaRadiansPerSecond * 1.1459;
     SmartDashboard.putNumber("AORPS", temp);
     temp += m_simAngle.get();
-     m_simAngle.set(temp);
-     wrapAngleDeg(m_simAngle.get());
-     
+    m_simAngle.set(temp);
 
   }
 

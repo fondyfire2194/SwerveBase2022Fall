@@ -9,6 +9,7 @@ import java.util.Map;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import frc.robot.utils.ModuleMap;
 
 /**
@@ -52,14 +53,14 @@ public final class Constants {
   public static final class DriveConstants {
 
     public static final boolean kFrontLeftTurningMotorReversed = false;
-    public static final boolean kBackLeftTurningMotorReversed = false;//true;
+    public static final boolean kBackLeftTurningMotorReversed = false;// true;
     public static final boolean kFrontRightTurningMotorReversed = false;
-    public static final boolean kBackRightTurningMotorReversed = false;//true;
+    public static final boolean kBackRightTurningMotorReversed = false;// true;
 
     public static final boolean kFrontLeftDriveMotorReversed = false;
-    public static final boolean kBackLeftDriveMotorReversed = false;//true;
+    public static final boolean kBackLeftDriveMotorReversed = false;// true;
     public static final boolean kFrontRightDriveMotorReversed = false;
-    public static final boolean kBackRightDriveMotorReversed = false;//true;
+    public static final boolean kBackRightDriveMotorReversed = false;// true;
 
     public static final double kTrackWidth = 0.5;
     // Distance between centers of right and left wheels on robot
@@ -112,14 +113,13 @@ public final class Constants {
 
     // ModuleConfiguration MK4I_L1
     public static final double kWheelDiameterMeters = 0.10033;
-    public static double mk4iL1DriveGearRatio = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0);// .122807
+    public static double mk4iL1DriveGearRatio = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0);//8.14 .122807
     public static boolean driveMotorInverted = true;
-    public static double mk4iL1TurnGearRatio = (14.0 / 50.0) * (10.0 / 60.0);// .46667
+    public static double mk4iL1TurnGearRatio = 1 / ((14.0 / 50.0) * (10.0 / 60.0));// 21.43 1/.046667
     public static boolean turningMotorInverted = false;
     public static double ksVolts;
     public static double kvVoltSecondsPerMeter;
     public static double kaVoltSecondsSquaredPerMeter;
-
 
     public static final double kDriveMetersPerPulse =
 
@@ -127,9 +127,9 @@ public final class Constants {
 
     public static final double kTurningDegreesPerPulse =
 
-         mk4iL1TurnGearRatio / (double) NEO550_COUNTS_PER_REV;
-
-    public static final double kPModuleTurningController = .2;
+        360 / (mk4iL1TurnGearRatio * (double) NEO550_COUNTS_PER_REV);// .004102
+//max turn speed = (5400/ 21.43)/60 revs per sec 4 revs per sec 1200 deg per sec
+    public static final double kPModuleTurningController = 1;
 
     public static final double kPModuleDriveController = .2;
   }
@@ -141,15 +141,16 @@ public final class Constants {
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-
+    public static final double kMaxAngularSpeedDegreesPerSecond = 800;
+    public static final double kMaxAngularSpeedDegreesPerSecondSquared =2000;
     public static final double kPXController = 1;
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;
 
-    // Constraint for the motion profiled robot angle controller
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    // // Constraint for the motion profiled robot angle controller
+    // public static final TrapezoidProfile.Constraints kThetaControllerConstraints
+    // = new TrapezoidProfile.Constraints(
+    // Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecond),
+    // Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecondSquared));
   }
 }
