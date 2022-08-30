@@ -3,7 +3,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/DriveSubsystem": "Subsystem",
-      "/LiveWindow/SwerveGlass": "Subsystem",
+      "/LiveWindow/SwerveModuleSparkMax4201": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
@@ -14,56 +14,26 @@
       "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
-      "/Shuffleboard/Field/FL Heading": "Gyro",
-      "/Shuffleboard/Field/FR Heading": "Gyro",
-      "/Shuffleboard/Field/Field": "Field2d",
-      "/Shuffleboard/Field/RL Heading": "Gyro",
-      "/Shuffleboard/Field/RR Heading": "Gyro",
-      "/Shuffleboard/SwerveModules/Field": "Field2d",
-      "/Shuffleboard/SwerveModules/pic": "Subsystem",
       "/SmartDashboard/BACK_LEFT": "Mechanism2d",
       "/SmartDashboard/BACK_RIGHT": "Mechanism2d",
       "/SmartDashboard/FRONT_LEFT": "Mechanism2d",
       "/SmartDashboard/FRONT_RIGHT": "Mechanism2d",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field2d": "Field2d",
+      "/SmartDashboard/ResetPose": "Command"
     },
     "windows": {
-      "/SmartDashboard/BACK_LEFT": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/BACK_RIGHT": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/FRONT_LEFT": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/FRONT_RIGHT": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/frontleft": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/frontright": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/rearleft": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/rearright": {
+      "/SmartDashboard/Field2d": {
+        "Robot": {
+          "image": "resources/images/robot.png",
+          "length": 0.7620000243186951,
+          "width": 0.7620000243186951
+        },
+        "Swerve Modules": {
+          "image": "resources/images/swerve_module.png",
+          "length": 0.4000000059604645,
+          "width": 0.4000000059604645
+        },
+        "image": "resources/images/field22.png",
         "window": {
           "visible": true
         }
@@ -72,31 +42,16 @@
   },
   "NetworkTables": {
     "Shuffleboard": {
-      "Field": {
+      "Drivetrain": {
+        "BACK_LEFT": {
+          "open": true
+        },
         "open": true
-      },
-      "SwerveModules": {
-        "Field": {
-          "open": true
-        },
-        "SwerveMods": {
-          "open": true
-        },
-        "open": true,
-        "pic": {
-          "open": true
-        }
-      },
-      "open": true
+      }
     },
     "SmartDashboard": {
-      "frontleft": {
-        "fl": {
-          "frontleftangle": {
-            "open": true
-          },
-          "open": true
-        }
+      "ResetPose": {
+        "open": true
       },
       "open": true
     }

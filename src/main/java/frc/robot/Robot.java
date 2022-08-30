@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.swerve.SetSwerveOdometry;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -44,6 +47,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    m_robotContainer.m_fieldSim.periodic();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -84,6 +88,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+  //  new SetSwerveOdometry(m_robotContainer.m_robotDrive, m_robotContainer.m_fieldSim,new Pose2d(6.13, 5.23, Rotation2d.fromDegrees(-41.5))).schedule();
   }
 
   /** This function is called periodically during operator control. */

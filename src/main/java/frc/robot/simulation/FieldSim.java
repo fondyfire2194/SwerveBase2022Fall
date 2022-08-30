@@ -28,6 +28,8 @@ public class FieldSim {
     m_swerveDrive = swerveDrive;
   }
 
+  private int tst;
+
   public void initSim() {}
 
   public Field2d getField2d() {
@@ -35,9 +37,11 @@ public class FieldSim {
   }
 
   private void updateRobotPoses() {
-    m_field2d.setRobotPose(m_swerveDrive.getPoseMeters());
+    SmartDashboard.putNumber("TST", tst++);
 
+    m_field2d.setRobotPose(m_swerveDrive.getPoseMeters());
     for (ModulePosition i : ModulePosition.values()) {
+      
       Translation2d updatedPositions =
           m_swerveDrive.kModuleTranslations
               .get(i)
@@ -50,7 +54,7 @@ public class FieldSim {
               m_swerveDrive
                   .getSwerveModule(i)
                   .getHeadingRotation2d()
-                  .plus(m_swerveDrive.getHeadingRotation2d())));
+                  .plus(m_swerveDrive.getHeadingRotation2d()))) ;            
     }
 
     m_field2d

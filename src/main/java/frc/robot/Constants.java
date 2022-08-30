@@ -8,7 +8,6 @@ import java.util.Map;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.utils.ModuleMap;
 
@@ -52,15 +51,15 @@ public final class Constants {
 
   public static final class DriveConstants {
 
-    public static final boolean kFrontLeftTurningEncoderReversed = false;
-    public static final boolean kRearLeftTurningEncoderReversed = true;
-    public static final boolean kFrontRightTurningEncoderReversed = false;
-    public static final boolean kRearRightTurningEncoderReversed = true;
+    public static final boolean kFrontLeftTurningMotorReversed = false;
+    public static final boolean kBackLeftTurningMotorReversed = false;//true;
+    public static final boolean kFrontRightTurningMotorReversed = false;
+    public static final boolean kBackRightTurningMotorReversed = false;//true;
 
-    public static final boolean kFrontLeftDriveEncoderReversed = false;
-    public static final boolean kRearLeftDriveEncoderReversed = true;
-    public static final boolean kFrontRightDriveEncoderReversed = false;
-    public static final boolean kRearRightDriveEncoderReversed = true;
+    public static final boolean kFrontLeftDriveMotorReversed = false;
+    public static final boolean kBackLeftDriveMotorReversed = false;//true;
+    public static final boolean kFrontRightDriveMotorReversed = false;
+    public static final boolean kBackRightDriveMotorReversed = false;//true;
 
     public static final double kTrackWidth = 0.5;
     // Distance between centers of right and left wheels on robot
@@ -95,6 +94,9 @@ public final class Constants {
     public static final double kaVoltSecondsSquaredPerMeter = 0.15;
 
     public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
+    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
+
   }
 
   public static final class ModuleConstants {
@@ -110,27 +112,26 @@ public final class Constants {
 
     // ModuleConfiguration MK4I_L1
     public static final double kWheelDiameterMeters = 0.10033;
-    public static double mk4iL1DriveGearRatio = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0);// ,122807
+    public static double mk4iL1DriveGearRatio = (14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0);// .122807
     public static boolean driveMotorInverted = true;
     public static double mk4iL1TurnGearRatio = (14.0 / 50.0) * (10.0 / 60.0);// .46667
     public static boolean turningMotorInverted = false;
     public static double ksVolts;
     public static double kvVoltSecondsPerMeter;
     public static double kaVoltSecondsSquaredPerMeter;
-    public static final DCMotor kDriveGearbox = DCMotor.getNEO(1);
-    public static final DCMotor kTurnGearbox = DCMotor.getNEO(1);
+
 
     public static final double kDriveMetersPerPulse =
 
         (kWheelDiameterMeters * Math.PI) * mk4iL1DriveGearRatio / (double) NEO550_COUNTS_PER_REV;
 
-    public static final double kTurningRadiansPerPulse =
+    public static final double kTurningDegreesPerPulse =
 
-        (2 * Math.PI) * mk4iL1TurnGearRatio / (double) NEO550_COUNTS_PER_REV;
+         mk4iL1TurnGearRatio / (double) NEO550_COUNTS_PER_REV;
 
-    public static final double kPModuleTurningController = 1;
+    public static final double kPModuleTurningController = .2;
 
-    public static final double kPModuleDriveController = 1;
+    public static final double kPModuleDriveController = .2;
   }
 
   public static final class OIConstants {
