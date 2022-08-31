@@ -53,14 +53,14 @@ public final class Constants {
   public static final class DriveConstants {
 
     public static final boolean kFrontLeftTurningMotorReversed = false;
-    public static final boolean kBackLeftTurningMotorReversed =  true;
+    public static final boolean kBackLeftTurningMotorReversed = true;
     public static final boolean kFrontRightTurningMotorReversed = false;
-    public static final boolean kBackRightTurningMotorReversed =  true;
+    public static final boolean kBackRightTurningMotorReversed = true;
 
     public static final boolean kFrontLeftDriveMotorReversed = false;
-    public static final boolean kBackLeftDriveMotorReversed =  true;
+    public static final boolean kBackLeftDriveMotorReversed = true;
     public static final boolean kFrontRightDriveMotorReversed = false;
-    public static final boolean kBackRightDriveMotorReversed =  true;
+    public static final boolean kBackRightDriveMotorReversed = true;
 
     public static final double kTrackWidth = 0.5;
     // Distance between centers of right and left wheels on robot
@@ -94,41 +94,39 @@ public final class Constants {
     public static final double kvVoltSecondsPerMeter = 0.8;
     public static final double kaVoltSecondsSquaredPerMeter = 0.15;
 
-     public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxSpeedMetersPerSecond = 3;
 
     public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
     public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
 
-    // public static final double kMaxRotationRadiansPerSecond = Math.hypot(DriveConstants.kTrackWidth / 2.0,
-    //     DriveConstants.kWheelBase / 2.0);
+    // public static final double kMaxRotationRadiansPerSecond =
+    // Math.hypot(DriveConstants.kTrackWidth / 2.0,
+    // DriveConstants.kWheelBase / 2.0);
 
-   // public static final double MAX_ANGULAR_ACCEL_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI;
+    // public static final double MAX_ANGULAR_ACCEL_RADIANS_PER_SECOND_SQUARED = 2 *
+    // Math.PI;
 
   }
 
   public static final class ModuleConstants {
 
-    
-  
-
     // ModuleConfiguration MK4I_L1
     public static final double kWheelDiameterMeters = 0.10033;
 
-    public static double mk4iL1DriveGearRatio = 1/((14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0));//8.14 .122807
-    
-    public static double mk4iL1TurnGearRatio = 1 / ((14.0 / 50.0) * (10.0 / 60.0));// 21.43 1/.046667
-    
+    public static double mk4iL1DriveGearRatio = 1 / ((14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0));// 8.14 .122807
 
-//use sysid on robot
+    public static double mk4iL1TurnGearRatio = 1 / ((14.0 / 50.0) * (10.0 / 60.0));// 21.43 1/.046667
+
+    // use sysid on robot
     public static double ksVolts;
     public static double kvVoltSecondsPerMeter;
     public static double kaVoltSecondsSquaredPerMeter;
 
-    //sysid on module?
+    // sysid on module?
     public static final double ksDriveVoltSecondsPerMeter = 0.667 / 12;
     public static final double kvDriveVoltSecondsSquaredPerMeter = 2.44 / 12;
     public static final double kaDriveVoltSecondsSquaredPerMeter = 0.27 / 12;
-//sysid on module?
+    // sysid on module?
     public static final double kvTurnVoltSecondsPerRadian = 1.47; // originally 1.5
     public static final double kaTurnVoltSecondsSquaredPerRadian = 0.348; // originally 0.3
 
@@ -136,13 +134,15 @@ public final class Constants {
 
         (kWheelDiameterMeters * Math.PI) / mk4iL1DriveGearRatio;
 
+    public static final double kDriveEncRPMToMPS = kDriveMetersPerEncRev / 60;
+
     public static final double kTurningDegreesPerEncRev =
 
-        360 / mk4iL1TurnGearRatio ;
+        360 / mk4iL1TurnGearRatio;
 
-//max turn speed = (5400/ 21.43)/60 revs per sec 4 revs per sec 1200 deg per sec
+    // max turn speed = (5400/ 21.43)/60 revs per sec 4 revs per sec 1200 deg per
+    // sec
     public static final double kPModuleTurningController = .1;
-
 
     public static final double kPModuleDriveController = .2;
   }
@@ -160,7 +160,7 @@ public final class Constants {
 
     // public static final double kMaxAngularSpeedDegreesPerSecondSquared =2000;
     public static final double kMaxRotationRadiansPerSecond = Math.PI;
-    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI*2;
+    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
