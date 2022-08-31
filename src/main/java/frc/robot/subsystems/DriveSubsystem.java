@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,9 +34,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   public SwerveDriveKinematics kSwerveKinematics = DriveConstants.kSwerveKinematics;
 
-  public void name() {
+  // public void name() {
 
-  }
+  // }
 
   final HashMap<ModulePosition, SwerveModuleSparkMax4201> m_swerveModules = new HashMap<>(
 
@@ -47,7 +46,7 @@ public class DriveSubsystem extends SubsystemBase {
           new SwerveModuleSparkMax4201(ModulePosition.FRONT_LEFT,
               CanConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
               CanConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
-              CanConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
+              CanConstants.FRONT_LEFT_MODULE_STEER_CANCODER,
               DriveConstants.kBackLeftDriveMotorReversed,
               DriveConstants.kBackLeftTurningMotorReversed,
               CanConstants.FRONT_LEFT_MODULE_STEER_OFFSET),
@@ -57,7 +56,7 @@ public class DriveSubsystem extends SubsystemBase {
               ModulePosition.FRONT_RIGHT,
               CanConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
               CanConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
-              CanConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
+              CanConstants.FRONT_RIGHT_MODULE_STEER_CANCODER,
               DriveConstants.kFrontRightDriveMotorReversed,
               DriveConstants.kFrontRightTurningMotorReversed,
               CanConstants.FRONT_RIGHT_MODULE_STEER_OFFSET),
@@ -66,7 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
           new SwerveModuleSparkMax4201(ModulePosition.BACK_LEFT,
               CanConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
               CanConstants.BACK_LEFT_MODULE_STEER_MOTOR,
-              CanConstants.BACK_LEFT_MODULE_STEER_ENCODER,
+              CanConstants.BACK_LEFT_MODULE_STEER_CANCODER,
               DriveConstants.kBackLeftDriveMotorReversed,
               DriveConstants.kBackLeftTurningMotorReversed,
               CanConstants.BACK_LEFT_MODULE_STEER_OFFSET),
@@ -76,7 +75,7 @@ public class DriveSubsystem extends SubsystemBase {
               ModulePosition.BACK_RIGHT,
               CanConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
               CanConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
-              CanConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
+              CanConstants.BACK_RIGHT_MODULE_STEER_CANCODER,
               DriveConstants.kBackRightDriveMotorReversed,
               DriveConstants.kBackRightTurningMotorReversed,
               CanConstants.BACK_RIGHT_MODULE_STEER_OFFSET)));
@@ -94,10 +93,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private boolean showOnShuffleboard = true;
 
-  private boolean showOnGlass = true;
-
-  private int loopCtr;
-  private SimDouble m_simAngle;
+  private SimDouble m_simAngle;// navx sim
 
   public Map<ModulePosition, Translation2d> kModuleTranslations = DriveConstants.kModuleTranslations;
 
@@ -120,7 +116,8 @@ public class DriveSubsystem extends SubsystemBase {
 
       m_simAngle = new SimDouble((SimDeviceDataJNI.getSimValueHandle(dev, "Yaw")));
     }
-
+    // info
+    SmartDashboard.putNumber("maxradps", DriveConstants.kMaxRotationRadiansPerSecond);
   }
 
   @Override
@@ -131,7 +128,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("X", getX());
     SmartDashboard.putNumber("Y", getY());
 
-    SmartDashboard.putNumber("Yaw", m_gyro.getYaw());
+    SmartDashboard.putNumber("Yaw", getHeadingDegrees());
 
   }
 
@@ -145,8 +142,8 @@ public class DriveSubsystem extends SubsystemBase {
     // increment is made every 20 ms so radian adder would be (rads/sec) *(20/1000)
     // degree adder would be radian adder * 360/2pi
     // so degree increment multiplier is 360/100pi = 1.1459
-    double temp = chassisSpeed.omegaRadiansPerSecond* 1.1459;
-    SmartDashboard.putNumber("AORPS", chassisSpeed.omegaRadiansPerSecond );
+    double temp = chassisSpeed.omegaRadiansPerSecond * 1.1459155;
+    SmartDashboard.putNumber("AORPS", chassisSpeed.omegaRadiansPerSecond);
     temp += m_simAngle.get();
     m_simAngle.set(temp);
 
@@ -189,7 +186,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getHeadingDegrees() {
-    return Math.IEEEremainder((m_gyro.getAngle()), 360);
+    return reduceRes(Math.IEEEremainder((m_gyro.getAngle()), 360),  2) * (DriveConstants.kGyroReversed ? -1.0 : 1.0) ;
 
   }
 
@@ -207,6 +204,8 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    */
   @SuppressWarnings("ParameterName")
+
+  // nove the robot from gamepad
   public void drive(
       double throttle,
       double strafe,
@@ -224,6 +223,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     Map<ModulePosition, SwerveModuleState> moduleStates = ModuleMap
         .of(kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
+
+    // info
     SmartDashboard.putNumber("CHSPDX", chassisSpeeds.vxMetersPerSecond);
     SmartDashboard.putNumber("CHSPDY", chassisSpeeds.vyMetersPerSecond);
 
@@ -289,6 +290,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double getY() {
     return getTranslation().getY();
+  }
+
+  public double reduceRes(double value, int numPlaces) {
+    double n = Math.pow(10, numPlaces);
+    return Math.round(value * n) / n;
   }
 
   /**

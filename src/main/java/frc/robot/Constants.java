@@ -30,22 +30,22 @@ public final class Constants {
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 4;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 5;
-    public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 6;
+    public static final int FRONT_LEFT_MODULE_STEER_CANCODER = 6;
     public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0.0);
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 7;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 8;
-    public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 9;
+    public static final int FRONT_RIGHT_MODULE_STEER_CANCODER = 9;
     public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0.0);
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 10;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 11;
-    public static final int BACK_LEFT_MODULE_STEER_ENCODER = 12;
+    public static final int BACK_LEFT_MODULE_STEER_CANCODER = 12;
     public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0.0);
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 13;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 14;
-    public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 15;
+    public static final int BACK_RIGHT_MODULE_STEER_CANCODER = 15;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0.0);
 
   }
@@ -94,31 +94,43 @@ public final class Constants {
     public static final double kvVoltSecondsPerMeter = 0.8;
     public static final double kaVoltSecondsSquaredPerMeter = 0.15;
 
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
-    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
+     public static final double kMaxSpeedMetersPerSecond = 3;
+
+  //   public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
+    // public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
+
+    public static final double kMaxRotationRadiansPerSecond = Math.hypot(DriveConstants.kTrackWidth / 2.0,
+        DriveConstants.kWheelBase / 2.0);
+
+   // public static final double MAX_ANGULAR_ACCEL_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI;
 
   }
 
   public static final class ModuleConstants {
 
-    private static final double MAX_VOLTAGE = 12.0;
-    public static final double kMax = 4.14528;
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = Math.hypot(DriveConstants.kTrackWidth / 2.0,
-        DriveConstants.kWheelBase / 2.0);
-
-    public static final double MAX_ANGULAR_ACCEL_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI;
-
+    
+  
 
     // ModuleConfiguration MK4I_L1
     public static final double kWheelDiameterMeters = 0.10033;
+
     public static double mk4iL1DriveGearRatio = 1/((14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0));//8.14 .122807
-    public static boolean driveMotorInverted = true;
+    
     public static double mk4iL1TurnGearRatio = 1 / ((14.0 / 50.0) * (10.0 / 60.0));// 21.43 1/.046667
-    public static boolean turningMotorInverted = false;
+    
+
+//use sysid on robot
     public static double ksVolts;
     public static double kvVoltSecondsPerMeter;
     public static double kaVoltSecondsSquaredPerMeter;
+
+    //sysid on module?
+    public static final double ksDriveVoltSecondsPerMeter = 0.667 / 12;
+    public static final double kvDriveVoltSecondsSquaredPerMeter = 2.44 / 12;
+    public static final double kaDriveVoltSecondsSquaredPerMeter = 0.27 / 12;
+//sysid on module?
+    public static final double kvTurnVoltSecondsPerRadian = 1.47; // originally 1.5
+    public static final double kaTurnVoltSecondsSquaredPerRadian = 0.348; // originally 0.3
 
     public static final double kDriveMetersPerEncRev =
 
@@ -126,9 +138,11 @@ public final class Constants {
 
     public static final double kTurningDegreesPerEncRev =
 
-        360 / mk4iL1TurnGearRatio ;// 
+        360 / mk4iL1TurnGearRatio ;
+
 //max turn speed = (5400/ 21.43)/60 revs per sec 4 revs per sec 1200 deg per sec
     public static final double kPModuleTurningController = .1;
+
 
     public static final double kPModuleDriveController = .2;
   }
@@ -137,7 +151,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static final class AutoConstants {
+  public static final class TrapezoidConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
 
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
