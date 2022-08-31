@@ -58,8 +58,8 @@ public class RobotContainer {
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new SetSwerveDrive(
-            m_robotDrive, () -> m_driverController.getRawAxis(1),
-            () -> 0,//m_driverController.getRawAxis(2),
+            m_robotDrive, () -> -m_driverController.getRawAxis(1),
+            () -> m_driverController.getRawAxis(0),
             () ->  m_driverController.getRawAxis(2),
             true,
             true));
