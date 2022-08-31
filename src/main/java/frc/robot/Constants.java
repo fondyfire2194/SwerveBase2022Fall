@@ -96,11 +96,11 @@ public final class Constants {
 
      public static final double kMaxSpeedMetersPerSecond = 3;
 
-  //   public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
-    // public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
+    public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
+    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
 
-    public static final double kMaxRotationRadiansPerSecond = Math.hypot(DriveConstants.kTrackWidth / 2.0,
-        DriveConstants.kWheelBase / 2.0);
+    // public static final double kMaxRotationRadiansPerSecond = Math.hypot(DriveConstants.kTrackWidth / 2.0,
+    //     DriveConstants.kWheelBase / 2.0);
 
    // public static final double MAX_ANGULAR_ACCEL_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI;
 
@@ -160,7 +160,7 @@ public final class Constants {
 
     // public static final double kMaxAngularSpeedDegreesPerSecondSquared =2000;
     public static final double kMaxRotationRadiansPerSecond = Math.PI;
-    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI;
+    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI*2;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;

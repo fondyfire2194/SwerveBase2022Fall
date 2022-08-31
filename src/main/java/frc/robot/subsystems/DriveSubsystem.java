@@ -34,10 +34,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public SwerveDriveKinematics kSwerveKinematics = DriveConstants.kSwerveKinematics;
 
-  // public void name() {
-
-  // }
-
   final HashMap<ModulePosition, SwerveModuleSparkMax4201> m_swerveModules = new HashMap<>(
 
       Map.of(
@@ -88,7 +84,7 @@ public class DriveSubsystem extends SubsystemBase {
       new Pose2d(),
       kSwerveKinematics,
       VecBuilder.fill(0.1, 0.1, 0.1),
-      VecBuilder.fill(0.05),
+      VecBuilder.fill(0.025),
       VecBuilder.fill(0.1, 0.1, 0.1));
 
   private boolean showOnShuffleboard = true;
@@ -186,7 +182,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getHeadingDegrees() {
-    return reduceRes(Math.IEEEremainder((m_gyro.getAngle()), 360),  2) * (DriveConstants.kGyroReversed ? -1.0 : 1.0) ;
+    return Math.IEEEremainder((m_gyro.getAngle()), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
 
   }
 

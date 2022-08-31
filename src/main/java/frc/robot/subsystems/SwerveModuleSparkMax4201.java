@@ -167,7 +167,9 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
     else {
 
-      m_turnVelController.setP(100);
+      m_turnVelController.setP(200);
+
+      m_turningPIDController.setP(1);
     }
 
     // info
@@ -233,15 +235,13 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
     SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(actualAngleDegrees));
 
     // Calculate the drive output from the drive PID controller.
-    actualDriveRate = (m_driveEncoder.getVelocity() * ModuleConstants.kDriveMetersPerEncRev) / 60;
+    actualDriveRate = (m_driveEncoder.getVelocity() / 60 * ModuleConstants.kDriveMetersPerEncRev) / 60;
 
     double driveOutput = m_drivePIDController.calculate(actualDriveRate, state.speedMetersPerSecond);
 
-  
-     
-      m_driveVelController.setReference(driveOutput * 11, ControlType.kVelocity);
+    m_driveVelController.setReference(driveOutput * 11, ControlType.kVelocity);
 
-   // }
+    
     // turn motor code
     // Prevent rotating module if speed is less then 1%. Prevents Jittering.
     angle = (Math.abs(desiredState.speedMetersPerSecond) <= (DriveConstants.kMaxSpeedMetersPerSecond * 0.01))
@@ -253,6 +253,7 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
     SmartDashboard.putNumber("TurnAngle" + String.valueOf(m_moduleNumber), desiredState.angle.getDegrees());
 
     SmartDashboard.putNumber("DESSPEED" + String.valueOf(m_moduleNumber), desiredState.speedMetersPerSecond);
+    SmartDashboard.putNumber("ANGPERR" + String.valueOf(m_moduleNumber), m_turningPIDController.getPositionError());
 
     // Calculate the turning motor output from the turning PID controller.
     // encoder counts are in decimal fraction revolutions
@@ -337,7 +338,5 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
     double angle = m_turnCANcoder.getAbsolutePosition() - m_turningEncoderOffset;
     m_turningEncoder.setPosition(angle / ModuleConstants.kTurningDegreesPerEncRev);
   }
-
-  
 
 }
