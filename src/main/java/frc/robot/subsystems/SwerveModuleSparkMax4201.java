@@ -7,37 +7,32 @@ package frc.robot.subsystems;
 import java.util.Map;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
-import edu.wpi.first.hal.CTREPCMJNI;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CTRECanCoder;
-import frc.robot.Pref;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.TrapezoidConstants;
+import frc.robot.Pref;
 
 public class SwerveModuleSparkMax4201 extends SubsystemBase {
   public final CANSparkMax m_driveMotor;
@@ -54,20 +49,13 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
   private final PIDController m_drivePIDController = new PIDController(ModuleConstants.kPModuleDriveController, 0, 0);
 
+  private final PIDController m_turnPIDController = new PIDController(1, 0, 0);
+
   ModulePosition m_modulePosition;// enum with test module names
 
   int m_moduleNumber;
 
   String layout;
-
-  // Using a TrapezoidProfile PIDController to allow for smooth turning
-  public ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-      ModuleConstants.kPModuleTurningController,
-      0,
-      0,
-      new TrapezoidProfile.Constraints(
-          Units.radiansToDegrees(TrapezoidConstants.kMaxRotationRadiansPerSecond),
-          TrapezoidConstants.kMaxRotationRadiansPerSecondSquared));
 
   Pose2d m_pose;
 
@@ -80,9 +68,14 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
   private double angle;
   private double actualAngleDegrees;
 
+  private double optimumAngle;
+
   private double actualDriveRate;
 
   double m_turningEncoderOffset;
+
+  private final int POS_SLOT = 0;
+  private final int VEL_SLOT = 1;
 
   /**
    * Constructs a SwerveModule.
@@ -167,22 +160,20 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
     m_turnPosController = m_turningMotor.getPIDController();
 
     if (RobotBase.isReal()) {
-      m_turnPosController.setP(Pref.getPref("SwerveTurnPoskP"));
-      m_turnPosController.setI(Pref.getPref("SwerveTurnPoskI"));
-      m_turnPosController.setD(Pref.getPref("SwerveTurnPosKD"));
-      m_turnPosController.setIZone(Pref.getPref("SwerveTurnPosKIz"));
+      m_turnPosController.setP(Pref.getPref("SwerveTurnPoskP"), POS_SLOT);
+      m_turnPosController.setI(Pref.getPref("SwerveTurnPoskI"), POS_SLOT);
+      m_turnPosController.setD(Pref.getPref("SwerveTurnPosKD"), POS_SLOT);
+      m_turnPosController.setIZone(Pref.getPref("SwerveTurnPosKIz"), POS_SLOT);
     }
 
     else {
 
-      m_turnPosController.setP(.02);
+      m_turnPosController.setP(1, VEL_SLOT);
 
-      m_turningPIDController.setP(.01);
-
-      m_turningPIDController.setI(.00001);
+      m_turnPIDController.setP(1);
 
     }
-
+    m_turnPIDController.enableContinuousInput(-180, 180);
     // info
     SmartDashboard.putNumber("DriveGearRatio", ModuleConstants.mk4iL1DriveGearRatio);
 
@@ -194,10 +185,6 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
     SmartDashboard.putNumber("Max Ang Radspersec", TrapezoidConstants.kMaxRotationRadiansPerSecond);
 
-    // Limit the PID Controller's input range between -pi and pi and set the input
-    // to be continuous.
-    m_turningPIDController.enableContinuousInput(-180, 180);
-
     m_modulePosition = modulePosition;
 
     m_moduleNumber = m_modulePosition.ordinal();// gets module enum index
@@ -207,8 +194,6 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
       REVPhysicsSim.getInstance().addSparkMax(m_driveMotor, DCMotor.getNEO(1));
 
       REVPhysicsSim.getInstance().addSparkMax(m_turningMotor, DCMotor.getNEO(1));
-
-      m_turningPIDController.setP(100);
 
     }
     resetEncoders();
@@ -264,35 +249,23 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
     double driveOutput = m_drivePIDController.calculate(actualDriveRate, state.speedMetersPerSecond);
 
-    double drff80 = desiredState.speedMetersPerSecond * .8;
+    double drff80 = state.speedMetersPerSecond * .8;
 
     if (RobotBase.isSimulation())
+
       m_driveVelController.setReference(drff80 + driveOutput, ControlType.kVelocity);
 
     else
 
-      m_driveMotor.set(desiredState.speedMetersPerSecond / 3.5);
+      m_driveMotor.set(state.speedMetersPerSecond / 3.5);
 
-    SmartDashboard.putNumber("DRVELERR" + String.valueOf(m_moduleNumber),
-        m_drivePIDController.getVelocityError());
-
-    // SmartDashboard.putNumber("DRRATE" + String.valueOf(m_moduleNumber),
-    // actualDriveRate);
-
-    // SmartDashboard.putNumber("DRRPM" + String.valueOf(m_moduleNumber),
-    // m_driveEncoder.getVelocity());
-
-    // turn motor code
+       // turn motor code
     // Prevent rotating module if speed is less then 1%. Prevents Jittering.
-    angle = (Math.abs(desiredState.speedMetersPerSecond) <= (DriveConstants.kMaxSpeedMetersPerSecond * 0.01))
+    angle = (Math.abs(state.speedMetersPerSecond) <= (DriveConstants.kMaxSpeedMetersPerSecond * 0.01))
         ? m_lastAngle
-        : desiredState.angle
+        : state.angle
             .getDegrees();
     m_lastAngle = angle;
-
-    SmartDashboard.putNumber("TurnAngle" + String.valueOf(m_moduleNumber), desiredState.angle.getDegrees());
-
-    SmartDashboard.putNumber("ANGPERR" + String.valueOf(m_moduleNumber), m_turningPIDController.getPositionError());
 
     // Calculate the turning motor output from the turning PID controller.
     // encoder counts are in decimal fraction revolutions
@@ -301,17 +274,27 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
     // keeps angle within +-180 degrees
     actualAngleDegrees = wrapAngleDeg(actualAngleDegrees);
 
-    // get the angle error
-    // double turnOutput = m_turningPIDController.calculate(actualAngleDegrees,
-    // angle);
+    double angleError = m_turnPIDController.calculate(actualAngleDegrees, angle);
 
-    // turnOutput = turnOutput / ModuleConstants.kTurningDegreesPerEncRev;
+    
+    SmartDashboard.putNumber("Angle" + String.valueOf(m_moduleNumber), state.angle.getDegrees());
+    SmartDashboard.putNumber("OptAngle" + String.valueOf(m_moduleNumber), optimumAngle);
+    SmartDashboard.putNumber("ActAngle" + String.valueOf(m_moduleNumber), actualAngleDegrees);
+    SmartDashboard.putNumber("ERRAngle" + String.valueOf(m_moduleNumber), optimumAngle - actualAngleDegrees);
 
-    // if (RobotBase.isSimulation())
-    // feed the error in degrees per second to the SparkMax velocity loop
-    // different P values are used for simulation
-    m_turnPosController.setReference(angle / ModuleConstants.kTurningDegreesPerEncRev, ControlType.kPosition);
-
+    if (RobotBase.isReal()) {
+      // feed the error in degrees per second to the SparkMax velocity loop
+      m_turnPosController.setReference(angleError, ControlType.kPosition,
+          POS_SLOT);
+    }
+    // need to use veocity controller as position doesn't work in simulation
+    // So the position error needs to drive a vel controller
+    // max err is 180 degrees max velocity is
+    else {
+      m_turnPosController.setReference((optimumAngle - actualAngleDegrees) / 5,
+          ControlType.kVelocity, VEL_SLOT);
+      // m_turnPosController.setReference(0, ControlType.kVelocity, VEL_SLOT);
+    }
   }
 
   public void initShuffleboard() {

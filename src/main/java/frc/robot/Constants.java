@@ -140,8 +140,8 @@ public final class Constants {
 
         360 / mk4iL1TurnGearRatio;
 
-    // max turn speed = (5400/ 21.43)/60 revs per sec 4 revs per sec 1200 deg per
-    // sec
+    // max turn speed = (5400/ 21.43) revs per min 240 revs per min 4250 deg per
+    // min
     public static final double kPModuleTurningController = .025;
 
     public static final double kPModuleDriveController = .2;

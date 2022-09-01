@@ -119,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    //updateOdometry();
+    updateOdometry();
 
     SmartDashboard.putNumber("X", getX());
     SmartDashboard.putNumber("Y", getY());
