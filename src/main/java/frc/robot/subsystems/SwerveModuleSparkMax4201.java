@@ -50,7 +50,7 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
   private final PIDController m_drivePIDController = new PIDController(ModuleConstants.kPModuleDriveController, 0, 0);
 
-  private final PIDController m_turnPIDController = new PIDController(1, 0, 0);
+  private final PIDController m_turnPIDController = new PIDController(100, 0, 0);
 
   ModulePosition m_modulePosition;// enum with test module names
 
@@ -77,6 +77,7 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
   private final int POS_SLOT = 0;
   private final int VEL_SLOT = 1;
+  private double wrappedActualAngleDegrees;
 
   /**
    * Constructs a SwerveModule.
@@ -260,7 +261,7 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
       m_driveMotor.set(state.speedMetersPerSecond / 3.5);
 
-       // turn motor code
+    // turn motor code
     // Prevent rotating module if speed is less then 1%. Prevents Jittering.
     angle = (Math.abs(state.speedMetersPerSecond) <= (DriveConstants.kMaxSpeedMetersPerSecond * 0.01))
         ? m_lastAngle
@@ -273,29 +274,54 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
     // need to convert them to degrees for use with command angle
     actualAngleDegrees = m_turningEncoder.getPosition() * ModuleConstants.kTurningDegreesPerEncRev;
     // keeps angle within +-180 degrees
-    actualAngleDegrees = wrapAngleDeg(actualAngleDegrees);
+    wrappedActualAngleDegrees = wrapAngleDeg(actualAngleDegrees);
 
-    double angleError = m_turnPIDController.calculate(actualAngleDegrees, angle);
-
-    
-    SmartDashboard.putNumber("Angle" + String.valueOf(m_moduleNumber), state.angle.getDegrees());
-    SmartDashboard.putNumber("OptAngle" + String.valueOf(m_moduleNumber), optimumAngle);
-    SmartDashboard.putNumber("ActAngle" + String.valueOf(m_moduleNumber), actualAngleDegrees);
-    SmartDashboard.putNumber("ERRAngle" + String.valueOf(m_moduleNumber), optimumAngle - actualAngleDegrees);
+    // SmartDashboard.putNumber("Angle" + String.valueOf(m_moduleNumber),
+    // state.angle.getDegrees());
+    // SmartDashboard.putNumber("OptAngle" + String.valueOf(m_moduleNumber),
+    // optimumAngle);
+    // SmartDashboard.putNumber("ActAngle" + String.valueOf(m_moduleNumber),
+    // actualAngleDegrees);
+    // SmartDashboard.putNumber("ERRAngle" + String.valueOf(m_moduleNumber),
+    // optimumAngle - actualAngleDegrees);
+    optimumAngle = getOptAngle(wrappedActualAngleDegrees, angle);
 
     if (RobotBase.isReal()) {
-      // feed the error in degrees per second to the SparkMax velocity loop
-      m_turnPosController.setReference(angleError, ControlType.kPosition,
-          POS_SLOT);
+      positionTurn(optimumAngle);
+    } else {
+      simPositionTurn(optimumAngle);
     }
-    // need to use veocity controller as position doesn't work in simulation
-    // So the position error needs to drive a vel controller
-    // max err is 180 degrees max velocity is
-    else {
-      m_turnPosController.setReference((optimumAngle - actualAngleDegrees) / 5,
-          ControlType.kVelocity, VEL_SLOT);
-      // m_turnPosController.setReference(0, ControlType.kVelocity, VEL_SLOT);
-    }
+  }
+
+  public void positionTurn(double angle) {
+    // feed the error in degrees per second to the SparkMax velocity loop
+    double angleError = m_turnPIDController.calculate(actualAngleDegrees, angle);
+    m_turnPosController.setReference(angleError, ControlType.kPosition,
+        POS_SLOT);
+
+  }
+
+  public void simPositionTurn(double angle) {
+
+    double out = m_turnPIDController.calculate(actualAngleDegrees, angle);
+
+    m_turnPosController.setReference(out, ControlType.kVelocity);
+  }
+
+  public double getOptAngle(double measurement, double setpoint) {
+
+    return MathUtil.inputModulus(setpoint - measurement, -180, 180);
+  }
+
+  public static double wrapAngleDeg(double angle) {
+    angle %= 360;
+    angle = angle > 180 ? angle - 360 : angle;
+    angle = angle < -180 ? angle + 360 : angle;
+    return angle;
+  }
+
+  public static double limitMotorCmd(double motorCmdIn) {
+    return Math.max(Math.min(motorCmdIn, 1.0), -1.0);
   }
 
   public void initShuffleboard() {
@@ -336,22 +362,6 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
   public void setModulePose(Pose2d pose) {
     m_pose = pose;
-  }
-
-  private double getOptAngle(double measurement, double setpoint) {
-
-    return MathUtil.inputModulus(setpoint - measurement, -180, 180);
-  }
-
-  public static double wrapAngleDeg(double angle) {
-    angle %= 360;
-    angle = angle > 180 ? angle - 360 : angle;
-    angle = angle < -180 ? angle + 360 : angle;
-    return angle;
-  }
-
-  public static double limitMotorCmd(double motorCmdIn) {
-    return Math.max(Math.min(motorCmdIn, 1.0), -1.0);
   }
 
   public void setDriveBrakeMode(boolean on) {
