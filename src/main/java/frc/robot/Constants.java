@@ -134,7 +134,7 @@ public final class Constants {
 
         (kWheelDiameterMeters * Math.PI) / mk4iL1DriveGearRatio;
 
-    public static final double kDriveEncRPMToMPS = kDriveMetersPerEncRev / 60;
+    public static final double kDriveEncRPSToMPS = kDriveMetersPerEncRev;
 
     public static final double kTurningDegreesPerEncRev =
 
@@ -142,7 +142,7 @@ public final class Constants {
 
     // max turn speed = (5400/ 21.43)/60 revs per sec 4 revs per sec 1200 deg per
     // sec
-    public static final double kPModuleTurningController = .1;
+    public static final double kPModuleTurningController = .025;
 
     public static final double kPModuleDriveController = .2;
   }

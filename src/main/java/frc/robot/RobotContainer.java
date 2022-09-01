@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -34,6 +35,9 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    // Preferences.removeAll();
+    Pref.deleteUnused();
+    Pref.addMissing();
     // Configure the button bindings
     configureButtonBindings();
     m_fieldSim.initSim();
@@ -47,7 +51,7 @@ public class RobotContainer {
         new SetSwerveDrive(
             m_robotDrive, () -> -m_driverController.getRawAxis(1),
             () -> m_driverController.getRawAxis(0),
-            () ->  m_driverController.getRawAxis(2),
+            () -> m_driverController.getRawAxis(2),
             true,
             true));
   }

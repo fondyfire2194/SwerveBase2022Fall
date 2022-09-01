@@ -84,7 +84,7 @@ public class DriveSubsystem extends SubsystemBase {
       new Pose2d(),
       kSwerveKinematics,
       VecBuilder.fill(0.1, 0.1, 0.1),
-      VecBuilder.fill(0.025),
+      VecBuilder.fill(0.05),
       VecBuilder.fill(0.1, 0.1, 0.1));
 
   private boolean showOnShuffleboard = true;
@@ -119,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    updateOdometry();
+    //updateOdometry();
 
     SmartDashboard.putNumber("X", getX());
     SmartDashboard.putNumber("Y", getY());
