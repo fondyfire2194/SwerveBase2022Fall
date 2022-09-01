@@ -15,6 +15,7 @@ import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -335,6 +336,11 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
   public void setModulePose(Pose2d pose) {
     m_pose = pose;
+  }
+
+  private double getOptAngle(double measurement, double setpoint) {
+
+    return MathUtil.inputModulus(setpoint - measurement, -180, 180);
   }
 
   public static double wrapAngleDeg(double angle) {
