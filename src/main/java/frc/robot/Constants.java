@@ -52,15 +52,15 @@ public final class Constants {
 
   public static final class DriveConstants {
 
-    public static final boolean kFrontLeftTurningMotorReversed = false;
-    public static final boolean kBackLeftTurningMotorReversed = true;
-    public static final boolean kFrontRightTurningMotorReversed = false;
-    public static final boolean kBackRightTurningMotorReversed = true;
+    public static final boolean kFrontLeftTurningMotorReversed = true;//false;
+    public static final boolean kBackLeftTurningMotorReversed = false;//true;
+    public static final boolean kFrontRightTurningMotorReversed = true;//false;
+    public static final boolean kBackRightTurningMotorReversed =false;// true;
 
-    public static final boolean kFrontLeftDriveMotorReversed = false;
-    public static final boolean kBackLeftDriveMotorReversed = true;
-    public static final boolean kFrontRightDriveMotorReversed = false;
-    public static final boolean kBackRightDriveMotorReversed = true;
+    public static final boolean kFrontLeftDriveMotorReversed = true;//false;
+    public static final boolean kBackLeftDriveMotorReversed = false;//true;
+    public static final boolean kFrontRightDriveMotorReversed =true;// false;
+    public static final boolean kBackRightDriveMotorReversed = false;//true;
 
     public static final double kTrackWidth = 0.5;
     // Distance between centers of right and left wheels on robot

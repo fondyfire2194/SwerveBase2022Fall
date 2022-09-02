@@ -4,10 +4,10 @@
 
 package frc.robot.simulation;
 
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ModuleConstants;
@@ -21,8 +21,8 @@ public class FieldSim {
 
   private final Field2d m_field2d = new Field2d();
 
-  private final Map<ModulePosition, Pose2d> m_swerveModulePoses =
-      ModuleMap.of(new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d());
+  private final Map<ModulePosition, Pose2d> m_swerveModulePoses = ModuleMap.of(new Pose2d(), new Pose2d(), new Pose2d(),
+      new Pose2d());
 
   public FieldSim(DriveSubsystem swerveDrive) {
     m_swerveDrive = swerveDrive;
@@ -30,23 +30,36 @@ public class FieldSim {
 
   private int tst;
 
-  public void initSim() {}
+  private double starttime;
+
+  private double endtime;
+
+  public void initSim() {
+  }
 
   public Field2d getField2d() {
     return m_field2d;
   }
 
   private void updateRobotPoses() {
+
+ 
+    if (tst == 0)
+      starttime = Timer.getFPGATimestamp();
+    if (starttime != 0 && tst >= 50 && endtime == 0)
+      endtime = Timer.getFPGATimestamp();
+    SmartDashboard.putNumber("sampletime", endtime - starttime);
     SmartDashboard.putNumber("TST", tst++);
 
+    
+    m_field2d.setRobotPose(m_swerveDrive.getPoseMeters());
     m_field2d.setRobotPose(m_swerveDrive.getPoseMeters());
     for (ModulePosition i : ModulePosition.values()) {
-      
-      Translation2d updatedPositions =
-          m_swerveDrive.kModuleTranslations
-              .get(i)
-              .rotateBy(m_swerveDrive.getPoseMeters().getRotation())
-              .plus(m_swerveDrive.getPoseMeters().getTranslation());
+
+      Translation2d updatedPositions = m_swerveDrive.kModuleTranslations
+          .get(i)
+          .rotateBy(m_swerveDrive.getPoseMeters().getRotation())
+          .plus(m_swerveDrive.getPoseMeters().getTranslation());
       m_swerveModulePoses.put(
           i,
           new Pose2d(
@@ -54,7 +67,7 @@ public class FieldSim {
               m_swerveDrive
                   .getSwerveModule(i)
                   .getHeadingRotation2d()
-                  .plus(m_swerveDrive.getHeadingRotation2d()))) ;            
+                  .plus(m_swerveDrive.getHeadingRotation2d())));
     }
 
     m_field2d
@@ -63,12 +76,16 @@ public class FieldSim {
   }
 
   public void periodic() {
+
     updateRobotPoses();
 
-    if (RobotBase.isSimulation()) simulationPeriodic();
+    if (RobotBase.isSimulation())
+
+      simulationPeriodic();
 
     SmartDashboard.putData("Field2d", m_field2d);
   }
 
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+  }
 }

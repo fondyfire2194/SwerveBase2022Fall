@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.SetSwerveDrive;
+import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.swerve.SetSwerveOdometry;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
@@ -42,18 +42,20 @@ public class RobotContainer {
     configureButtonBindings();
     m_fieldSim.initSim();
 
-    SmartDashboard.putData("ResetPose",
-        new SetSwerveOdometry(m_robotDrive, m_fieldSim, new Pose2d(0, 0, Rotation2d.fromDegrees(0))));
+    // SmartDashboard.putData("ResetPose",
+    //     new SetSwerveOdometry(m_robotDrive, m_fieldSim, new Pose2d(0, 0, Rotation2d.fromDegrees(0))));
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new SetSwerveDrive(
-            m_robotDrive, () -> -m_driverController.getRawAxis(1),
+            m_robotDrive,
+            // () -> leftJoystick.getRawAxis(1),
+            // () -> leftJoystick.getRawAxis(0),
+            // () -> leftJoystick.getRawAxis(2)));
+            () -> -m_driverController.getRawAxis(1),
             () -> m_driverController.getRawAxis(0),
-            () -> m_driverController.getRawAxis(2),
-            true,
-            true));
+            () -> m_driverController.getRawAxis(2)));
   }
 
   /**
@@ -65,6 +67,17 @@ public class RobotContainer {
    * passing it to a
    * {@link JoystickButton}.
    */
+
+  public void simulationPeriodic() {
+    m_fieldSim.periodic();
+    periodic();
+  }
+ public void periodic() {
+    m_fieldSim.periodic();
+  }
+
+
+
   private void configureButtonBindings() {
   }
 

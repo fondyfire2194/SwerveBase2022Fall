@@ -34,27 +34,15 @@ public class Pref {
   static {
 
     
-    prefDict.put("dRKff", .22);
-    prefDict.put("dRKp", .1);
-    prefDict.put("dRKi", .0);
-    prefDict.put("dRKd", .0);
-    prefDict.put("dRKiz", .0);
-    prefDict.put("dRStKp", .15);
-    prefDict.put("dRacc", .1);
+ 
 
-    prefDict.put("dRTurnkP", .004);
-    prefDict.put("dRTurnkD", .0);
-    prefDict.put("dRTurnkI", .0);
-    prefDict.put("dRTurnkIz", .0);
-    prefDict.put("dRTurnkIzLim", 5.);
-
-    prefDict.put("dRTune", 0.);
+    prefDict.put("SwerveTuneTune", 0.);
     
 
-    prefDict.put("SwerveTurnPoskP", .1);
-    prefDict.put("SwerveTurnPoskI", 0.);
-    prefDict.put("SwerveTurnPoskD", 0.);
-    prefDict.put("SwerveTurnPoskIz", 0.);
+    prefDict.put("SwerveTurnVelkP", .1);
+    prefDict.put("SwerveTurnVelkI", 0.);
+    prefDict.put("SwerveTurnVelkD", 0.);
+    prefDict.put("SwerveTurnVelkIz", 0.);
 
     
   }

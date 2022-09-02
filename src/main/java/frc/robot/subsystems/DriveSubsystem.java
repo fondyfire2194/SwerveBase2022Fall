@@ -112,9 +112,7 @@ public class DriveSubsystem extends SubsystemBase {
 
       m_simAngle = new SimDouble((SimDeviceDataJNI.getSimValueHandle(dev, "Yaw")));
     }
-    // info
-    SmartDashboard.putNumber("maxradps", DriveConstants.kMaxRotationRadiansPerSecond);
-  }
+      }
 
   @Override
   public void periodic() {
@@ -185,7 +183,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double getHeadingDegrees() {
     
-      return Math.IEEEremainder((m_gyro.getAngle()), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+      return Math.IEEEremainder((m_gyro.getAngle()), 360);// * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
   public Rotation2d getHeadingRotation2d() {
