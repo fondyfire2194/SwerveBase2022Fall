@@ -96,8 +96,8 @@ public final class Constants {
 
     public static final double kMaxSpeedMetersPerSecond = 3;
 
-    public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
-    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
+    public static final double kMaxRotationRadiansPerSecond = Math.PI ;
+    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI ;
 
     // public static final double kMaxRotationRadiansPerSecond =
     // Math.hypot(DriveConstants.kTrackWidth / 2.0,
@@ -117,6 +117,28 @@ public final class Constants {
 
     public static double mk4iL1TurnGearRatio = 1 / ((14.0 / 50.0) * (10.0 / 60.0));// 21.43 1/.046667
 
+    public static final double kDriveMetersPerEncRev =
+
+        (kWheelDiameterMeters * Math.PI) / mk4iL1DriveGearRatio;
+
+    // in 1 minute at 1 rpm encoder drive moves kDriveMetersPerEncRev
+    // so in 1 second encoder travels 1/60 revs = kDriveMetersPerEncRev/60
+    // so MPS
+
+    public static final double kDriveEncRPMperMPS = 60 / kDriveMetersPerEncRev;
+
+    public static double kFreeMetersPerSecond = 5600 / kDriveEncRPMperMPS;
+
+    public static final double kTurningDegreesPerEncRev =
+
+        360 / mk4iL1TurnGearRatio;
+
+    // max turn speed = (5400/ 21.43) revs per min 240 revs per min 4250 deg per
+    // min
+    public static final double kPModuleTurningController = .025;
+
+    public static final double kPModuleDriveController = .2;
+
     // use sysid on robot
     public static double ksVolts;
     public static double kvVoltSecondsPerMeter;
@@ -130,21 +152,6 @@ public final class Constants {
     public static final double kvTurnVoltSecondsPerRadian = 1.47; // originally 1.5
     public static final double kaTurnVoltSecondsSquaredPerRadian = 0.348; // originally 0.3
 
-    public static final double kDriveMetersPerEncRev =
-
-        (kWheelDiameterMeters * Math.PI) / mk4iL1DriveGearRatio;
-
-    public static final double kDriveEncRPSToMPS = kDriveMetersPerEncRev;
-
-    public static final double kTurningDegreesPerEncRev =
-
-        360 / mk4iL1TurnGearRatio;
-
-    // max turn speed = (5400/ 21.43) revs per min 240 revs per min 4250 deg per
-    // min
-    public static final double kPModuleTurningController = .025;
-
-    public static final double kPModuleDriveController = .2;
   }
 
   public static final class OIConstants {

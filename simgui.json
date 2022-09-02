@@ -46,14 +46,26 @@
         "BACK_LEFT": {
           "open": true
         },
+        "BACK_LEFT Drive": {
+          "open": true
+        },
+        "BACK_LEFT Turn": {
+          "open": true
+        },
         "BACK_RIGHT": {
           "open": true
         },
         "open": true
-      }
+      },
+      "open": true
     },
     "SmartDashboard": {
-      "open": true
+      "Field2d": {
+        "open": true
+      },
+      "ResetPose": {
+        "open": true
+      }
     }
   },
   "Plot": {
@@ -65,43 +77,30 @@
               "autoFit": true
             }
           ],
-          "height": 260,
-          "series": [
-            {
-              "color": [
-                0.2980392277240753,
-                0.44705885648727417,
-                0.6901960968971252,
-                1.0
-              ],
-              "id": "NT:/SmartDashboard/Yaw"
-            }
-          ]
-        },
-        {
-          "axis": [
-            {
-              "autoFit": true
-            }
-          ],
-          "height": 260,
-          "series": [
-            {
-              "color": [
-                0.2980392277240753,
-                0.44705885648727417,
-                0.6901960968971252,
-                1.0
-              ],
-              "digital": "Auto",
-              "id": "NT:/SmartDashboard/DSSMS3"
-            }
-          ]
+          "height": 1308
         }
       ],
       "window": {
         "visible": false
       }
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "height": 1385,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/Drivetrain/BACK_LEFT Turn/Turn Angle 2"
+            }
+          ]
+        }
+      ]
     }
   }
 }

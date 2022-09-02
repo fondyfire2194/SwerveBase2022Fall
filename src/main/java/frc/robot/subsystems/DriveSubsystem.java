@@ -138,9 +138,9 @@ public class DriveSubsystem extends SubsystemBase {
     // increment is made every 20 ms so radian adder would be (rads/sec) *(20/1000)
     // degree adder would be radian adder * 360/2pi
     // so degree increment multiplier is 360/100pi = 1.1459
-    
+
     double temp = chassisSpeed.omegaRadiansPerSecond * 1.1459155;
-  
+
     temp += m_simAngle.get();
 
     m_simAngle.set(temp);
@@ -184,8 +184,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getHeadingDegrees() {
-    return Math.IEEEremainder((m_gyro.getAngle()), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-
+    
+      return Math.IEEEremainder((m_gyro.getAngle()), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
   public Rotation2d getHeadingRotation2d() {
@@ -225,6 +225,7 @@ public class DriveSubsystem extends SubsystemBase {
     // info
     SmartDashboard.putNumber("CHSPDX", chassisSpeeds.vxMetersPerSecond);
     SmartDashboard.putNumber("CHSPDY", chassisSpeeds.vyMetersPerSecond);
+    SmartDashboard.putBoolean("FldRel", isFieldRelative);
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), DriveConstants.kMaxSpeedMetersPerSecond);
