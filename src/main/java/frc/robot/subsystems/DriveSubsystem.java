@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import java.util.HashMap;
 import java.util.Map;
 
+
+import com.ctre.phoenix.unmanaged.Unmanaged;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.hal.SimDouble;
@@ -20,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,6 +32,7 @@ import frc.robot.Constants.CanConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.ModuleMap;
 import frc.robot.Constants.DriveConstants.*;
+
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -77,7 +81,9 @@ public class DriveSubsystem extends SubsystemBase {
               CanConstants.BACK_RIGHT_MODULE_STEER_OFFSET)));
   // The gyro sensor
 
-  private final AHRS m_gyro = new AHRS(SPI.Port.kMXP, (byte) 200);
+   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP, (byte) 200);
+
+
 
   private final SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
       getHeadingRotation2d(),
@@ -91,12 +97,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   private SimDouble m_simAngle;// navx sim
 
-  public Map<ModulePosition, Translation2d> kModuleTranslations = DriveConstants.kModuleTranslations;
+  private double m_simYaw;
+
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-
-    m_gyro.reset();
+    
+     m_gyro.reset();
 
     resetModuleEncoders();
 
@@ -112,7 +119,57 @@ public class DriveSubsystem extends SubsystemBase {
 
       m_simAngle = new SimDouble((SimDeviceDataJNI.getSimValueHandle(dev, "Yaw")));
     }
-      }
+  }
+
+  /**
+   * Method to drive the robot using joystick info.
+   *
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the
+   *                      field.
+   */
+  @SuppressWarnings("ParameterName")
+
+  // move the robot from gamepad
+  public void drive(
+      double throttle,
+      double strafe,
+      double rotation,
+      boolean isFieldRelative,
+      boolean isOpenLoop) {
+    throttle *= DriveConstants.kMaxSpeedMetersPerSecond;
+    strafe *= DriveConstants.kMaxSpeedMetersPerSecond;
+    rotation *= DriveConstants.kMaxRotationRadiansPerSecond;
+
+    ChassisSpeeds chassisSpeeds = isFieldRelative
+    ? ChassisSpeeds.fromFieldRelativeSpeeds(
+    throttle, strafe, rotation, getHeadingRotation2d())
+    : new ChassisSpeeds(throttle, strafe, rotation);
+
+    SmartDashboard.putString("HR2D", getHeadingRotation2d().toString());
+    SmartDashboard.putNumber("FRTH", throttle);
+    SmartDashboard.putNumber("FRST", strafe);
+    SmartDashboard.putNumber("FRRT", rotation);
+
+    Map<ModulePosition, SwerveModuleState> moduleStates = ModuleMap
+        .of(kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
+
+    if(RobotBase.isReal()){
+    SmartDashboard.putNumber("CHSPDX", chassisSpeeds.vxMetersPerSecond);
+    SmartDashboard.putNumber("CHSPDY", chassisSpeeds.vyMetersPerSecond);
+    SmartDashboard.putBoolean("FldRel", isFieldRelative);
+    }
+
+   
+    
+      SwerveDriveKinematics.desaturateWheelSpeeds(
+        ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), DriveConstants.kMaxSpeedMetersPerSecond);
+
+    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
+      module.setDesiredState(moduleStates.get(module.getModulePosition()), isOpenLoop);
+  }
 
   @Override
   public void periodic() {
@@ -126,32 +183,14 @@ public class DriveSubsystem extends SubsystemBase {
 
   }
 
-  @Override
-  public void simulationPeriodic() {
-    ChassisSpeeds chassisSpeed = kSwerveKinematics.toChassisSpeeds(
-        ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
-    // want to simulate navX gyro changing as robot turns
-    // information available is radians per second and this happens every 20ms
-    // radians/2pi = 360 degrees so 1 degree per second is radians / 2pi
-    // increment is made every 20 ms so radian adder would be (rads/sec) *(20/1000)
-    // degree adder would be radian adder * 360/2pi
-    // so degree increment multiplier is 360/100pi = 1.1459
-
-    double temp = chassisSpeed.omegaRadiansPerSecond * 1.1459155;
-
-    temp += m_simAngle.get();
-
-    m_simAngle.set(temp);
-
-  }
-
+  
   public void updateOdometry() {
     m_odometry.update(
         getHeadingRotation2d(),
         ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
 
     for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules)) {
-      Translation2d modulePositionFromChassis = kModuleTranslations
+      Translation2d modulePositionFromChassis = DriveConstants.kModuleTranslations
           .get(module.getModulePosition())
           .rotateBy(getHeadingRotation2d())
           .plus(getPoseMeters().getTranslation());
@@ -173,7 +212,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void setOdometry(Pose2d pose) {
 
     m_odometry.resetPosition(pose, pose.getRotation());
-    m_gyro.reset();
+     m_gyro.reset();
 
   }
 
@@ -182,56 +221,16 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getHeadingDegrees() {
-    
-      return Math.IEEEremainder((m_gyro.getAngle()), 360);// * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+   
+     return Math.IEEEremainder((m_gyro.getAngle()), 360);// *
+    // (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
   public Rotation2d getHeadingRotation2d() {
     return Rotation2d.fromDegrees(getHeadingDegrees());
   }
 
-  /**
-   * Method to drive the robot using joystick info.
-   *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the
-   *                      field.
-   */
-  @SuppressWarnings("ParameterName")
-
-  // nove the robot from gamepad
-  public void drive(
-      double throttle,
-      double strafe,
-      double rotation,
-      boolean isFieldRelative,
-      boolean isOpenLoop) {
-    throttle *= DriveConstants.kMaxSpeedMetersPerSecond;
-    strafe *= DriveConstants.kMaxSpeedMetersPerSecond;
-    rotation *= DriveConstants.kMaxRotationRadiansPerSecond;
-
-    ChassisSpeeds chassisSpeeds = isFieldRelative
-        ? ChassisSpeeds.fromFieldRelativeSpeeds(
-            throttle, strafe, rotation, getHeadingRotation2d())
-        : new ChassisSpeeds(throttle, strafe, rotation);
-
-    Map<ModulePosition, SwerveModuleState> moduleStates = ModuleMap
-        .of(kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
-
-    // info
-    SmartDashboard.putNumber("CHSPDX", chassisSpeeds.vxMetersPerSecond);
-    SmartDashboard.putNumber("CHSPDY", chassisSpeeds.vyMetersPerSecond);
-    SmartDashboard.putBoolean("FldRel", isFieldRelative);
-
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), DriveConstants.kMaxSpeedMetersPerSecond);
-
-    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
-      module.setDesiredState(moduleStates.get(module.getModulePosition()), isOpenLoop);
-  }
-
+  
   public Map<ModulePosition, SwerveModuleState> getModuleStates() {
     Map<ModulePosition, SwerveModuleState> map = new HashMap<>();
     for (ModulePosition i : m_swerveModules.keySet()) {
@@ -263,21 +262,16 @@ public class DriveSubsystem extends SubsystemBase {
       module.initShuffleboard();
   }
 
-  public static double wrapAngleDeg(double angle) {
-    angle %= 360;
-    angle = angle > 180 ? angle - 360 : angle;
-    angle = angle < -180 ? angle + 360 : angle;
-    return angle;
-  }
+ 
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    m_gyro.reset();
-    m_gyro.setAngleAdjustment(0);
+    // m_gyro.reset();
+    // m_gyro.setAngleAdjustment(0);
 
   }
 
-  public Translation2d getTranslation() {
+    public Translation2d getTranslation() {
     return getPoseMeters().getTranslation();
   }
 
@@ -299,9 +293,9 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @return The turn rate of the robot, in degrees per second
    */
-  public double getTurnRate() {
-    return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-  }
+  // public double getTurnRate() {
+  // return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+  // }
 
   public void setIdleMode(boolean brake) {
     for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules)) {
@@ -309,6 +303,32 @@ public class DriveSubsystem extends SubsystemBase {
       module.setTurnBrakeMode(brake);
     }
 
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    ChassisSpeeds chassisSpeedSim = kSwerveKinematics.toChassisSpeeds(
+        ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
+    // want to simulate navX gyro changing as robot turns
+    // information available is radians per second and this happens every 20ms
+    // radians/2pi = 360 degrees so 1 degree per second is radians / 2pi
+    // increment is made every 20 ms so radian adder would be (rads/sec) *(20/1000)
+    // degree adder would be radian adder * 360/2pi
+    // so degree increment multiplier is 360/100pi = 1.1459
+
+    double temp = chassisSpeedSim.omegaRadiansPerSecond * 1.1459155;
+
+     temp += m_simAngle.get();
+
+     m_simAngle.set(temp);
+
+    m_simYaw += chassisSpeedSim.omegaRadiansPerSecond * 0.02;
+
+    Unmanaged.feedEnable(20);
+    
+    SmartDashboard.putNumber("CHSPDX", chassisSpeedSim.vxMetersPerSecond);
+    SmartDashboard.putNumber("CHSPDY", chassisSpeedSim.vyMetersPerSecond);
+    SmartDashboard.putNumber("CHSRot", chassisSpeedSim.omegaRadiansPerSecond);
   }
 
 }

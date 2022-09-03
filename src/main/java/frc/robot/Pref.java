@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Preferences;
 
 public class Pref {
@@ -36,13 +35,13 @@ public class Pref {
     
  
 
-    prefDict.put("SwerveTuneTune", 0.);
+    prefDict.put("SwerveTune", 0.);
     
 
-    prefDict.put("SwerveTurnVelkP", .1);
-    prefDict.put("SwerveTurnVelkI", 0.);
-    prefDict.put("SwerveTurnVelkD", 0.);
-    prefDict.put("SwerveTurnVelkIz", 0.);
+    prefDict.put("SwerveTurnPoskP", .1);
+    prefDict.put("SwerveTurnPoskI", 0.);
+    prefDict.put("SwerveTurnPoskD", 0.);
+    prefDict.put("SwerveTurnPoskIz", 0.);
 
     
   }

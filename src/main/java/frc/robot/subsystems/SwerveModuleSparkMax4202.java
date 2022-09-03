@@ -24,7 +24,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -37,7 +36,6 @@ import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.TrapezoidConstants;
 import frc.robot.Pref;
-import frc.robot.Robot;
 
 public class SwerveModuleSparkMax4202 extends SubsystemBase {
   public final CANSparkMax m_driveMotor;
@@ -175,8 +173,8 @@ public class SwerveModuleSparkMax4202 extends SubsystemBase {
     if (RobotBase.isReal()) {
       m_turnPosController.setP(Pref.getPref("SwerveTurnPoskP"), POS_SLOT);
       m_turnPosController.setI(Pref.getPref("SwerveTurnPoskI"), POS_SLOT);
-      m_turnPosController.setD(Pref.getPref("SwerveTurnPosKD"), POS_SLOT);
-      m_turnPosController.setIZone(Pref.getPref("SwerveTurnPosKIz"), POS_SLOT);
+      m_turnPosController.setD(Pref.getPref("SwerveTurnPoskD"), POS_SLOT);
+      m_turnPosController.setIZone(Pref.getPref("SwerveTurnPoskIz"), POS_SLOT);
     }
 
     else {
@@ -217,8 +215,8 @@ public class SwerveModuleSparkMax4202 extends SubsystemBase {
     if (Pref.getPref("dRTune") == 1) {
       m_turnPosController.setP(Pref.getPref("SwerveTurnPoskP"));
       m_turnPosController.setI(Pref.getPref("SwerveTurnPoskI"));
-      m_turnPosController.setD(Pref.getPref("SwerveTurnPosKD"));
-      m_turnPosController.setIZone(Pref.getPref("SwerveTurnPosKIz"));
+      m_turnPosController.setD(Pref.getPref("SwerveTurnPoskD"));
+      m_turnPosController.setIZone(Pref.getPref("SwerveTurnPoskIz"));
 
     }
     if (DriverStation.isTeleopEnabled() && startTime == 0) {

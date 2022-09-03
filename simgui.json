@@ -46,22 +46,26 @@
         "BACK_LEFT": {
           "open": true
         },
-        "BACK_LEFT Drive": {
-          "open": true
-        },
         "BACK_LEFT Turn": {
           "open": true
         },
         "BACK_RIGHT": {
           "open": true
         },
-        "open": true
-      }
-    },
-    "SmartDashboard": {
-      "Field2d": {
+        "BACK_RIGHT Turn": {
+          "open": true
+        },
+        "FRONT_LEFT Turn": {
+          "open": true
+        },
+        "FRONT_RIGHT Turn": {
+          "open": true
+        },
         "open": true
       },
+      "open": true
+    },
+    "SmartDashboard": {
       "ResetPose": {
         "open": true
       },
@@ -77,7 +81,7 @@
               "autoFit": true
             }
           ],
-          "height": 1308,
+          "height": 640,
           "series": [
             {
               "color": [
@@ -86,50 +90,17 @@
                 0.6901960968971252,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/OtPANG"
+              "id": "NT:/Shuffleboard/Drivetrain/BACK_LEFT Turn/Turn Setpoint Degrees 2"
             }
           ]
-        }
-      ],
-      "window": {
-        "visible": false
-      }
-    },
-    "Plot <1>": {
-      "plots": [
+        },
         {
           "axis": [
             {
               "autoFit": true
             }
           ],
-          "height": 1239,
-          "series": [
-            {
-              "color": [
-                0.6609304547309875,
-                0.2980392277240753,
-                0.6901960968971252,
-                1.0
-              ],
-              "id": "NT:/Shuffleboard/Drivetrain/BACK_LEFT Turn/Turn Angle 2"
-            }
-          ]
-        }
-      ],
-      "window": {
-        "visible": false
-      }
-    },
-    "Plot <2>": {
-      "plots": [
-        {
-          "axis": [
-            {
-              "autoFit": true
-            }
-          ],
-          "height": -37,
+          "height": 640,
           "series": [
             {
               "color": [
@@ -138,11 +109,14 @@
                 0.6901960968971252,
                 1.0
               ],
-              "id": "NT:/Shuffleboard/Drivetrain/BACK_LEFT Turn/Turn Angle 2"
+              "id": "NT:/Shuffleboard/Drivetrain/BACK_LEFT Turn/TurnAngleOut2"
             }
           ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }
