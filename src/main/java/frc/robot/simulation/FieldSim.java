@@ -43,13 +43,6 @@ public class FieldSim {
 
   private void updateRobotPoses() {
 
-    if (tst == 0)
-      starttime = Timer.getFPGATimestamp();
-    if (starttime != 0 && tst >= 50 && endtime == 0)
-      endtime = Timer.getFPGATimestamp();
-    SmartDashboard.putNumber("sampletime", endtime - starttime);
-    SmartDashboard.putNumber("TST", tst++);
-
     Pose2d testing = m_swerveDrive.getPoseMeters();
 
     SmartDashboard.putNumber("TSTYAW", testing.getRotation().getDegrees());

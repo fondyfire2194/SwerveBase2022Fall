@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -31,7 +32,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Pref;
-import frc.robot.utils.DriveUtils;
+import frc.robot.utils.AngleUtils;
 
 public class SwerveModuleSparkMax4201 extends SubsystemBase {
   public final CANSparkMax m_driveMotor;
@@ -67,18 +68,20 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
   private double m_lastAngle;
   private double angle;
-  private double actualAngleDegrees;
-  private double angleError;
 
   double m_turningEncoderOffset;
 
   private final int POS_SLOT = 0;
   private final int VEL_SLOT = 1;
-
-  int SIM_SLOT = 0;
+  private final int SIM_SLOT = 2;
 
   private int tuneOn;
-  private double pidout;
+  private double actualAngleDegrees;
+
+  private double changeStartTime;
+  private double previousAngleDegrees;
+  private double angleDifference;
+  private double angleIncrementPer20ms;
 
   /**
    * Constructs a SwerveModule.
@@ -214,7 +217,7 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
     if (RobotBase.isReal())
       return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(getHeadingDegrees()));
     else
-      return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(Units.radiansToDegrees(angle)));
+      return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(Units.degreesToRadians(angle)));
   }
 
   public ModulePosition getModulePosition() {
@@ -228,7 +231,7 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
    */
   public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
 
-    state = DriveUtils.optimize(desiredState, getHeadingRotation2d());
+    state = AngleUtils.optimize(desiredState, getHeadingRotation2d());
 
     // state = SwerveModuleState.optimize(desiredState, new
     // Rotation2d(actualAngleDegrees));
@@ -241,18 +244,19 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
     m_lastAngle = angle;
 
-    if (RobotBase.isReal())
+    if (RobotBase.isReal()) {
 
       actualAngleDegrees = m_turningEncoder.getPosition();
 
-    else
-      actualAngleDegrees = angle;
-
-    if (RobotBase.isReal()) {
-
-      m_driveMotor.set(state.speedMetersPerSecond / ModuleConstants.kFreeMetersPerSecond);
-
       m_turnSMController.setReference(angle, ControlType.kPosition, POS_SLOT);
+
+      if (isOpenLoop)
+
+        m_driveMotor.set(state.speedMetersPerSecond / ModuleConstants.kFreeMetersPerSecond);
+
+      else
+
+        m_driveVelController.setReference(state.speedMetersPerSecond, ControlType.kVelocity, VEL_SLOT);
 
     }
 
@@ -263,6 +267,18 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
       // no simulation for angle - angle command is returned directly to drive
       // subsystem as actual angle in 2 places - getState() and getHeading
 
+      if (angle != actualAngleDegrees && angleIncrementPer20ms == 0) {
+        angleDifference = angle - actualAngleDegrees;
+        angleIncrementPer20ms = angleDifference / 20;// 10*20ms = .2 sec move time
+      }
+
+      if (angleIncrementPer20ms != 0) {
+        actualAngleDegrees += angleIncrementPer20ms;
+        if ((Math.abs(angle) - Math.abs(actualAngleDegrees)) < .01) {
+          actualAngleDegrees = angle;
+          angleIncrementPer20ms = 0;
+        }
+      }
     }
 
   }
@@ -291,14 +307,16 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
     tuLayout.addNumber("Turn Setpoint Degrees " + String.valueOf(m_moduleNumber), () -> angle);
 
-    tuLayout.addNumber("Turn Angle " + String.valueOf(m_moduleNumber),
+    tuLayout.addNumber("Turn Enc Pos " + String.valueOf(m_moduleNumber),
         () -> m_turningEncoder.getPosition());
+
+    tuLayout.addNumber("Act Ang Deg " + String.valueOf(m_moduleNumber),
+        () -> actualAngleDegrees);
 
     tuLayout.addNumber("TurnAngleOut" + String.valueOf(m_moduleNumber), () -> m_turningMotor.getAppliedOutput());
 
-    tuLayout.addNumber("AngERR" + String.valueOf(m_moduleNumber), () -> angleError);
+    tuLayout.addString("TurnState" + String.valueOf(m_moduleNumber), () -> getState().toString());
 
-    tuLayout.addNumber("AngPID" + String.valueOf(m_moduleNumber), () -> pidout);
   }
 
   /** Zeroes all the SwerveModule encoders. */
@@ -316,8 +334,8 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
       return m_turningEncoder.getPosition();
 
     else
-    
-      return angle;
+
+      return actualAngleDegrees;
 
   }
 

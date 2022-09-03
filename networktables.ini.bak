@@ -1,19 +1,7 @@
 [NetworkTables Storage 3.0]
 string "/Preferences/.type"="RobotPreferences"
+double "/Preferences/SwerveTuneTune"=0
 double "/Preferences/SwerveTurnPoskD"=0
 double "/Preferences/SwerveTurnPoskI"=0
 double "/Preferences/SwerveTurnPoskIz"=0
 double "/Preferences/SwerveTurnPoskP"=0.1
-double "/Preferences/dRKd"=0
-double "/Preferences/dRKff"=0.22
-double "/Preferences/dRKi"=0
-double "/Preferences/dRKiz"=0
-double "/Preferences/dRKp"=0.1
-double "/Preferences/dRStKp"=0.15
-double "/Preferences/dRTune"=0
-double "/Preferences/dRTurnkD"=0
-double "/Preferences/dRTurnkI"=0
-double "/Preferences/dRTurnkIz"=0
-double "/Preferences/dRTurnkIzLim"=5
-double "/Preferences/dRTurnkP"=0.004
-double "/Preferences/dRacc"=0.1

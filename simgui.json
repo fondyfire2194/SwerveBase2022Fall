@@ -46,6 +46,9 @@
         "BACK_LEFT": {
           "open": true
         },
+        "BACK_LEFT Drive": {
+          "open": true
+        },
         "BACK_LEFT Turn": {
           "open": true
         },
@@ -62,8 +65,7 @@
           "open": true
         },
         "open": true
-      },
-      "open": true
+      }
     },
     "SmartDashboard": {
       "ResetPose": {
@@ -76,12 +78,21 @@
     "Plot <0>": {
       "plots": [
         {
-          "axis": [
+          "height": 414,
+          "series": [
             {
-              "autoFit": true
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/Drivetrain/BACK_LEFT Turn/Act Ang Deg 2"
             }
-          ],
-          "height": 640,
+          ]
+        },
+        {
+          "height": 414,
           "series": [
             {
               "color": [
@@ -95,12 +106,7 @@
           ]
         },
         {
-          "axis": [
-            {
-              "autoFit": true
-            }
-          ],
-          "height": 640,
+          "height": 414,
           "series": [
             {
               "color": [
@@ -109,14 +115,11 @@
                 0.6901960968971252,
                 1.0
               ],
-              "id": "NT:/Shuffleboard/Drivetrain/BACK_LEFT Turn/TurnAngleOut2"
+              "id": "NT:/Shuffleboard/Drivetrain/BACK_LEFT Drive/Drive Speed MPS 2"
             }
           ]
         }
-      ],
-      "window": {
-        "visible": false
-      }
+      ]
     }
   }
 }

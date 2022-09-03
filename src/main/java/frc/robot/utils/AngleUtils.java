@@ -9,7 +9,7 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
-public final class DriveUtils {
+public final class AngleUtils {
   public static TalonFXConfiguration generateTurnMotorConfig() {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
