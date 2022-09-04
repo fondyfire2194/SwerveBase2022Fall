@@ -4,15 +4,20 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.PositionTurnModule;
+import frc.robot.commands.auto.DriveForward;
+import frc.robot.commands.swerve.JogDriveModule;
+import frc.robot.commands.swerve.JogTurnModule;
 import frc.robot.commands.swerve.SetSwerveDrive;
-import frc.robot.commands.swerve.SetSwerveOdometry;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -28,8 +33,15 @@ public class RobotContainer {
 
   public final FieldSim m_fieldSim = new FieldSim(m_robotDrive);
 
+  private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
+
   // The driver's controller
+
+  static Joystick leftJoystick = new Joystick(OIConstants.kDriverControllerPort + 1);
+
   private XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+
+  final GamepadButtons driver = new GamepadButtons(m_driverController, true);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -38,98 +50,77 @@ public class RobotContainer {
     // Preferences.removeAll();
     Pref.deleteUnused();
     Pref.addMissing();
+    SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     // Configure the button bindings
-    configureButtonBindings();
+   
     m_fieldSim.initSim();
-
-    // SmartDashboard.putData("ResetPose",
-    //     new SetSwerveOdometry(m_robotDrive, m_fieldSim, new Pose2d(0, 0, Rotation2d.fromDegrees(0))));
+    initializeAutoChooser();
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new SetSwerveDrive(
             m_robotDrive,
-            // () -> leftJoystick.getRawAxis(1),
-            // () -> leftJoystick.getRawAxis(0),
-            // () -> leftJoystick.getRawAxis(2)));
+
             () -> -m_driverController.getRawAxis(1),
             () -> m_driverController.getRawAxis(0),
             () -> m_driverController.getRawAxis(2)));
+
+    // new SetSwerveDrive(
+    // m_robotDrive,
+    // () -> leftJoystick.getRawAxis(1),
+    // () -> leftJoystick.getRawAxis(0),
+    // () -> rightJoystick.getRawAxis(0)));
+
+    driver.leftTrigger.whileHeld(new JogTurnModule(
+        m_robotDrive,
+        () -> -m_driverController.getRawAxis(1),
+        () -> m_driverController.getRawAxis(0),
+        () -> m_driverController.getRawAxis(2),
+        () -> m_driverController.getRawAxis(3)));
+
+    // individual modules
+    driver.leftBumper.whileHeld(new JogDriveModule(
+        m_robotDrive,
+        () -> -m_driverController.getRawAxis(1),
+        () -> m_driverController.getRawAxis(0),
+        () -> m_driverController.getRawAxis(2),
+        () -> m_driverController.getRawAxis(3),
+        true));
+
+    // all modules
+    driver.rightBumper.whileHeld(new JogDriveModule(
+        m_robotDrive,
+        () -> -m_driverController.getRawAxis(1),
+        () -> m_driverController.getRawAxis(0),
+        () -> m_driverController.getRawAxis(2),
+        () -> m_driverController.getRawAxis(3),
+        false));
+    // position turn modules individually
+    driver.X_button.whileHeld(new PositionTurnModule(m_robotDrive, ModulePosition.FRONT_LEFT));
+    driver.A_button.whileHeld(new PositionTurnModule(m_robotDrive, ModulePosition.FRONT_RIGHT));
+    driver.B_button.whileHeld(new PositionTurnModule(m_robotDrive, ModulePosition.BACK_LEFT));
+    driver.Y_button.whileHeld(new PositionTurnModule(m_robotDrive, ModulePosition.BACK_RIGHT));
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
-   * subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
-   * passing it to a
-   * {@link JoystickButton}.
-   */
+  private void initializeAutoChooser() {
+    m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
+    m_autoChooser.addOption("Drive Forward", new DriveForward(m_robotDrive));
+
+    SmartDashboard.putData("Auto Selector", m_autoChooser);
+  }
 
   public void simulationPeriodic() {
     m_fieldSim.periodic();
     periodic();
   }
- public void periodic() {
+
+  public void periodic() {
     m_fieldSim.periodic();
   }
 
-
-
-  private void configureButtonBindings() {
+  public double getThrottle() {
+    return (1 - leftJoystick.getThrottle()) / 2;
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  // // public Command getAutonomousCommand() {
-  // // // Create config for trajectory
-  // // TrajectoryConfig config =
-  // // new TrajectoryConfig(
-  // // AutoConstants.kMaxSpeedMetersPerSecond,
-  // // AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-  // // // Add kinematics to ensure max speed is actually obeyed
-  // // .setKinematics(m_robotDrive.kSwerveKinematics);
-
-  // // // An example trajectory to follow. All units in meters.
-  // // Trajectory exampleTrajectory =
-  // // TrajectoryGenerator.generateTrajectory(
-  // // // Start at the origin facing the +X direction
-  // // new Pose2d(0, 0, new Rotation2d(0)),
-  // // // Pass through these two interior waypoints, making an 's' curve path
-  // // List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-  // // // End 3 meters straight ahead of where we started, facing forward
-  // // new Pose2d(3, 0, new Rotation2d(0)),
-  // // config);
-
-  // // var thetaController =
-  // // new ProfiledPIDController(
-  // // AutoConstants.kPThetaController, 0, 0,
-  // AutoConstants.kThetaControllerConstraints);
-  // // thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-  // // SwerveControllerCommand swerveControllerCommand =
-  // // new SwerveControllerCommand(x,
-  // // exampleTrajectory,
-  // // m_robotDrive::getPose, // Functional interface to feed supplier
-  // // m_robotDrive.kSwerveKinematics,
-
-  // // // Position controllers
-  // // new PIDController(AutoConstants.kPXController, 0, 0),
-  // // new PIDController(AutoConstants.kPYController, 0, 0),
-  // // thetaController,
-  // // m_robotDrive::setModuleStates,
-  // // m_robotDrive);
-
-  // // Reset odometry to the starting pose of the trajectory.
-  // m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-  // // Run path following command, then stop at the end.
-  // return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0,
-  // false,false));
-  // }
 }

@@ -52,15 +52,15 @@ public final class Constants {
 
   public static final class DriveConstants {
 
-    public static final boolean kFrontLeftTurningMotorReversed = true;//false;
-    public static final boolean kBackLeftTurningMotorReversed = false;//true;
-    public static final boolean kFrontRightTurningMotorReversed = true;//false;
-    public static final boolean kBackRightTurningMotorReversed =false;// true;
+    public static final boolean kFrontLeftTurningMotorReversed = true;// false;
+    public static final boolean kBackLeftTurningMotorReversed = false;// true;
+    public static final boolean kFrontRightTurningMotorReversed = true;// false;
+    public static final boolean kBackRightTurningMotorReversed = false;// true;
 
-    public static final boolean kFrontLeftDriveMotorReversed = true;//false;
-    public static final boolean kBackLeftDriveMotorReversed = false;//true;
-    public static final boolean kFrontRightDriveMotorReversed =true;// false;
-    public static final boolean kBackRightDriveMotorReversed = false;//true;
+    public static final boolean kFrontLeftDriveMotorReversed = true;// false;
+    public static final boolean kBackLeftDriveMotorReversed = false;// true;
+    public static final boolean kFrontRightDriveMotorReversed = true;// false;
+    public static final boolean kBackRightDriveMotorReversed = false;// true;
 
     public static final double kTrackWidth = 0.5;
     // Distance between centers of right and left wheels on robot
@@ -96,8 +96,15 @@ public final class Constants {
 
     public static final double kMaxSpeedMetersPerSecond = 3;
 
-    public static final double kMaxRotationRadiansPerSecond = Math.PI ;
-    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI ;
+    public static final double kMaxRotationRadiansPerSecond = Math.PI;
+    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI;
+
+    public static final double kP_X = 0.2;
+    public static final double kD_X = 0;
+    public static final double kP_Y = 0.2;
+    public static final double kD_Y = 0;
+    public static final double kP_Theta = 8;
+    public static final double kD_Theta = 0;
 
     // public static final double kMaxRotationRadiansPerSecond =
     // Math.hypot(DriveConstants.kTrackWidth / 2.0,
@@ -172,6 +179,9 @@ public final class Constants {
     public static final double kPXController = 1;
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;
+
+    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+        kMaxRotationRadiansPerSecond, kMaxRotationRadiansPerSecondSquared);
 
     // // Constraint for the motion profiled robot angle controller
     // public static final TrapezoidProfile.Constraints kThetaControllerConstraints

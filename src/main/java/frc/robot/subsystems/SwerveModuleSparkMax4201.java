@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -57,6 +58,8 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
   String turnLayout;
 
+  String canCoderLayout;
+
   Pose2d m_pose;
 
   double testAngle;
@@ -82,6 +85,8 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
   private double previousAngleDegrees;
   private double angleDifference;
   private double angleIncrementPer20ms;
+  private double tolDegPerSec = .05;
+  private double toleranceDeg = .25;
 
   /**
    * Constructs a SwerveModule.
@@ -299,6 +304,8 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
     drLayout.addNumber("Drive Position " + String.valueOf(m_moduleNumber), () -> m_driveEncoder.getPosition());
 
+    drLayout.addNumber("App Output " + String.valueOf(m_moduleNumber), () -> m_driveMotor.getAppliedOutput());
+
     turnLayout = m_modulePosition.toString() + " Turn";
 
     ShuffleboardLayout tuLayout = Shuffleboard.getTab("Drivetrain")
@@ -316,6 +323,27 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
     tuLayout.addNumber("TurnAngleOut" + String.valueOf(m_moduleNumber), () -> m_turningMotor.getAppliedOutput());
 
     tuLayout.addString("TurnState" + String.valueOf(m_moduleNumber), () -> getState().toString());
+
+  }
+
+  public void initShuffleboardCanCoder(){
+    canCoderLayout = m_modulePosition.toString() + " CanCoder";
+
+    ShuffleboardLayout coderLayout = Shuffleboard.getTab("CanCoders")
+        .getLayout(canCoderLayout, BuiltInLayouts.kList).withPosition(m_moduleNumber * 2, 0)
+        .withSize(2, 3).withProperties(Map.of("Label position", "LEFT"));
+
+    coderLayout.addNumber("Position" + String.valueOf(m_moduleNumber), () -> m_turnCANcoder.getMyPosition());
+    coderLayout.addNumber("Abs Position" + String.valueOf(m_moduleNumber), () -> m_turnCANcoder.getAbsolutePosition());
+    coderLayout.addNumber("Velocity" + String.valueOf(m_moduleNumber), () -> m_turnCANcoder.getVelValue());
+    coderLayout.addString(" Position" + String.valueOf(m_moduleNumber),
+        () -> m_turnCANcoder.getMagnetFieldStrength().toString());
+    coderLayout.addString(" MagFieldStrength" + String.valueOf(m_moduleNumber),
+        () -> m_turnCANcoder.getMagnetFieldStrength().toString());
+    coderLayout.addStringArray("Faults" + String.valueOf(m_moduleNumber),
+        () -> m_turnCANcoder.getFaults());
+    coderLayout.addStringArray("StickyFaults" + String.valueOf(m_moduleNumber),
+        () -> m_turnCANcoder.getStickyFaults());
 
   }
 
@@ -364,6 +392,30 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
   public void resetAngleToAbsolute() {
     double angle = m_turnCANcoder.getAbsolutePosition() - m_turningEncoderOffset;
     m_turningEncoder.setPosition(angle);
+  }
+
+  public double getTurnAngle() {
+    return m_turningEncoder.getPosition();
+  }
+
+  public void turnMotorMove(double speed) {
+    m_turningMotor.setVoltage(speed * RobotController.getBatteryVoltage());
+  }
+
+  public void positionTurn(double angle) {
+    m_turnSMController.setReference(angle, ControlType.kPosition, POS_SLOT);
+  }
+
+  public void driveMotorMove(double speed) {
+    m_driveMotor.setVoltage(speed * RobotController.getBatteryVoltage());
+  }
+
+  public boolean turnInPosition(double targetAngle) {
+    return Math.abs(targetAngle - getTurnAngle()) < toleranceDeg;
+  }
+
+  public boolean turnIsStopped() {
+    return Math.abs(m_turningEncoder.getVelocity()) < tolDegPerSec;
   }
 
 }

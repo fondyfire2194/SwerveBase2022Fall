@@ -13,6 +13,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,14 +23,16 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants;
 import frc.robot.Constants.CanConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.TrapezoidConstants;
 import frc.robot.utils.ModuleMap;
 import frc.robot.Constants.DriveConstants.*;
 
@@ -81,6 +85,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP, (byte) 200);
 
+  private PIDController m_xController = new PIDController(DriveConstants.kP_X, 0, DriveConstants.kD_X);
+  private PIDController m_yController = new PIDController(DriveConstants.kP_Y, 0, DriveConstants.kD_Y);
+  private ProfiledPIDController m_turnController = new ProfiledPIDController(
+      DriveConstants.kP_Theta, 0,
+      DriveConstants.kD_Theta,
+      Constants.TrapezoidConstants.kThetaControllerConstraints);
+
   private final SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
       getHeadingRotation2d(),
       new Pose2d(),
@@ -95,6 +106,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   private double m_simYaw;
 
+  public double throttleValue;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
 
@@ -102,9 +115,11 @@ public class DriveSubsystem extends SubsystemBase {
 
     resetModuleEncoders();
 
-    if (showOnShuffleboard)
+    if (showOnShuffleboard) {
 
       moduleInitShuffleboard();
+
+    }
 
     setIdleMode(true);
 
@@ -144,18 +159,9 @@ public class DriveSubsystem extends SubsystemBase {
         : new ChassisSpeeds(throttle, strafe, rotation);
 
     SmartDashboard.putString("HR2D", getHeadingRotation2d().toString());
-    SmartDashboard.putNumber("FRTH", throttle);
-    SmartDashboard.putNumber("FRST", strafe);
-    SmartDashboard.putNumber("FRRT", rotation);
 
     Map<ModulePosition, SwerveModuleState> moduleStates = ModuleMap
         .of(kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
-
-    if (RobotBase.isReal()) {
-      SmartDashboard.putNumber("CHSPDX", chassisSpeeds.vxMetersPerSecond);
-      SmartDashboard.putNumber("CHSPDY", chassisSpeeds.vyMetersPerSecond);
-      SmartDashboard.putBoolean("FldRel", isFieldRelative);
-    }
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), DriveConstants.kMaxSpeedMetersPerSecond);
@@ -168,9 +174,6 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     updateOdometry();
-
-    SmartDashboard.putNumber("X", getX());
-    SmartDashboard.putNumber("Y", getY());
 
     SmartDashboard.putNumber("Yaw", getHeadingDegrees());
 
@@ -213,9 +216,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getHeadingDegrees() {
+    return -Math.IEEEremainder((m_gyro.getAngle()), 360);
 
-    return -Math.IEEEremainder((m_gyro.getAngle()), 360);// *
-    // (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
   public Rotation2d getHeadingRotation2d() {
@@ -250,7 +252,10 @@ public class DriveSubsystem extends SubsystemBase {
   public void moduleInitShuffleboard() {
     for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
 
+    {
       module.initShuffleboard();
+      module.initShuffleboardCanCoder();
+    }
   }
 
   /** Zeroes the heading of the robot. */
@@ -262,6 +267,22 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Translation2d getTranslation() {
     return getPoseMeters().getTranslation();
+  }
+
+  public PIDController getXPidController() {
+    return m_xController;
+  }
+
+  public PIDController getYPidController() {
+    return m_yController;
+  }
+
+  public void setSwerveModuleStatesAuto(SwerveModuleState[] states) {
+    setSwerveModuleStates(states, false);
+  }
+
+  public ProfiledPIDController getThetaPidController() {
+    return m_turnController;
   }
 
   public double getX() {
@@ -311,12 +332,30 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_simAngle.set(temp);
 
-
     Unmanaged.feedEnable(20);
+  }
 
-    SmartDashboard.putNumber("CHSPDX", chassisSpeedSim.vxMetersPerSecond);
-    SmartDashboard.putNumber("CHSPDY", chassisSpeedSim.vyMetersPerSecond);
-    SmartDashboard.putNumber("CHSRot", chassisSpeedSim.omegaRadiansPerSecond);
+  public void turnModule(ModulePosition mp, double speed) {
+    getSwerveModule(mp).turnMotorMove(speed);
+  }
+
+  public void positionTurnModule(ModulePosition mp, double angle) {
+    getSwerveModule(mp).positionTurn(angle);
+  }
+
+  public void driveModule(ModulePosition mp, double speed) {
+    getSwerveModule(mp).driveMotorMove(speed);
+  }
+
+  public boolean getTurnInPosition(ModulePosition mp, double targetAngle) {
+    return getSwerveModule(mp).turnInPosition(targetAngle);
+  }
+
+  public double getRPMfromThrottle() {
+    double maxAngle = 180;
+    double minAngle = -180;
+    double angleRange = maxAngle - minAngle;
+    return angleRange * throttleValue;
   }
 
 }

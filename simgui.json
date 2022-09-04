@@ -19,7 +19,8 @@
       "/SmartDashboard/FRONT_LEFT": "Mechanism2d",
       "/SmartDashboard/FRONT_RIGHT": "Mechanism2d",
       "/SmartDashboard/Field2d": "Field2d",
-      "/SmartDashboard/ResetPose": "Command"
+      "/SmartDashboard/ResetPose": "Command",
+      "/SmartDashboard/Scheduler": "Scheduler"
     },
     "windows": {
       "/SmartDashboard/Field2d": {
@@ -37,6 +38,11 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/Scheduler": {
+        "window": {
+          "visible": true
+        }
       }
     }
   },
@@ -49,36 +55,39 @@
         "BACK_LEFT Drive": {
           "open": true
         },
-        "BACK_LEFT Turn": {
-          "open": true
-        },
         "BACK_RIGHT": {
           "open": true
         },
-        "BACK_RIGHT Turn": {
+        "BACK_RIGHT Drive": {
           "open": true
         },
-        "FRONT_LEFT Turn": {
+        "FRONT_LEFT Drive": {
+          "open": true
+        },
+        "FRONT_RIGHT Drive": {
           "open": true
         },
         "FRONT_RIGHT Turn": {
           "open": true
         },
         "open": true
-      }
+      },
+      "open": true
     },
     "SmartDashboard": {
       "ResetPose": {
         "open": true
       },
-      "open": true
+      "Scheduler": {
+        "open": true
+      }
     }
   },
   "Plot": {
     "Plot <0>": {
       "plots": [
         {
-          "height": 414,
+          "height": -26,
           "series": [
             {
               "color": [
@@ -92,7 +101,7 @@
           ]
         },
         {
-          "height": 414,
+          "height": -26,
           "series": [
             {
               "color": [
@@ -106,7 +115,7 @@
           ]
         },
         {
-          "height": 414,
+          "height": -26,
           "series": [
             {
               "color": [
