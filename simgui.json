@@ -14,6 +14,7 @@
       "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/SmartDashboard/Auto Selector": "String Chooser",
       "/SmartDashboard/BACK_LEFT": "Mechanism2d",
       "/SmartDashboard/BACK_RIGHT": "Mechanism2d",
       "/SmartDashboard/FRONT_LEFT": "Mechanism2d",
@@ -23,6 +24,11 @@
       "/SmartDashboard/Scheduler": "Scheduler"
     },
     "windows": {
+      "/SmartDashboard/Auto Selector": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field2d": {
         "Robot": {
           "image": "resources/images/robot.png",
@@ -55,6 +61,9 @@
         "BACK_LEFT Drive": {
           "open": true
         },
+        "BACK_LEFT Turn": {
+          "open": true
+        },
         "BACK_RIGHT": {
           "open": true
         },
@@ -71,8 +80,7 @@
           "open": true
         },
         "open": true
-      },
-      "open": true
+      }
     },
     "SmartDashboard": {
       "ResetPose": {
@@ -80,7 +88,8 @@
       },
       "Scheduler": {
         "open": true
-      }
+      },
+      "open": true
     }
   },
   "Plot": {

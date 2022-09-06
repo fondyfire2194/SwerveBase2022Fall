@@ -15,6 +15,7 @@ import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.PositionTurnModule;
 import frc.robot.commands.auto.DriveForward;
+import frc.robot.commands.auto.FiveBallAuto;
 import frc.robot.commands.swerve.JogDriveModule;
 import frc.robot.commands.swerve.JogTurnModule;
 import frc.robot.commands.swerve.SetSwerveDrive;
@@ -52,7 +53,7 @@ public class RobotContainer {
     Pref.addMissing();
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     // Configure the button bindings
-   
+
     m_fieldSim.initSim();
     initializeAutoChooser();
     // Configure default commands
@@ -106,6 +107,7 @@ public class RobotContainer {
   private void initializeAutoChooser() {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
     m_autoChooser.addOption("Drive Forward", new DriveForward(m_robotDrive));
+    m_autoChooser.addOption("5 Ball Auto", new FiveBallAuto(m_robotDrive));
 
     SmartDashboard.putData("Auto Selector", m_autoChooser);
   }
@@ -119,8 +121,15 @@ public class RobotContainer {
     m_fieldSim.periodic();
   }
 
+  
+
   public double getThrottle() {
-    return (1 - leftJoystick.getThrottle()) / 2;
+    return - leftJoystick.getThrottle();
+  }
+
+  public Command getAutonomousCommand() {
+    // An ExampleCommand will run in autonomous
+    return m_autoChooser.getSelected();
   }
 
 }

@@ -108,6 +108,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double throttleValue;
 
+public double targetAngle;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
 
@@ -351,11 +353,9 @@ public class DriveSubsystem extends SubsystemBase {
     return getSwerveModule(mp).turnInPosition(targetAngle);
   }
 
-  public double getRPMfromThrottle() {
-    double maxAngle = 180;
-    double minAngle = -180;
-    double angleRange = maxAngle - minAngle;
-    return angleRange * throttleValue;
+  public double getAnglefromThrottle() {
+    
+    return 180* throttleValue;
   }
 
 }

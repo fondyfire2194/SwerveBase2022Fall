@@ -25,8 +25,11 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CTRECanCoder;
 import frc.robot.Constants.DriveConstants;
@@ -81,8 +84,6 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
   private int tuneOn;
   private double actualAngleDegrees;
 
-  private double changeStartTime;
-  private double previousAngleDegrees;
   private double angleDifference;
   private double angleIncrementPer20ms;
   private double tolDegPerSec = .05;
@@ -116,8 +117,14 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
     m_driveMotor.restoreFactoryDefaults();
 
+    m_turningMotor.setSmartCurrentLimit(20);
+
+    m_driveMotor.setSmartCurrentLimit(20);
+
     // absolute encoder used to establish known wheel position on start position
     m_turnCANcoder = new CTRECanCoder(cancoderCanChannel);
+    m_turnCANcoder.configFactoryDefault();
+    m_turnCANcoder.configAllSettings(AngleUtils.generateCanCoderConfig());
 
     m_turningEncoderOffset = turningEncoderOffset;
 
@@ -140,6 +147,7 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
     m_driveEncoder = m_driveMotor.getEncoder();
 
     m_driveEncoder.setPositionConversionFactor(1);
+
     m_driveEncoder.setVelocityConversionFactor(1 / 60);
 
     m_driveVelController = m_driveMotor.getPIDController();
@@ -201,7 +209,12 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
     if (tuneOn == 1) {
       tuneOn = (int) Pref.getPref("SwerveTune");
     }
-
+    if (m_turnCANcoder.getFaulted()) {
+      // SmartDashboard.putStringArray("CanCoderFault"
+      // + m_modulePosition.toString(), m_turnCANcoder.getFaults());
+      SmartDashboard.putStringArray("CanCoderStickyFault"
+          + m_modulePosition.toString(), m_turnCANcoder.getStickyFaults());
+    }
   }
 
   public void tuneGains() {
@@ -279,7 +292,7 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
       if (angleIncrementPer20ms != 0) {
         actualAngleDegrees += angleIncrementPer20ms;
-        if ((Math.abs(angle) - Math.abs(actualAngleDegrees)) < .01) {
+        if ((Math.abs(angle - actualAngleDegrees)) < .01) {
           actualAngleDegrees = angle;
           angleIncrementPer20ms = 0;
         }
@@ -298,13 +311,11 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
         .getLayout(driveLayout, BuiltInLayouts.kList).withPosition(m_moduleNumber * 2, 0)
         .withSize(2, 2).withProperties(Map.of("Label position", "LEFT"));
 
-    drLayout.addNumber("Drive Setpoint MPS " + String.valueOf(m_moduleNumber), () -> getState().speedMetersPerSecond);
+    drLayout.addNumber("Drive Speed MPS " + m_modulePosition.toString(), () -> m_driveEncoder.getVelocity());
 
-    drLayout.addNumber("Drive Speed MPS " + String.valueOf(m_moduleNumber), () -> m_driveEncoder.getVelocity());
+    drLayout.addNumber("Drive Position " + m_modulePosition.toString(), () -> m_driveEncoder.getPosition());
 
-    drLayout.addNumber("Drive Position " + String.valueOf(m_moduleNumber), () -> m_driveEncoder.getPosition());
-
-    drLayout.addNumber("App Output " + String.valueOf(m_moduleNumber), () -> m_driveMotor.getAppliedOutput());
+    drLayout.addNumber("App Output " + m_modulePosition.toString(), () -> m_driveMotor.getAppliedOutput());
 
     turnLayout = m_modulePosition.toString() + " Turn";
 
@@ -312,38 +323,46 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
         .getLayout(turnLayout, BuiltInLayouts.kList).withPosition(m_moduleNumber * 2, 2)
         .withSize(2, 3).withProperties(Map.of("Label position", "LEFT"));
 
-    tuLayout.addNumber("Turn Setpoint Degrees " + String.valueOf(m_moduleNumber), () -> angle);
 
-    tuLayout.addNumber("Turn Enc Pos " + String.valueOf(m_moduleNumber),
+    tuLayout.addNumber("Turn Setpoint Deg " + m_modulePosition.toString(), () -> angle);
+
+      tuLayout.addNumber("Turn Enc Pos " + m_modulePosition.toString(),
         () -> m_turningEncoder.getPosition());
 
-    tuLayout.addNumber("Act Ang Deg " + String.valueOf(m_moduleNumber),
+    tuLayout.addNumber("Act Ang Deg " + m_modulePosition.toString(),
         () -> actualAngleDegrees);
 
-    tuLayout.addNumber("TurnAngleOut" + String.valueOf(m_moduleNumber), () -> m_turningMotor.getAppliedOutput());
+    tuLayout.addNumber("TurnAngleOut" + m_modulePosition.toString(), () -> m_turningMotor.getAppliedOutput());
 
-    tuLayout.addString("TurnState" + String.valueOf(m_moduleNumber), () -> getState().toString());
+    tuLayout.addNumber("Position" + m_modulePosition.toString(), () -> m_turnCANcoder.getMyPosition());
+
+    tuLayout.addNumber("Abs Offset" + m_modulePosition.toString(), () -> m_turningEncoderOffset);
+
+    tuLayout.addString("Fault" + m_modulePosition.toString(), () -> m_turnCANcoder.getFaulted() ? "TRUE" : "FALSE");
 
   }
 
-  public void initShuffleboardCanCoder(){
+  public void initShuffleboardCanCoder() {
+
     canCoderLayout = m_modulePosition.toString() + " CanCoder";
 
     ShuffleboardLayout coderLayout = Shuffleboard.getTab("CanCoders")
         .getLayout(canCoderLayout, BuiltInLayouts.kList).withPosition(m_moduleNumber * 2, 0)
         .withSize(2, 3).withProperties(Map.of("Label position", "LEFT"));
 
-    coderLayout.addNumber("Position" + String.valueOf(m_moduleNumber), () -> m_turnCANcoder.getMyPosition());
-    coderLayout.addNumber("Abs Position" + String.valueOf(m_moduleNumber), () -> m_turnCANcoder.getAbsolutePosition());
-    coderLayout.addNumber("Velocity" + String.valueOf(m_moduleNumber), () -> m_turnCANcoder.getVelValue());
-    coderLayout.addString(" Position" + String.valueOf(m_moduleNumber),
+    coderLayout.addNumber("Position" + m_modulePosition.toString(), () -> m_turnCANcoder.getMyPosition());
+    coderLayout.addNumber("Abs Position" + m_modulePosition.toString(), () -> m_turnCANcoder.getAbsolutePosition());
+    coderLayout.addNumber("Velocity" + m_modulePosition.toString(), () -> m_turnCANcoder.getVelValue());
+    coderLayout.addString(" MagField " + m_modulePosition.toString(),
         () -> m_turnCANcoder.getMagnetFieldStrength().toString());
-    coderLayout.addString(" MagFieldStrength" + String.valueOf(m_moduleNumber),
-        () -> m_turnCANcoder.getMagnetFieldStrength().toString());
-    coderLayout.addStringArray("Faults" + String.valueOf(m_moduleNumber),
-        () -> m_turnCANcoder.getFaults());
-    coderLayout.addStringArray("StickyFaults" + String.valueOf(m_moduleNumber),
-        () -> m_turnCANcoder.getStickyFaults());
+    coderLayout.addBoolean("Has Fault" + m_modulePosition.toString(),
+        () -> m_turnCANcoder.getFaulted());
+    coderLayout.addNumber("Battery Volts" + m_modulePosition.toString(),
+        () -> m_turnCANcoder.getBatValue());
+    coderLayout.addNumber("Bus Volts" + m_modulePosition.toString(),
+        () -> m_turnCANcoder.getBusVoltage());
+
+        coderLayout.addNumber("Abs Offset" + m_modulePosition.toString(), () -> m_turningEncoderOffset);
 
   }
 
@@ -391,7 +410,7 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
 
   public void resetAngleToAbsolute() {
     double angle = m_turnCANcoder.getAbsolutePosition() - m_turningEncoderOffset;
-    m_turningEncoder.setPosition(angle);
+    m_turningEncoder.setPosition(-angle);
   }
 
   public double getTurnAngle() {
@@ -403,6 +422,7 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
   }
 
   public void positionTurn(double angle) {
+
     m_turnSMController.setReference(angle, ControlType.kPosition, POS_SLOT);
   }
 
