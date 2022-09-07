@@ -71,11 +71,7 @@ public class JogDriveModule extends CommandBase {
       m_swerveDrive.driveModule(ModulePosition.BACK_RIGHT, test);
     }
 
-    SmartDashboard.putNumber("FRTH", throttle);
-    SmartDashboard.putNumber("FRST", strafe);
-    SmartDashboard.putNumber("FRRT", rotation);
-    SmartDashboard.putNumber("FRTST", test);
-
+   
   }
 
   // Called once the command ends or is interrupted.

@@ -38,7 +38,7 @@ import frc.robot.Constants.ModuleConstants;
 import frc.robot.Pref;
 import frc.robot.utils.AngleUtils;
 
-public class SwerveModuleSparkMax4201 extends SubsystemBase {
+public class SwerveModuleSparkMax extends SubsystemBase {
   public final CANSparkMax m_driveMotor;
   public final CANSparkMax m_turningMotor;
 
@@ -100,7 +100,7 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
    * @param turningEncoderReversed  Whether the turning encoder is reversed.
    * @param turningEncoderOffset
    */
-  public SwerveModuleSparkMax4201(
+  public SwerveModuleSparkMax(
       ModulePosition modulePosition,
       int driveMotorCanChannel,
       int turningMotorCanChannel,
@@ -323,10 +323,9 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
         .getLayout(turnLayout, BuiltInLayouts.kList).withPosition(m_moduleNumber * 2, 2)
         .withSize(2, 3).withProperties(Map.of("Label position", "LEFT"));
 
-
     tuLayout.addNumber("Turn Setpoint Deg " + m_modulePosition.toString(), () -> angle);
 
-      tuLayout.addNumber("Turn Enc Pos " + m_modulePosition.toString(),
+    tuLayout.addNumber("Turn Enc Pos " + m_modulePosition.toString(),
         () -> m_turningEncoder.getPosition());
 
     tuLayout.addNumber("Act Ang Deg " + m_modulePosition.toString(),
@@ -362,7 +361,31 @@ public class SwerveModuleSparkMax4201 extends SubsystemBase {
     coderLayout.addNumber("Bus Volts" + m_modulePosition.toString(),
         () -> m_turnCANcoder.getBusVoltage());
 
-        coderLayout.addNumber("Abs Offset" + m_modulePosition.toString(), () -> m_turningEncoderOffset);
+    coderLayout.addNumber("Abs Offset" + m_modulePosition.toString(), () -> m_turningEncoderOffset);
+
+  }
+
+  public void initTuningShuffleboard() {
+
+    ShuffleboardLayout tuLayout = Shuffleboard.getTab("Drivetrain")
+        .getLayout(turnLayout, BuiltInLayouts.kList).withPosition(m_moduleNumber * 2, 2)
+        .withSize(2, 3).withProperties(Map.of("Label position", "LEFT"));
+
+    tuLayout.addNumber("Turn Setpoint Deg " + m_modulePosition.toString(), () -> angle);
+
+    tuLayout.addNumber("Turn Enc Pos " + m_modulePosition.toString(),
+        () -> m_turningEncoder.getPosition());
+
+    tuLayout.addNumber("Act Ang Deg " + m_modulePosition.toString(),
+        () -> actualAngleDegrees);
+
+    tuLayout.addNumber("TurnAngleOut" + m_modulePosition.toString(), () -> m_turningMotor.getAppliedOutput());
+
+    tuLayout.addNumber("Position" + m_modulePosition.toString(), () -> m_turnCANcoder.getMyPosition());
+
+    tuLayout.addNumber("Abs Offset" + m_modulePosition.toString(), () -> m_turningEncoderOffset);
+
+    tuLayout.addString("Fault" + m_modulePosition.toString(), () -> m_turnCANcoder.getFaulted() ? "TRUE" : "FALSE");
 
   }
 

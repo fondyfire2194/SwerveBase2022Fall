@@ -1,11 +1,11 @@
 package frc.robot.commands.swerve;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.subsystems.DriveSubsystem;
-import java.util.function.DoubleSupplier;
 
 public class JogTurnModule extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
@@ -57,12 +57,7 @@ public class JogTurnModule extends CommandBase {
 
     m_swerveDrive.turnModule(ModulePosition.BACK_RIGHT, test);
 
-    SmartDashboard.putNumber("FRTH", throttle);
-    SmartDashboard.putNumber("FRST", strafe);
-    SmartDashboard.putNumber("FRRT", rotation);
-    SmartDashboard.putNumber("FRTST", test);
-
-  }
+     }
 
   // Called once the command ends or is interrupted.
   @Override

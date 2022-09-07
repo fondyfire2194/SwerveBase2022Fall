@@ -40,12 +40,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   public SwerveDriveKinematics kSwerveKinematics = DriveConstants.kSwerveKinematics;
 
-  public final HashMap<ModulePosition, SwerveModuleSparkMax4201> m_swerveModules = new HashMap<>(
+  public final HashMap<ModulePosition, SwerveModuleSparkMax> m_swerveModules = new HashMap<>(
 
       Map.of(
 
           ModulePosition.FRONT_LEFT,
-          new SwerveModuleSparkMax4201(ModulePosition.FRONT_LEFT,
+          new SwerveModuleSparkMax(ModulePosition.FRONT_LEFT,
               CanConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
               CanConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
               CanConstants.FRONT_LEFT_MODULE_STEER_CANCODER,
@@ -54,7 +54,7 @@ public class DriveSubsystem extends SubsystemBase {
               CanConstants.FRONT_LEFT_MODULE_STEER_OFFSET),
 
           ModulePosition.FRONT_RIGHT,
-          new SwerveModuleSparkMax4201(
+          new SwerveModuleSparkMax(
               ModulePosition.FRONT_RIGHT,
               CanConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
               CanConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
@@ -64,7 +64,7 @@ public class DriveSubsystem extends SubsystemBase {
               CanConstants.FRONT_RIGHT_MODULE_STEER_OFFSET),
 
           ModulePosition.BACK_LEFT,
-          new SwerveModuleSparkMax4201(ModulePosition.BACK_LEFT,
+          new SwerveModuleSparkMax(ModulePosition.BACK_LEFT,
               CanConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
               CanConstants.BACK_LEFT_MODULE_STEER_MOTOR,
               CanConstants.BACK_LEFT_MODULE_STEER_CANCODER,
@@ -73,7 +73,7 @@ public class DriveSubsystem extends SubsystemBase {
               CanConstants.BACK_LEFT_MODULE_STEER_OFFSET),
 
           ModulePosition.BACK_RIGHT,
-          new SwerveModuleSparkMax4201(
+          new SwerveModuleSparkMax(
               ModulePosition.BACK_RIGHT,
               CanConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
               CanConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
@@ -160,15 +160,14 @@ public double targetAngle;
             throttle, strafe, rotation, getHeadingRotation2d())
         : new ChassisSpeeds(throttle, strafe, rotation);
 
-    SmartDashboard.putString("HR2D", getHeadingRotation2d().toString());
-
+    
     Map<ModulePosition, SwerveModuleState> moduleStates = ModuleMap
         .of(kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), DriveConstants.kMaxSpeedMetersPerSecond);
 
-    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
+    for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules))
       module.setDesiredState(moduleStates.get(module.getModulePosition()), isOpenLoop);
   }
 
@@ -177,7 +176,6 @@ public double targetAngle;
     // Update the odometry in the periodic block
     updateOdometry();
 
-    SmartDashboard.putNumber("Yaw", getHeadingDegrees());
 
   }
 
@@ -186,7 +184,7 @@ public double targetAngle;
         getHeadingRotation2d(),
         ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
 
-    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules)) {
+    for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules)) {
       Translation2d modulePositionFromChassis = DriveConstants.kModuleTranslations
           .get(module.getModulePosition())
           .rotateBy(getHeadingRotation2d())
@@ -213,7 +211,7 @@ public double targetAngle;
 
   }
 
-  public SwerveModuleSparkMax4201 getSwerveModule(ModulePosition modulePosition) {
+  public SwerveModuleSparkMax getSwerveModule(ModulePosition modulePosition) {
     return m_swerveModules.get(modulePosition);
   }
 
@@ -242,17 +240,17 @@ public double targetAngle;
   public void setSwerveModuleStates(SwerveModuleState[] states, boolean isOpenLoop) {
     SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.kMaxSpeedMetersPerSecond);
 
-    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
+    for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules))
       module.setDesiredState(states[module.getModulePosition().ordinal()], isOpenLoop);
   }
 
   public void resetModuleEncoders() {
-    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
+    for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules))
       module.resetEncoders();
   }
 
   public void moduleInitShuffleboard() {
-    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules))
+    for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules))
 
     {
       module.initShuffleboard();
@@ -310,7 +308,7 @@ public double targetAngle;
   // }
 
   public void setIdleMode(boolean brake) {
-    for (SwerveModuleSparkMax4201 module : ModuleMap.orderedValuesList(m_swerveModules)) {
+    for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules)) {
       module.setDriveBrakeMode(brake);
       module.setTurnBrakeMode(brake);
     }

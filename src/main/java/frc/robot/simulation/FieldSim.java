@@ -45,9 +45,7 @@ public class FieldSim {
 
     Pose2d testing = m_swerveDrive.getPoseMeters();
 
-    SmartDashboard.putNumber("TSTYAW", testing.getRotation().getDegrees());
-
-    m_field2d.setRobotPose(m_swerveDrive.getPoseMeters());
+        m_field2d.setRobotPose(m_swerveDrive.getPoseMeters());
 
     for (ModulePosition i : ModulePosition.values()) {
 
