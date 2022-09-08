@@ -146,17 +146,13 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     m_driveEncoder = m_driveMotor.getEncoder();
 
-    m_driveEncoder.setPositionConversionFactor(1);
+    m_driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveMetersPerEncRev);
 
-    m_driveEncoder.setVelocityConversionFactor(1 / 60);
+    m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncRPMperMPS);
 
     m_driveVelController = m_driveMotor.getPIDController();
 
     if (RobotBase.isReal()) {
-
-      m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveMetersPerEncRev);
-
-      m_driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveMetersPerEncRev / 60);
 
       m_driveVelController.setP(.01, VEL_SLOT);
 
@@ -182,10 +178,10 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     m_turnSMController = m_turningMotor.getPIDController();
 
-    m_turnSMController.setP(Pref.getPref("SwerveTurnPoskP"), VEL_SLOT);
-    m_turnSMController.setI(Pref.getPref("SwerveTurnPoskI"), VEL_SLOT);
-    m_turnSMController.setD(Pref.getPref("SwerveTurnPoskD"), VEL_SLOT);
-    m_turnSMController.setIZone(Pref.getPref("SwerveTurnPoskIz"), VEL_SLOT);
+    m_turnSMController.setP(Pref.getPref("SwerveTurnPoskP"), POS_SLOT);
+    m_turnSMController.setI(Pref.getPref("SwerveTurnPoskI"), POS_SLOT);
+    m_turnSMController.setD(Pref.getPref("SwerveTurnPoskD"), POS_SLOT);
+    m_turnSMController.setIZone(Pref.getPref("SwerveTurnPoskIz"), POS_SLOT);
 
     m_modulePosition = modulePosition;
 
@@ -326,7 +322,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
     tuLayout.addNumber("Turn Setpoint Deg " + m_modulePosition.toString(), () -> angle);
 
     tuLayout.addNumber("Turn Enc Pos " + m_modulePosition.toString(),
-        () -> m_turningEncoder.getPosition());
+        () -> m_turningEncoder.getPosition() % 360);
 
     tuLayout.addNumber("Act Ang Deg " + m_modulePosition.toString(),
         () -> actualAngleDegrees);

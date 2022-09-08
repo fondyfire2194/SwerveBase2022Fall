@@ -62,9 +62,9 @@ public final class Constants {
     public static final boolean kFrontRightDriveMotorReversed = true;// false;
     public static final boolean kBackRightDriveMotorReversed = false;// true;
 
-    public static final double kTrackWidth = 0.5;
+    public static final double kTrackWidth = Units.inchesToMeters(22);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = 0.7;
+    public static final double kWheelBase = Units.inchesToMeters(27);
 
     public enum ModulePosition {
       FRONT_LEFT,
@@ -118,7 +118,7 @@ public final class Constants {
   public static final class ModuleConstants {
 
     // ModuleConfiguration MK4I_L1
-    public static final double kWheelDiameterMeters = 0.10033;
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
 
     public static double mk4iL1DriveGearRatio = 1 / ((14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0));// 8.14 .122807
 

@@ -11,7 +11,7 @@ public class JogTurnModule extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveSubsystem m_swerveDrive;
 
-  private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput,m_testInput;
+  private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput, m_testInput;
 
   /**
    * Creates a new ExampleCommand.
@@ -27,7 +27,7 @@ public class JogTurnModule extends CommandBase {
     m_throttleInput = throttleInput;
     m_strafeInput = strafeInput;
     m_rotationInput = rotationInput;
-    m_testInput=testInput;
+    m_testInput = testInput;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDriveSubsystem);
   }
@@ -49,6 +49,11 @@ public class JogTurnModule extends CommandBase {
     double test = MathUtil.applyDeadband(Math.abs(m_testInput.getAsDouble()), 0.05)
         * Math.signum(m_testInput.getAsDouble());
 
+    throttle *= .5;
+    strafe *= .5;
+    rotation *= .5;
+    test *= .5;
+
     m_swerveDrive.turnModule(ModulePosition.FRONT_LEFT, throttle);
 
     m_swerveDrive.turnModule(ModulePosition.FRONT_RIGHT, strafe);
@@ -57,11 +62,15 @@ public class JogTurnModule extends CommandBase {
 
     m_swerveDrive.turnModule(ModulePosition.BACK_RIGHT, test);
 
-     }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_swerveDrive.turnModule(ModulePosition.FRONT_LEFT, 0);
+    m_swerveDrive.turnModule(ModulePosition.FRONT_RIGHT, 0);
+    m_swerveDrive.turnModule(ModulePosition.BACK_RIGHT, 0);
+    m_swerveDrive.turnModule(ModulePosition.BACK_LEFT, 0);
   }
 
   // Returns true when the command should end.

@@ -98,10 +98,10 @@ public class RobotContainer {
         () -> m_driverController.getRawAxis(3),
         false));
     // position turn modules individually
-    driver.X_button.whileHeld(new PositionTurnModule(m_robotDrive, ModulePosition.FRONT_LEFT));
-    driver.A_button.whileHeld(new PositionTurnModule(m_robotDrive, ModulePosition.FRONT_RIGHT));
-    driver.B_button.whileHeld(new PositionTurnModule(m_robotDrive, ModulePosition.BACK_LEFT));
-    driver.Y_button.whileHeld(new PositionTurnModule(m_robotDrive, ModulePosition.BACK_RIGHT));
+    driver.X_button.whenPressed(new PositionTurnModule(m_robotDrive, ModulePosition.FRONT_LEFT));
+    driver.A_button.whenPressed(new PositionTurnModule(m_robotDrive, ModulePosition.FRONT_RIGHT));
+    driver.B_button.whenPressed(new PositionTurnModule(m_robotDrive, ModulePosition.BACK_LEFT));
+    driver.Y_button.whenPressed(new PositionTurnModule(m_robotDrive, ModulePosition.BACK_RIGHT));
   }
 
   private void initializeAutoChooser() {
@@ -121,10 +121,8 @@ public class RobotContainer {
     m_fieldSim.periodic();
   }
 
-  
-
   public double getThrottle() {
-    return - leftJoystick.getThrottle();
+    return -leftJoystick.getThrottle();
   }
 
   public Command getAutonomousCommand() {

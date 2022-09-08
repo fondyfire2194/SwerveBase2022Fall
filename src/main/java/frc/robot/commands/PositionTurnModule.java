@@ -13,13 +13,16 @@ import frc.robot.subsystems.SwerveModuleSparkMax;
 public class PositionTurnModule extends CommandBase {
 
   private DriveSubsystem m_drive;
+
+
   
   private ModulePosition m_mp;
 
   /** Creates a new PositionTurnModule. */
-  public PositionTurnModule(DriveSubsystem drive, ModulePosition mp) {
+  public PositionTurnModule(DriveSubsystem drive,  ModulePosition mp) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drive = drive;
+
     m_mp = mp;
   
     addRequirements(m_drive);
@@ -41,6 +44,10 @@ public class PositionTurnModule extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_drive.turnModule(ModulePosition.FRONT_LEFT, 0);
+    m_drive.turnModule(ModulePosition.FRONT_RIGHT, 0);
+    m_drive.turnModule(ModulePosition.BACK_RIGHT, 0);
+    m_drive.turnModule(ModulePosition.BACK_LEFT, 0);
   }
 
   // Returns true when the command should end.

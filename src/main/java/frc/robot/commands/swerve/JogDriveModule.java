@@ -50,6 +50,11 @@ public class JogDriveModule extends CommandBase {
     double test = MathUtil.applyDeadband(Math.abs(m_testInput.getAsDouble()), 0.05)
         * Math.signum(m_testInput.getAsDouble());
 
+        throttle *= .5;
+        strafe *= .5;
+        rotation *= .5;
+        test *= .5;
+
     if (!m_individual) {
 
       m_swerveDrive.driveModule(ModulePosition.FRONT_LEFT, throttle);
@@ -77,6 +82,10 @@ public class JogDriveModule extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_swerveDrive.driveModule(ModulePosition.FRONT_LEFT,0);
+    m_swerveDrive.driveModule(ModulePosition.FRONT_RIGHT, 0);
+    m_swerveDrive.driveModule(ModulePosition.BACK_RIGHT, 0);
+    m_swerveDrive.driveModule(ModulePosition.BACK_LEFT, 0);
   }
 
   // Returns true when the command should end.
