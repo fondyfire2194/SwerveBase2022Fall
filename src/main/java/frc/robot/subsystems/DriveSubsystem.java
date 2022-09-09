@@ -21,20 +21,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CanConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.TrapezoidConstants;
+import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.utils.ModuleMap;
-import frc.robot.Constants.DriveConstants.*;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -108,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double throttleValue;
 
-public double targetAngle;
+  public double targetAngle;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -116,12 +111,6 @@ public double targetAngle;
     m_gyro.reset();
 
     resetModuleEncoders();
-
-    if (showOnShuffleboard) {
-
-      moduleInitShuffleboard();
-
-    }
 
     setIdleMode(true);
 
@@ -160,7 +149,6 @@ public double targetAngle;
             throttle, strafe, rotation, getHeadingRotation2d())
         : new ChassisSpeeds(throttle, strafe, rotation);
 
-    
     Map<ModulePosition, SwerveModuleState> moduleStates = ModuleMap
         .of(kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
 
@@ -175,7 +163,6 @@ public double targetAngle;
   public void periodic() {
     // Update the odometry in the periodic block
     updateOdometry();
-
 
   }
 
@@ -247,15 +234,6 @@ public double targetAngle;
   public void resetModuleEncoders() {
     for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules))
       module.resetEncoders();
-  }
-
-  public void moduleInitShuffleboard() {
-    for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules))
-
-    {
-      module.initShuffleboard();
-      module.initShuffleboardCanCoder();
-    }
   }
 
   /** Zeroes the heading of the robot. */
@@ -352,8 +330,8 @@ public double targetAngle;
   }
 
   public double getAnglefromThrottle() {
-    
-    return 180* throttleValue;
+
+    return 180 * throttleValue;
   }
 
 }

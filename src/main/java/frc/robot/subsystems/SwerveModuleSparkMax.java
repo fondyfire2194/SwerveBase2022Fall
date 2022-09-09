@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.Map;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -23,12 +21,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CTRECanCoder;
@@ -37,25 +29,26 @@ import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Pref;
 import frc.robot.utils.AngleUtils;
+import frc.robot.utils.ShuffleboardContent;
 
 public class SwerveModuleSparkMax extends SubsystemBase {
   public final CANSparkMax m_driveMotor;
   public final CANSparkMax m_turningMotor;
 
-  private final RelativeEncoder m_driveEncoder;
+  public final RelativeEncoder m_driveEncoder;
   private final RelativeEncoder m_turningEncoder;
 
   private final SparkMaxPIDController m_driveVelController;
 
   private final SparkMaxPIDController m_turnSMController;
 
-  private final CTRECanCoder m_turnCANcoder;
+  public final CTRECanCoder m_turnCANcoder;
 
-  ModulePosition m_modulePosition;// enum with test module names;
+  public ModulePosition m_modulePosition;// enum with test module names;
 
   SwerveModuleState state;
 
-  int m_moduleNumber;
+  public int m_moduleNumber;
 
   String driveLayout;
 
@@ -73,21 +66,24 @@ public class SwerveModuleSparkMax extends SubsystemBase {
       ModuleConstants.kaVoltSecondsSquaredPerMeter);
 
   private double m_lastAngle;
-  private double angle;
+  public double angle;
 
-  double m_turningEncoderOffset;
+  public double m_turningEncoderOffset;
 
   private final int POS_SLOT = 0;
   private final int VEL_SLOT = 1;
   private final int SIM_SLOT = 2;
 
   private int tuneOn;
-  private double actualAngleDegrees;
+  public double actualAngleDegrees;
 
   private double angleDifference;
   private double angleIncrementPer20ms;
   private double tolDegPerSec = .05;
   private double toleranceDeg = .25;
+  public boolean driveMotorConnected;
+  public boolean turnMotorConnected;
+  public boolean turnCoderConnected;
 
   /**
    * Constructs a SwerveModule.
@@ -192,7 +188,16 @@ public class SwerveModuleSparkMax extends SubsystemBase {
       REVPhysicsSim.getInstance().addSparkMax(m_driveMotor, DCMotor.getNEO(1));
 
     }
+
+    checkCAN();
+
     resetEncoders();
+
+    ShuffleboardContent.initDriveShuffleboard(this);
+    ShuffleboardContent.initTurnShuffleboard(this);
+    ShuffleboardContent.initCANCoderShuffleboard(this);
+    ShuffleboardContent.initBooleanShuffleboard(this);
+    ShuffleboardContent.initCoderBooleanShuffleboard(this);    
 
   }
 
@@ -301,90 +306,6 @@ public class SwerveModuleSparkMax extends SubsystemBase {
     return Math.max(Math.min(motorCmdIn, 1.0), -1.0);
   }
 
-  public void initShuffleboard() {
-    driveLayout = m_modulePosition.toString() + " Drive";
-    ShuffleboardLayout drLayout = Shuffleboard.getTab("Drivetrain")
-        .getLayout(driveLayout, BuiltInLayouts.kList).withPosition(m_moduleNumber * 2, 0)
-        .withSize(2, 2).withProperties(Map.of("Label position", "LEFT"));
-
-    drLayout.addNumber("Drive Speed MPS " + m_modulePosition.toString(), () -> m_driveEncoder.getVelocity());
-
-    drLayout.addNumber("Drive Position " + m_modulePosition.toString(), () -> m_driveEncoder.getPosition());
-
-    drLayout.addNumber("App Output " + m_modulePosition.toString(), () -> m_driveMotor.getAppliedOutput());
-
-    turnLayout = m_modulePosition.toString() + " Turn";
-
-    ShuffleboardLayout tuLayout = Shuffleboard.getTab("Drivetrain")
-        .getLayout(turnLayout, BuiltInLayouts.kList).withPosition(m_moduleNumber * 2, 2)
-        .withSize(2, 3).withProperties(Map.of("Label position", "LEFT"));
-
-    tuLayout.addNumber("Turn Setpoint Deg " + m_modulePosition.toString(), () -> angle);
-
-    tuLayout.addNumber("Turn Enc Pos " + m_modulePosition.toString(),
-        () -> m_turningEncoder.getPosition() % 360);
-
-    tuLayout.addNumber("Act Ang Deg " + m_modulePosition.toString(),
-        () -> actualAngleDegrees);
-
-    tuLayout.addNumber("TurnAngleOut" + m_modulePosition.toString(), () -> m_turningMotor.getAppliedOutput());
-
-    tuLayout.addNumber("Position" + m_modulePosition.toString(), () -> m_turnCANcoder.getMyPosition());
-
-    tuLayout.addNumber("Abs Offset" + m_modulePosition.toString(), () -> m_turningEncoderOffset);
-
-    tuLayout.addString("Fault" + m_modulePosition.toString(), () -> m_turnCANcoder.getFaulted() ? "TRUE" : "FALSE");
-
-  }
-
-  public void initShuffleboardCanCoder() {
-
-    canCoderLayout = m_modulePosition.toString() + " CanCoder";
-
-    ShuffleboardLayout coderLayout = Shuffleboard.getTab("CanCoders")
-        .getLayout(canCoderLayout, BuiltInLayouts.kList).withPosition(m_moduleNumber * 2, 0)
-        .withSize(2, 3).withProperties(Map.of("Label position", "LEFT"));
-
-    coderLayout.addNumber("Position" + m_modulePosition.toString(), () -> m_turnCANcoder.getMyPosition());
-    coderLayout.addNumber("Abs Position" + m_modulePosition.toString(), () -> m_turnCANcoder.getAbsolutePosition());
-    coderLayout.addNumber("Velocity" + m_modulePosition.toString(), () -> m_turnCANcoder.getVelValue());
-    coderLayout.addString(" MagField " + m_modulePosition.toString(),
-        () -> m_turnCANcoder.getMagnetFieldStrength().toString());
-    coderLayout.addBoolean("Has Fault" + m_modulePosition.toString(),
-        () -> m_turnCANcoder.getFaulted());
-    coderLayout.addNumber("Battery Volts" + m_modulePosition.toString(),
-        () -> m_turnCANcoder.getBatValue());
-    coderLayout.addNumber("Bus Volts" + m_modulePosition.toString(),
-        () -> m_turnCANcoder.getBusVoltage());
-
-    coderLayout.addNumber("Abs Offset" + m_modulePosition.toString(), () -> m_turningEncoderOffset);
-
-  }
-
-  public void initTuningShuffleboard() {
-
-    ShuffleboardLayout tuLayout = Shuffleboard.getTab("Drivetrain")
-        .getLayout(turnLayout, BuiltInLayouts.kList).withPosition(m_moduleNumber * 2, 2)
-        .withSize(2, 3).withProperties(Map.of("Label position", "LEFT"));
-
-    tuLayout.addNumber("Turn Setpoint Deg " + m_modulePosition.toString(), () -> angle);
-
-    tuLayout.addNumber("Turn Enc Pos " + m_modulePosition.toString(),
-        () -> m_turningEncoder.getPosition());
-
-    tuLayout.addNumber("Act Ang Deg " + m_modulePosition.toString(),
-        () -> actualAngleDegrees);
-
-    tuLayout.addNumber("TurnAngleOut" + m_modulePosition.toString(), () -> m_turningMotor.getAppliedOutput());
-
-    tuLayout.addNumber("Position" + m_modulePosition.toString(), () -> m_turnCANcoder.getMyPosition());
-
-    tuLayout.addNumber("Abs Offset" + m_modulePosition.toString(), () -> m_turningEncoderOffset);
-
-    tuLayout.addString("Fault" + m_modulePosition.toString(), () -> m_turnCANcoder.getFaulted() ? "TRUE" : "FALSE");
-
-  }
-
   /** Zeroes all the SwerveModule encoders. */
   public void resetEncoders() {
     m_driveEncoder.setPosition(0);
@@ -449,12 +370,39 @@ public class SwerveModuleSparkMax extends SubsystemBase {
     m_driveMotor.setVoltage(speed * RobotController.getBatteryVoltage());
   }
 
+  public double getDriveVelocity() {
+    return m_driveEncoder.getVelocity();
+  }
+
+  public double getDrivePosition() {
+    return m_driveEncoder.getPosition();
+  }
+
+  public double getTurnVelocity() {
+    return m_turningEncoder.getVelocity();
+  }
+
+  public double getTurnPosition() {
+    return m_turningEncoder.getPosition();
+  }
+
   public boolean turnInPosition(double targetAngle) {
     return Math.abs(targetAngle - getTurnAngle()) < toleranceDeg;
   }
 
   public boolean turnIsStopped() {
+    
     return Math.abs(m_turningEncoder.getVelocity()) < tolDegPerSec;
+  }
+
+  public boolean checkCAN() {
+
+    driveMotorConnected = m_driveMotor.getFirmwareVersion() != 0;
+    turnMotorConnected = m_turningMotor.getFirmwareVersion() != 0;
+    turnCoderConnected = m_turnCANcoder.getFirmwareVersion() > 0;
+
+    return driveMotorConnected && turnMotorConnected && turnCoderConnected;
+
   }
 
 }

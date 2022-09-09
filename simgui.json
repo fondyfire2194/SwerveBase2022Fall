@@ -3,6 +3,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/DriveSubsystem": "Subsystem",
+      "/LiveWindow/SwerveModuleSparkMax": "Subsystem",
       "/LiveWindow/SwerveModuleSparkMax4201": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
@@ -32,8 +33,8 @@
       "/SmartDashboard/Field2d": {
         "Robot": {
           "image": "resources/images/robot.png",
-          "length": 0.7620000243186951,
-          "width": 0.7620000243186951
+          "length": 0.6850000023841858,
+          "width": 0.5
         },
         "Swerve Modules": {
           "image": "resources/images/swerve_module.png",

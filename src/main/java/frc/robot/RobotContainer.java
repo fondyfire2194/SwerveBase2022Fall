@@ -22,6 +22,8 @@ import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
 
+import frc.robot.utils.ShuffleboardContent;
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -32,7 +34,7 @@ public class RobotContainer {
   // The robot's subsystems
   final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-  public final FieldSim m_fieldSim = new FieldSim(m_robotDrive);
+   public final FieldSim m_fieldSim = new FieldSim(m_robotDrive);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
@@ -53,9 +55,10 @@ public class RobotContainer {
     Pref.addMissing();
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     // Configure the button bindings
-
+    
     m_fieldSim.initSim();
     initializeAutoChooser();
+   // sc.showAll();
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -110,6 +113,7 @@ public class RobotContainer {
     m_autoChooser.addOption("5 Ball Auto", new FiveBallAuto(m_robotDrive));
 
     SmartDashboard.putData("Auto Selector", m_autoChooser);
+
   }
 
   public void simulationPeriodic() {
