@@ -121,7 +121,6 @@ public class SwerveModuleSparkMax extends SubsystemBase {
     m_turnCANcoder = new CTRECanCoder(cancoderCanChannel);
     m_turnCANcoder.configFactoryDefault();
     m_turnCANcoder.configAllSettings(AngleUtils.generateCanCoderConfig());
-
     m_turningEncoderOffset = turningEncoderOffset;
 
     m_driveMotor.setInverted(driveMotorReversed);
@@ -378,12 +377,20 @@ public class SwerveModuleSparkMax extends SubsystemBase {
     return m_driveEncoder.getPosition();
   }
 
+  public double getDriveCurrent(){
+    return m_driveMotor.getOutputCurrent();
+  }
+
   public double getTurnVelocity() {
     return m_turningEncoder.getVelocity();
   }
 
   public double getTurnPosition() {
     return m_turningEncoder.getPosition();
+  }
+
+  public double getTurnCurrent() {
+    return m_turningMotor.getOutputCurrent();
   }
 
   public boolean turnInPosition(double targetAngle) {

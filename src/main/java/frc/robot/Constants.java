@@ -72,15 +72,25 @@ public final class Constants {
     // public static final boolean kFrontRightDriveMotorReversed = false;
     // public static final boolean kBackRightDriveMotorReversed = true;
   
-    public static final boolean kFrontLeftTurningMotorReversed = false;
-    public static final boolean kBackLeftTurningMotorReversed = false;
-    public static final boolean kFrontRightTurningMotorReversed = false;
-    public static final boolean kBackRightTurningMotorReversed = false;
+    // public static final boolean kFrontLeftTurningMotorReversed = false;
+    // public static final boolean kBackLeftTurningMotorReversed = false;
+    // public static final boolean kFrontRightTurningMotorReversed = false;
+    // public static final boolean kBackRightTurningMotorReversed = false;
 
-    public static final boolean kFrontLeftDriveMotorReversed = false;
-    public static final boolean kBackLeftDriveMotorReversed = false;
-    public static final boolean kFrontRightDriveMotorReversed = false;
-    public static final boolean kBackRightDriveMotorReversed = false;
+    // public static final boolean kFrontLeftDriveMotorReversed = false;
+    // public static final boolean kBackLeftDriveMotorReversed = false;
+    // public static final boolean kFrontRightDriveMotorReversed = false;
+    // public static final boolean kBackRightDriveMotorReversed = false;
+
+    public static final boolean kFrontLeftTurningMotorReversed = true;
+    public static final boolean kBackLeftTurningMotorReversed = true;
+    public static final boolean kFrontRightTurningMotorReversed = true;
+    public static final boolean kBackRightTurningMotorReversed = true;
+
+    public static final boolean kFrontLeftDriveMotorReversed = true;
+    public static final boolean kBackLeftDriveMotorReversed = true;
+    public static final boolean kFrontRightDriveMotorReversed = true;
+    public static final boolean kBackRightDriveMotorReversed = true;
 
     public static final double kTrackWidth = Units.inchesToMeters(22);
     // Distance between centers of right and left wheels on robot

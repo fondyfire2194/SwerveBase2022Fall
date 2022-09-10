@@ -4,7 +4,6 @@
 
 package frc.robot.utils;
 
-import java.security.cert.X509CRLSelector;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -56,6 +55,9 @@ public class ShuffleboardContent {
                 drLayout.addNumber("App Output " + m_modulePosition.toString(),
                                 () -> m_sm.m_driveMotor.getAppliedOutput());
 
+                drLayout.addNumber("Current Amps " + m_modulePosition.toString(),
+                                () -> m_sm.getDriveCurrent());
+
                 drLayout.addNumber("Firmware" + m_modulePosition.toString(),
                                 () -> m_sm.m_driveMotor.getFirmwareVersion());
 
@@ -83,6 +85,8 @@ public class ShuffleboardContent {
                                 () -> m_sm.m_turningMotor.getAppliedOutput());
 
                 tuLayout.addNumber("Position" + m_modulePosition.toString(), () -> m_sm.m_turnCANcoder.getMyPosition());
+
+                tuLayout.addNumber("Current Amps" + m_modulePosition.toString(), () -> m_sm.getTurnCurrent());
 
                 tuLayout.addNumber("Abs Offset" + m_modulePosition.toString(), () -> m_sm.m_turningEncoderOffset);
 
@@ -129,6 +133,7 @@ public class ShuffleboardContent {
                                 () -> m_sm.m_turnCANcoder.getBusVoltage());
 
                 coderLayout.addNumber("Abs Offset" + m_modulePosition.toString(), () -> m_sm.m_turningEncoderOffset);
+
                 coderLayout.addNumber("Firmware#" + m_modulePosition.toString(),
                                 () -> m_sm.m_turnCANcoder.getFirmwareVersion());
 
