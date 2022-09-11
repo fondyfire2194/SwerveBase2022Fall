@@ -297,7 +297,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
       if (angleIncrementPer20ms != 0) {
         actualAngleDegrees += angleIncrementPer20ms;
-        if ((Math.abs(angle - actualAngleDegrees)) < .01) {
+        if ((Math.abs(angle - actualAngleDegrees)) < .1) {
           actualAngleDegrees = angle;
           angleIncrementPer20ms = 0;
         }
