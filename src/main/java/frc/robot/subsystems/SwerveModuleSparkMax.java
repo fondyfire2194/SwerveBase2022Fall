@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CTRECanCoder;
 import frc.robot.Constants.DriveConstants;
+
 import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Pref;
@@ -49,6 +50,8 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   SwerveModuleState state;
 
   public int m_moduleNumber;
+
+  public String[] modAbrev={"_FL","_FR","_RL","_RR"};
 
   String driveLayout;
 
@@ -311,7 +314,6 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   public void resetEncoders() {
     m_driveEncoder.setPosition(0);
     m_turningEncoder.setPosition(0);
-    // m_canEncoder.
 
   }
 
