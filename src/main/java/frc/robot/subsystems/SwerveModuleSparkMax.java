@@ -190,13 +190,15 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     checkCAN();
 
-    resetEncoders();
+    if (m_turningEncoderOffset != 0)
+
+      resetAngleToAbsolute();
 
     ShuffleboardContent.initDriveShuffleboard(this);
     ShuffleboardContent.initTurnShuffleboard(this);
     ShuffleboardContent.initCANCoderShuffleboard(this);
     ShuffleboardContent.initBooleanShuffleboard(this);
-    ShuffleboardContent.initCoderBooleanShuffleboard(this);    
+    ShuffleboardContent.initCoderBooleanShuffleboard(this);
 
   }
 
@@ -349,7 +351,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
   public void resetAngleToAbsolute() {
     double angle = m_turnCANcoder.getAbsolutePosition() - m_turningEncoderOffset;
-    m_turningEncoder.setPosition(-angle);
+    m_turningEncoder.setPosition(angle);
   }
 
   public double getTurnAngle() {
@@ -377,7 +379,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
     return m_driveEncoder.getPosition();
   }
 
-  public double getDriveCurrent(){
+  public double getDriveCurrent() {
     return m_driveMotor.getOutputCurrent();
   }
 
@@ -398,7 +400,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   }
 
   public boolean turnIsStopped() {
-    
+
     return Math.abs(m_turningEncoder.getVelocity()) < tolDegPerSec;
   }
 

@@ -10,42 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public final class AngleUtils {
-  public static TalonFXConfiguration generateTurnMotorConfig() {
-    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-
-    motorConfig.slot0.kF = 0.0;
-    motorConfig.slot0.kP = 0.6;
-    motorConfig.slot0.kI = 0.0;
-    motorConfig.slot0.kD = 12.0;
-
-    SupplyCurrentLimitConfiguration supplyCurrentLimit =
-        new SupplyCurrentLimitConfiguration(true, 25, 40, 0.1);
-    motorConfig.supplyCurrLimit = supplyCurrentLimit;
-
-    motorConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
-
-    return motorConfig;
-  }
-
-  public static TalonFXConfiguration generateDriveMotorConfig() {
-    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-
-    motorConfig.slot0.kF = 0.0;
-    motorConfig.slot0.kP = 0.1;
-    motorConfig.slot0.kI = 0.0;
-    motorConfig.slot0.kD = 0.0;
-
-    SupplyCurrentLimitConfiguration supplyCurrentLimit =
-        new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1);
-    motorConfig.supplyCurrLimit = supplyCurrentLimit;
-
-    motorConfig.openloopRamp = 0.25;
-    motorConfig.closedloopRamp = 0.1;
-
-    motorConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
-
-    return motorConfig;
-  }
+  
 
   public static CANCoderConfiguration generateCanCoderConfig() {
     CANCoderConfiguration sensorConfig = new CANCoderConfiguration();

@@ -52,45 +52,15 @@ public final class Constants {
 
   public static final class DriveConstants {
 
-    // public static final boolean kFrontLeftTurningMotorReversed = true;// false;
-    // public static final boolean kBackLeftTurningMotorReversed = false;// true;
-    // public static final boolean kFrontRightTurningMotorReversed = true;// false;
-    // public static final boolean kBackRightTurningMotorReversed = false;// true;
+    public static final boolean kFrontLeftTurningMotorReversed = false;
+    public static final boolean kBackLeftTurningMotorReversed = false;
+    public static final boolean kFrontRightTurningMotorReversed = false;
+    public static final boolean kBackRightTurningMotorReversed = false;
 
-    // public static final boolean kFrontLeftDriveMotorReversed = true;// false;
-    // public static final boolean kBackLeftDriveMotorReversed = false;// true;
-    // public static final boolean kFrontRightDriveMotorReversed = true;// false;
-    // public static final boolean kBackRightDriveMotorReversed = false;// true;
-
-    // public static final boolean kFrontLeftTurningMotorReversed = false;
-    // public static final boolean kBackLeftTurningMotorReversed = true;
-    // public static final boolean kFrontRightTurningMotorReversed = false;
-    // public static final boolean kBackRightTurningMotorReversed = true;
-
-    // public static final boolean kFrontLeftDriveMotorReversed = false;
-    // public static final boolean kBackLeftDriveMotorReversed = true;
-    // public static final boolean kFrontRightDriveMotorReversed = false;
-    // public static final boolean kBackRightDriveMotorReversed = true;
-  
-    // public static final boolean kFrontLeftTurningMotorReversed = false;
-    // public static final boolean kBackLeftTurningMotorReversed = false;
-    // public static final boolean kFrontRightTurningMotorReversed = false;
-    // public static final boolean kBackRightTurningMotorReversed = false;
-
-    // public static final boolean kFrontLeftDriveMotorReversed = false;
-    // public static final boolean kBackLeftDriveMotorReversed = false;
-    // public static final boolean kFrontRightDriveMotorReversed = false;
-    // public static final boolean kBackRightDriveMotorReversed = false;
-
-    public static final boolean kFrontLeftTurningMotorReversed = true;
-    public static final boolean kBackLeftTurningMotorReversed = true;
-    public static final boolean kFrontRightTurningMotorReversed = true;
-    public static final boolean kBackRightTurningMotorReversed = true;
-
-    public static final boolean kFrontLeftDriveMotorReversed = true;
-    public static final boolean kBackLeftDriveMotorReversed = true;
-    public static final boolean kFrontRightDriveMotorReversed = true;
-    public static final boolean kBackRightDriveMotorReversed = true;
+    public static final boolean kFrontLeftDriveMotorReversed = false;
+    public static final boolean kBackLeftDriveMotorReversed = false;
+    public static final boolean kFrontRightDriveMotorReversed = false;
+    public static final boolean kBackRightDriveMotorReversed = false;
 
     public static final double kTrackWidth = Units.inchesToMeters(22);
     // Distance between centers of right and left wheels on robot
@@ -177,9 +147,9 @@ public final class Constants {
     public static final double kPModuleDriveController = .2;
 
     // use sysid on robot
-    public static double ksVolts;
-    public static double kvVoltSecondsPerMeter;
-    public static double kaVoltSecondsSquaredPerMeter;
+    public static double ksVolts = .055;
+    public static double kvVoltSecondsPerMeter = .2;
+    public static double kaVoltSecondsSquaredPerMeter = .02;
 
     // sysid on module?
     public static final double ksDriveVoltSecondsPerMeter = 0.667 / 12;
