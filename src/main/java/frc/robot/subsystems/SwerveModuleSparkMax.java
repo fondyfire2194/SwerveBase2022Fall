@@ -193,9 +193,9 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     checkCAN();
 
-    if (m_turningEncoderOffset != 0)
+    // if (m_turningEncoderOffset != 0)
 
-      resetAngleToAbsolute();
+    //   resetAngleToAbsolute();
 
     ShuffleboardContent.initDriveShuffleboard(this);
     ShuffleboardContent.initTurnShuffleboard(this);

@@ -44,8 +44,8 @@ public class DriveSubsystem extends SubsystemBase {
               CanConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
               CanConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
               CanConstants.FRONT_LEFT_MODULE_STEER_CANCODER,
-              DriveConstants.kBackLeftDriveMotorReversed,
-              DriveConstants.kBackLeftTurningMotorReversed,
+              DriveConstants.kFrontLeftDriveMotorReversed,
+              DriveConstants.kFrontLeftTurningMotorReversed,
               CanConstants.FRONT_LEFT_MODULE_STEER_OFFSET),
 
           ModulePosition.FRONT_RIGHT,

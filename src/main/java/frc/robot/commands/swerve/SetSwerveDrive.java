@@ -46,6 +46,9 @@ public class SetSwerveDrive extends CommandBase {
         MathUtil.applyDeadband(Math.abs(m_rotationInput.getAsDouble()), 0.05)
             * Math.signum(m_rotationInput.getAsDouble());
 
+          
+//strafe=0;
+//rotation=0;
     m_swerveDrive.drive(throttle, strafe, rotation, false, true);
   }
 
