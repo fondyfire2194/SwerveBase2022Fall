@@ -120,6 +120,10 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     m_driveMotor.setSmartCurrentLimit(20);
 
+    m_driveMotor.enableVoltageCompensation(DriveConstants.kVoltCompensation);
+
+    m_turningMotor.enableVoltageCompensation(DriveConstants.kVoltCompensation);
+
     // absolute encoder used to establish known wheel position on start position
     m_turnCANcoder = new CTRECanCoder(cancoderCanChannel);
     m_turnCANcoder.configFactoryDefault();

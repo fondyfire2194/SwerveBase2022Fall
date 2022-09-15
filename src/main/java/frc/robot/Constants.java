@@ -105,6 +105,10 @@ public final class Constants {
     public static final double kD_Y = 0;
     public static final double kP_Theta = 8;
     public static final double kD_Theta = 0;
+    public static double kTranslationSlew = 1.55;
+    public static double kRotationSlew = 3.00;
+    public static double kControllerDeadband=.05;
+    public static double kVoltCompensation=12.6;
 
     // public static final double kMaxRotationRadiansPerSecond =
     // Math.hypot(DriveConstants.kTrackWidth / 2.0,
