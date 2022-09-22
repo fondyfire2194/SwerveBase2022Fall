@@ -18,6 +18,7 @@ import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.FiveBallAuto;
 import frc.robot.commands.swerve.JogDriveModule;
 import frc.robot.commands.swerve.JogTurnModule;
+
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
@@ -38,11 +39,11 @@ public class RobotContainer {
 
   // The driver's controller
 
-  static Joystick leftJoystick = new Joystick(OIConstants.kDriverControllerPort + 1);
+  static Joystick leftJoystick = new Joystick(OIConstants.kDriverControllerPort);
 
-  private XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  private XboxController m_coDriverController = new XboxController(OIConstants.kCoDriverControllerPort);
 
-  final GamepadButtons driver = new GamepadButtons(m_driverController, true);
+  final GamepadButtons driver = new GamepadButtons(m_coDriverController, true);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -58,51 +59,56 @@ public class RobotContainer {
     initializeAutoChooser();
     // sc.showAll();
     // Configure default commands
-    m_robotDrive.setDefaultCommand(
+   // m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
+        // new SetSwerveDrive(
+        // m_robotDrive,
+
+        // () -> -m_coDriverController.getRawAxis(1),
+        // () -> -m_coDriverController.getRawAxis(0),
+        // () -> -m_coDriverController.getRawAxis(4)));
+        m_robotDrive.setDefaultCommand(
         new SetSwerveDrive(
             m_robotDrive,
-
-            () -> -m_driverController.getRawAxis(1),
-            () -> -m_driverController.getRawAxis(0),
-            () -> -m_driverController.getRawAxis(2)));
-
-    // new SetSwerveDrive(
-    // m_robotDrive,
-    // () -> leftJoystick.getRawAxis(1),
-    // () -> leftJoystick.getRawAxis(0),
-    // () -> rightJoystick.getRawAxis(0)));
+            () -> leftJoystick.getRawAxis(1),
+            () -> leftJoystick.getRawAxis(0),
+            () -> leftJoystick.getRawAxis(2)));
 
     driver.leftTrigger.whileHeld(new JogTurnModule(
         m_robotDrive,
-        () -> -m_driverController.getRawAxis(1),
-        () -> m_driverController.getRawAxis(0),
-        () -> m_driverController.getRawAxis(2),
-        () -> m_driverController.getRawAxis(3)));
+        () -> -m_coDriverController.getRawAxis(1),
+        () -> m_coDriverController.getRawAxis(0),
+        () -> m_coDriverController.getRawAxis(2),
+        () -> m_coDriverController.getRawAxis(3)));
 
     // individual modules
     driver.leftBumper.whileHeld(new JogDriveModule(
         m_robotDrive,
-        () -> -m_driverController.getRawAxis(1),
-        () -> m_driverController.getRawAxis(0),
-        () -> m_driverController.getRawAxis(2),
-        () -> m_driverController.getRawAxis(3),
+        () -> -m_coDriverController.getRawAxis(1),
+        () -> m_coDriverController.getRawAxis(0),
+        () -> m_coDriverController.getRawAxis(2),
+        () -> m_coDriverController.getRawAxis(3),
         true));
 
     // all modules
     driver.rightBumper.whileHeld(new JogDriveModule(
         m_robotDrive,
-        () -> -m_driverController.getRawAxis(1),
-        () -> m_driverController.getRawAxis(0),
-        () -> m_driverController.getRawAxis(2),
-        () -> m_driverController.getRawAxis(3),
+        () -> -m_coDriverController.getRawAxis(1),
+        () -> m_coDriverController.getRawAxis(0),
+        () -> m_coDriverController.getRawAxis(2),
+        () -> m_coDriverController.getRawAxis(3),
         false));
     // position turn modules individually
-    driver.X_button.whenPressed(new PositionTurnModule(m_robotDrive, ModulePosition.FRONT_LEFT));
-    driver.A_button.whenPressed(new PositionTurnModule(m_robotDrive, ModulePosition.FRONT_RIGHT));
-    driver.B_button.whenPressed(new PositionTurnModule(m_robotDrive, ModulePosition.BACK_LEFT));
-    driver.Y_button.whenPressed(new PositionTurnModule(m_robotDrive, ModulePosition.BACK_RIGHT));
+    // driver.X_button.whenPressed(new PositionTurnModule(m_robotDrive,
+    // ModulePosition.FRONT_LEFT));
+    // driver.A_button.whenPressed(new PositionTurnModule(m_robotDrive,
+    // ModulePosition.FRONT_RIGHT));
+    // driver.B_button.whenPressed(new PositionTurnModule(m_robotDrive,
+    // ModulePosition.BACK_LEFT));
+    // driver.Y_button.whenPressed(new PositionTurnModule(m_robotDrive,
+    // ModulePosition.BACK_RIGHT));
+
   }
 
   private void initializeAutoChooser() {

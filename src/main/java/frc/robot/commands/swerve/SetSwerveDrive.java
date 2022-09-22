@@ -1,16 +1,20 @@
 package frc.robot.commands.swerve;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
-import java.util.function.DoubleSupplier;
 
 public class SetSwerveDrive extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveSubsystem m_swerveDrive;
-
+  private final SlewRateLimiter m_slewX = new SlewRateLimiter(DriveConstants.kTranslationSlew);
+  private final SlewRateLimiter m_slewY = new SlewRateLimiter(DriveConstants.kTranslationSlew);
+  private final SlewRateLimiter m_slewRot = new SlewRateLimiter(DriveConstants.kRotationSlew);
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
 
   /**
@@ -51,9 +55,13 @@ public class SetSwerveDrive extends CommandBase {
 
     // square values after deadband while keeping original sign
 
-    throttle = Math.signum(throttle) * Math.pow(throttle, 2);
-    strafe = Math.signum(strafe) * Math.pow(strafe, 2);
-    rotation = Math.signum(rotation) * Math.pow(rotation, 2);
+    throttle = -Math.signum(throttle) * Math.pow(throttle, 2);
+    strafe = -Math.signum(strafe) * Math.pow(strafe, 2);
+    rotation = -Math.signum(rotation) * Math.pow(rotation, 2);
+
+    SmartDashboard.putNumber("Rotn", rotation);
+
+    
 
     m_swerveDrive.drive(throttle, strafe, rotation, false, true);
 

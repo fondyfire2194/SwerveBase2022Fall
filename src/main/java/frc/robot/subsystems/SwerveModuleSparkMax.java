@@ -51,7 +51,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
   public int m_moduleNumber;
 
-  public String[] modAbrev={"_FL","_FR","_RL","_RR"};
+  public String[] modAbrev = { "_FL", "_FR", "_RL", "_RR" };
 
   String driveLayout;
 
@@ -199,7 +199,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     // if (m_turningEncoderOffset != 0)
 
-    //   resetAngleToAbsolute();
+    resetAngleToAbsolute();
 
     ShuffleboardContent.initDriveShuffleboard(this);
     ShuffleboardContent.initTurnShuffleboard(this);

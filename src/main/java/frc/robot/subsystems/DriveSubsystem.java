@@ -24,6 +24,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CanConstants;
@@ -143,7 +144,7 @@ public class DriveSubsystem extends SubsystemBase {
     throttle *= DriveConstants.kMaxSpeedMetersPerSecond;
     strafe *= DriveConstants.kMaxSpeedMetersPerSecond;
     rotation *= DriveConstants.kMaxRotationRadiansPerSecond;
-
+    SmartDashboard.putNumber("Rotn1", rotation);
     ChassisSpeeds chassisSpeeds = isFieldRelative
         ? ChassisSpeeds.fromFieldRelativeSpeeds(
             throttle, strafe, rotation, getHeadingRotation2d())
@@ -233,7 +234,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetModuleEncoders() {
     for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules))
-      module.resetEncoders();
+      module.resetAngleToAbsolute();
   }
 
   /** Zeroes the heading of the robot. */
