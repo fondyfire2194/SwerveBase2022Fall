@@ -4,7 +4,6 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -39,7 +38,8 @@ public class SetSwerveDrive extends CommandBase {
   @Override
   public void initialize() {
   }
-// https://www.chiefdelphi.com/t/swerve-controller-joystick/392544/5
+
+  // https://www.chiefdelphi.com/t/swerve-controller-joystick/392544/5
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -50,7 +50,7 @@ public class SetSwerveDrive extends CommandBase {
         DriveConstants.kControllerDeadband)
         * Math.signum(m_strafeInput.getAsDouble());
     double rotation = MathUtil.applyDeadband(Math.abs(m_rotationInput.getAsDouble()),
-        DriveConstants.kControllerDeadband)
+        DriveConstants.kControllerRotDeadband)
         * Math.signum(m_rotationInput.getAsDouble());
 
     // square values after deadband while keeping original sign
@@ -59,11 +59,11 @@ public class SetSwerveDrive extends CommandBase {
     strafe = -Math.signum(strafe) * Math.pow(strafe, 2);
     rotation = -Math.signum(rotation) * Math.pow(rotation, 2);
 
-    SmartDashboard.putNumber("Rotn", rotation);
+    double throttle_sl = m_slewX.calculate(throttle);
+    double strafe_sl = m_slewY.calculate(strafe);
+    double rotation_sl = m_slewRot.calculate(rotation);
 
-    
-
-    m_swerveDrive.drive(throttle, strafe, rotation, false, true);
+    m_swerveDrive.drive(throttle_sl, strafe_sl, rotation_sl, false, true);
 
   }
 
