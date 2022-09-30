@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ToggleFieldOriented;
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.FiveBallAuto;
 import frc.robot.commands.swerve.JogDriveModule;
@@ -98,6 +100,12 @@ public class RobotContainer {
         () -> m_coDriverController.getRawAxis(2),
         () -> m_coDriverController.getRawAxis(3),
         false));
+
+
+        JoystickButton button_8 = new JoystickButton(leftJoystick,8);
+        JoystickButton button_7 = new JoystickButton(leftJoystick, 7);       
+
+        button_8.whenPressed(new ToggleFieldOriented(m_robotDrive));
     // position turn modules individually
     // driver.X_button.whenPressed(new PositionTurnModule(m_robotDrive,
     // ModulePosition.FRONT_LEFT));

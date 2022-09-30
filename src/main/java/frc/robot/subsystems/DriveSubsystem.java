@@ -22,6 +22,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,6 +33,7 @@ import frc.robot.Constants.CanConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.utils.ModuleMap;
+import frc.robot.utils.ShuffleboardContent;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -106,6 +109,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double targetAngle;
 
+   public boolean m_fieldOriented;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
 
@@ -115,12 +120,16 @@ public class DriveSubsystem extends SubsystemBase {
 
     setIdleMode(true);
 
+    m_fieldOriented=false;
+
     if (RobotBase.isSimulation()) {
 
       var dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
 
       m_simAngle = new SimDouble((SimDeviceDataJNI.getSimValueHandle(dev, "Yaw")));
     }
+
+    ShuffleboardContent.initMisc(this);
   }
 
   /**
@@ -139,13 +148,13 @@ public class DriveSubsystem extends SubsystemBase {
       double throttle,
       double strafe,
       double rotation,
-      boolean isFieldRelative,
+      
       boolean isOpenLoop) {
     throttle *= DriveConstants.kMaxSpeedMetersPerSecond;
     strafe *= DriveConstants.kMaxSpeedMetersPerSecond;
     rotation *= DriveConstants.kMaxRotationRadiansPerSecond;
     SmartDashboard.putNumber("Rotn1", rotation);
-    ChassisSpeeds chassisSpeeds = isFieldRelative
+    ChassisSpeeds chassisSpeeds =m_fieldOriented
         ? ChassisSpeeds.fromFieldRelativeSpeeds(
             throttle, strafe, rotation, getHeadingRotation2d())
         : new ChassisSpeeds(throttle, strafe, rotation);
@@ -164,6 +173,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     updateOdometry();
+    SmartDashboard.putNumber("Yaw",-m_gyro.getYaw());
 
   }
 

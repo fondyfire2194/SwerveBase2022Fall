@@ -157,6 +157,14 @@ public final class Constants {
     public static double kvVoltSecondsPerMeter = .2;
     public static double kaVoltSecondsSquaredPerMeter = .02;
 
+    public static double kPModuleTurnController;
+
+    public static double kSMmaxAccel = 90;//deg per sec per sec
+
+    public static double maxVel= 90; // deg per sec
+
+    public static double allowedErr = .05;//deg
+
     // sysid on module?
     public static final double ksDriveVoltSecondsPerMeter = 0.667 / 12;
     public static final double kvDriveVoltSecondsSquaredPerMeter = 2.44 / 12;
@@ -164,6 +172,11 @@ public final class Constants {
     // sysid on module?
     public static final double kvTurnVoltSecondsPerRadian = 1.47; // originally 1.5
     public static final double kaTurnVoltSecondsSquaredPerRadian = 0.348; // originally 0.3
+
+    
+    public static double kMaxModuleAngularSpeedDegPerSec = 90;
+
+    public static final double kMaxModuleAngularAccelerationDegreesPerSecondSquared = 90;
 
   }
 
@@ -174,6 +187,7 @@ public final class Constants {
   }
 
   public static final class TrapezoidConstants {
+    
     public static final double kMaxSpeedMetersPerSecond = 3;
 
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;

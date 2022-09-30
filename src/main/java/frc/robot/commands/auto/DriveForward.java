@@ -28,6 +28,6 @@ public class DriveForward extends SequentialCommandGroup {
         new SetSwerveOdometry(swerveDrive, trajectory.getInitialPose()),
         command,
         new SetSwerveIdleMode(swerveDrive, false)
-            .andThen(() -> swerveDrive.drive(0, 0, 0, false, false)));
+            .andThen(() -> swerveDrive.drive(0, 0, 0, false)));
   }
 }

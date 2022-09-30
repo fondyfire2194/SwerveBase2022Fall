@@ -1,6 +1,6 @@
 [NetworkTables Storage 3.0]
 string "/Preferences/.type"="RobotPreferences"
-double "/Preferences/SwerveTuneTune"=0
+double "/Preferences/SwerveTune"=0
 double "/Preferences/SwerveTurnPoskD"=0
 double "/Preferences/SwerveTurnPoskI"=0
 double "/Preferences/SwerveTurnPoskIz"=0

@@ -43,6 +43,10 @@ public class Pref {
     prefDict.put("SwerveTurnPoskD", 0.);
     prefDict.put("SwerveTurnPoskIz", 0.);
 
+    prefDict.put("SwerveTurnVelkP", .1);
+    prefDict.put("SwerveTurnVelkI", 0.);
+    prefDict.put("SwerveTurnVelkD", 0.);
+    prefDict.put("SwerveTurnVelkIz", 0.);
     
   }
 

@@ -63,7 +63,7 @@ public class SetSwerveDrive extends CommandBase {
     double strafe_sl = m_slewY.calculate(strafe);
     double rotation_sl = m_slewRot.calculate(rotation);
 
-    m_swerveDrive.drive(throttle_sl, strafe_sl, rotation_sl, false, true);
+    m_swerveDrive.drive(throttle_sl, strafe_sl, rotation_sl, true);
 
   }
 

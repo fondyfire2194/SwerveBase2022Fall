@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.DriveConstants.ModulePosition;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.SwerveModuleSparkMax;
 
 /** Add your docs here. */
@@ -141,5 +142,15 @@ public class ShuffleboardContent {
 
         }
 
+        public static void initMisc(DriveSubsystem drive) {
 
+                ShuffleboardTab drLayout1 = Shuffleboard.getTab("Drivetrain");
+
+                drLayout1.addBoolean("FieldOr", () -> drive.m_fieldOriented).withPosition(8,4)
+
+                                .withSize(1, 1);
+                drLayout1.addNumber("GyroYaw", () -> drive.getHeadingDegrees()).withPosition(9,4)
+
+                                .withSize(1, 1);
+        }
 }
