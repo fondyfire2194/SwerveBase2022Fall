@@ -192,7 +192,13 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
       m_turnController = new PIDController(ModuleConstants.kPModuleTurnController, 0, 0);
 
-    tunePosGains();
+    if (useRRPid)
+
+      tunePosGains();
+
+    else
+
+      tuneSMPosGains();
 
     m_modulePosition = modulePosition;
 
@@ -219,13 +225,21 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   public void periodic() {
 
     if (Pref.getPref("SwerveTune") == 1 && tuneOn == 0) {
+
       tuneOn = 1;
 
-      tunePosGains();
+      if (useRRPid)
+
+        tunePosGains();
+
+      else
+
+        tuneSMPosGains();
 
     }
 
     if (tuneOn == 1) {
+
       tuneOn = (int) Pref.getPref("SwerveTune");
     }
 
@@ -245,11 +259,11 @@ public class SwerveModuleSparkMax extends SubsystemBase {
     m_turnSMController.setIZone(Pref.getPref("SwerveTurnPoskIz"), POS_SLOT);
   }
 
-  public void tuneVelGains() {
-    m_turnSMController.setP(Pref.getPref("SwerveTurnVelkP"), VEL_SLOT);
-    m_turnSMController.setI(Pref.getPref("SwerveTurnVelkI"), VEL_SLOT);
-    m_turnSMController.setD(Pref.getPref("SwerveTurnVelkD"), VEL_SLOT);
-    m_turnSMController.setIZone(Pref.getPref("SwerveTurnPoskIz"), VEL_SLOT);
+  public void tuneSMPosGains() {
+    m_turnSMController.setP(Pref.getPref("SwerveTurnSMPoskP"), POS_SLOT);
+    m_turnSMController.setI(Pref.getPref("SwerveTurnSMPoskI"), POS_SLOT);
+    m_turnSMController.setD(Pref.getPref("SwerveTurnSMPoskD"), POS_SLOT);
+    m_turnSMController.setIZone(Pref.getPref("SwerveTurnSMPoskIz"), POS_SLOT);
   }
 
   @Override
@@ -299,32 +313,31 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     if (RobotBase.isReal()) {
 
+      // turn axis
+
       actualAngleDegrees = m_turningEncoder.getPosition();
 
-      if(!useRRPid){
+      if (useRRPid) {
 
-      positionTurn(angle);
+        positionTurn(angle);
       }
 
-      else{
-        positionTurn1(angle);
+      else {
+
+        positionSMTurn(angle);
       }
-    }
 
+      // drive axis
 
+      if (isOpenLoop)
 
-    else
+        m_driveMotor.set(state.speedMetersPerSecond / ModuleConstants.kFreeMetersPerSecond);
 
-      m_turnSMController.setReference(angle, ControlType.kPosition, POS_SLOT);
+      else {
 
-    if (isOpenLoop)
+        m_driveVelController.setReference(state.speedMetersPerSecond, ControlType.kVelocity, VEL_SLOT);
 
-      m_driveMotor.set(state.speedMetersPerSecond / ModuleConstants.kFreeMetersPerSecond);
-
-    else {
-
-      m_driveVelController.setReference(state.speedMetersPerSecond, ControlType.kVelocity, VEL_SLOT);
-
+      }
     }
 
     if (RobotBase.isSimulation()) {
@@ -334,24 +347,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
       // no simulation for angle - angle command is returned directly to drive
       // subsystem as actual angle in 2 places - getState() and getHeading
 
-      if (angle != actualAngleDegrees && angleIncrementPer20ms == 0) {
-
-        angleDifference = angle - actualAngleDegrees;
-
-        angleIncrementPer20ms = angleDifference / 20;// 10*20ms = .2 sec move time
-      }
-
-      if (angleIncrementPer20ms != 0) {
-
-        actualAngleDegrees += angleIncrementPer20ms;
-
-        if ((Math.abs(angle - actualAngleDegrees)) < .1) {
-
-          actualAngleDegrees = angle;
-
-          angleIncrementPer20ms = 0;
-        }
-      }
+      simTurnPosition(angle);
     }
 
   }
@@ -414,12 +410,12 @@ public class SwerveModuleSparkMax extends SubsystemBase {
     m_turningMotor.setVoltage(speed * RobotController.getBatteryVoltage());
   }
 
-  public void positionTurn(double angle) {
+  public void positionSMTurn(double angle) {
 
     m_turnSMController.setReference(angle, ControlType.kPosition, POS_SLOT);
   }
 
-  public void positionTurn1(double angle) {
+  public void positionTurn(double angle) {
 
     double turnAngleError = Math.abs(angle - m_turningEncoder.getPosition());
 
@@ -433,6 +429,28 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     m_turningMotor.setVoltage(pidOut * RobotController.getBatteryVoltage());
 
+  }
+
+  private void simTurnPosition(double angle) {
+    
+    if (angle != actualAngleDegrees && angleIncrementPer20ms == 0) {
+
+      angleDifference = angle - actualAngleDegrees;
+
+      angleIncrementPer20ms = angleDifference / 20;// 10*20ms = .2 sec move time
+    }
+
+    if (angleIncrementPer20ms != 0) {
+
+      actualAngleDegrees += angleIncrementPer20ms;
+
+      if ((Math.abs(angle - actualAngleDegrees)) < .1) {
+
+        actualAngleDegrees = angle;
+
+        angleIncrementPer20ms = 0;
+      }
+    }
   }
 
   public void driveMotorMove(double speed) {

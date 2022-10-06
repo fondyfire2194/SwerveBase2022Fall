@@ -43,11 +43,11 @@ public class Pref {
     prefDict.put("SwerveTurnPoskD", 0.);
     prefDict.put("SwerveTurnPoskIz", 0.);
 
-    prefDict.put("SwerveTurnVelkP", .1);
-    prefDict.put("SwerveTurnVelkI", 0.);
-    prefDict.put("SwerveTurnVelkD", 0.);
-    prefDict.put("SwerveTurnVelkIz", 0.);
-    
+    prefDict.put("SwerveTurnSMPoskP", .1);
+    prefDict.put("SwerveTurnSMPoskI", 0.);
+    prefDict.put("SwerveTurnSMPoskD", 0.);
+    prefDict.put("SwerveTurnSMPoskIz", 0.);
+     
   }
 
   public static void ensureRioPrefs() {
