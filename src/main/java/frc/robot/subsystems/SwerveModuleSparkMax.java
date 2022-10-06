@@ -13,6 +13,7 @@ import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -40,7 +41,9 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
   private final SparkMaxPIDController m_driveVelController;
 
-  private final SparkMaxPIDController m_turnSMController;
+  private SparkMaxPIDController m_turnSMController = null;
+
+  private PIDController m_turnController = null;
 
   public final CTRECanCoder m_turnCANcoder;
 
@@ -88,8 +91,8 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   public boolean driveMotorConnected;
   public boolean turnMotorConnected;
   public boolean turnCoderConnected;
-  private boolean useSmartMotion;
-  
+  private boolean useRRPid;
+  private double turnDeadband = .5;
 
   /**
    * Constructs a SwerveModule.
@@ -181,20 +184,15 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     m_turningEncoder.setVelocityConversionFactor(ModuleConstants.kTurningDegreesPerEncRev / 60);
 
-    m_turnSMController = m_turningMotor.getPIDController();
+    if (!useRRPid)
 
-    if (!useSmartMotion)
+      m_turnSMController = m_turningMotor.getPIDController();
 
-      tunePosGains();
+    else
 
-    else {
+      m_turnController = new PIDController(ModuleConstants.kPModuleTurnController, 0, 0);
 
-      tuneVelGains();
-
-      m_turnSMController.setSmartMotionMaxAccel(ModuleConstants.kSMmaxAccel, SM_SLOT);
-      m_turnSMController.setSmartMotionMaxVelocity(ModuleConstants.maxVel, SM_SLOT);
-      m_turnSMController.setSmartMotionAllowedClosedLoopError(ModuleConstants.allowedErr, SM_SLOT);
-    }
+    tunePosGains();
 
     m_modulePosition = modulePosition;
 
@@ -222,10 +220,9 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     if (Pref.getPref("SwerveTune") == 1 && tuneOn == 0) {
       tuneOn = 1;
-      if (!useSmartMotion)
-        tunePosGains();
-      else
-        tuneVelGains();
+
+      tunePosGains();
+
     }
 
     if (tuneOn == 1) {
@@ -304,40 +301,29 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
       actualAngleDegrees = m_turningEncoder.getPosition();
 
-      if (useSmartMotion) {
+      if(!useRRPid){
 
-        if (Math.abs(state.speedMetersPerSecond) <= (DriveConstants.kMaxSpeedMetersPerSecond * 0.01))
-
-        {
-          if (m_turnSMController.getSmartMotionAllowedClosedLoopError(SM_SLOT) == ModuleConstants.allowedErr)
-
-            m_turnSMController.setSmartMotionAllowedClosedLoopError(.25, SM_SLOT);
-        }
-
-        else {
-
-          if (
-
-          m_turnSMController.getSmartMotionAllowedClosedLoopError(SM_SLOT) != ModuleConstants.allowedErr)
-
-            m_turnSMController.setSmartMotionAllowedClosedLoopError(ModuleConstants.allowedErr, SM_SLOT);
-        }
-
-        m_turnSMController.setReference(angle, ControlType.kSmartMotion, SM_SLOT);
-
+      positionTurn(angle);
       }
 
-      else
+      else{
+        positionTurn1(angle);
+      }
+    }
 
-        m_turnSMController.setReference(angle, ControlType.kPosition, POS_SLOT);
 
-      if (isOpenLoop)
 
-        m_driveMotor.set(state.speedMetersPerSecond / ModuleConstants.kFreeMetersPerSecond);
+    else
 
-      else
+      m_turnSMController.setReference(angle, ControlType.kPosition, POS_SLOT);
 
-        m_driveVelController.setReference(state.speedMetersPerSecond, ControlType.kVelocity, VEL_SLOT);
+    if (isOpenLoop)
+
+      m_driveMotor.set(state.speedMetersPerSecond / ModuleConstants.kFreeMetersPerSecond);
+
+    else {
+
+      m_driveVelController.setReference(state.speedMetersPerSecond, ControlType.kVelocity, VEL_SLOT);
 
     }
 
@@ -431,6 +417,22 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   public void positionTurn(double angle) {
 
     m_turnSMController.setReference(angle, ControlType.kPosition, POS_SLOT);
+  }
+
+  public void positionTurn1(double angle) {
+
+    double turnAngleError = Math.abs(angle - m_turningEncoder.getPosition());
+
+    double pidOut = m_turnController.calculate(m_turningEncoder.getPosition(), angle);
+    // if robot is not moving, stop the turn motor oscillating
+    if (turnAngleError < turnDeadband
+
+        && Math.abs(state.speedMetersPerSecond) <= (DriveConstants.kMaxSpeedMetersPerSecond * 0.01))
+
+      pidOut = 0;
+
+    m_turningMotor.setVoltage(pidOut * RobotController.getBatteryVoltage());
+
   }
 
   public void driveMotorMove(double speed) {
