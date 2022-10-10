@@ -21,7 +21,7 @@ public class ShuffleboardContent {
 
         private ModulePosition m_modulePosition;
 
-        static ShuffleboardLayout boolsLayout;
+       //static ShuffleboardLayout boolsLayout;
 
         public ShuffleboardContent() {
 

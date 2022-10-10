@@ -6,7 +6,9 @@ package frc.robot;
 
 import java.util.Map;
 
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -31,22 +33,22 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 4;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 5;
     public static final int FRONT_LEFT_MODULE_STEER_CANCODER = 6;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET =231.5;// -Math.toRadians(0.0);
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 231.5;// -Math.toRadians(0.0);
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 7;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 8;
     public static final int FRONT_RIGHT_MODULE_STEER_CANCODER = 9;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 317;//-Math.toRadians(-42);
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 317;// -Math.toRadians(-42);
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 10;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 11;
     public static final int BACK_LEFT_MODULE_STEER_CANCODER = 12;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = 181.1;//-Math.toRadians(0.0);
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = 181.1;// -Math.toRadians(0.0);
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 13;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 14;
     public static final int BACK_RIGHT_MODULE_STEER_CANCODER = 15;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 253.7;//-Math.toRadians(-105);
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 253.7;// -Math.toRadians(-105);
 
   }
 
@@ -109,8 +111,8 @@ public final class Constants {
     public static double kRotationSlew = 3.00;
     public static double kControllerDeadband = .05;
     public static double kControllerRotDeadband = .1;
-    
-    public static double kVoltCompensation=12.6;
+
+    public static double kVoltCompensation = 12.6;
 
     // public static final double kMaxRotationRadiansPerSecond =
     // Math.hypot(DriveConstants.kTrackWidth / 2.0,
@@ -159,11 +161,11 @@ public final class Constants {
 
     public static double kPModuleTurnController;
 
-    public static double kSMmaxAccel = 90;//deg per sec per sec
+    public static double kSMmaxAccel = 90;// deg per sec per sec
 
-    public static double maxVel= 90; // deg per sec
+    public static double maxVel = 90; // deg per sec
 
-    public static double allowedErr = .05;//deg
+    public static double allowedErr = .05;// deg
 
     // sysid on module?
     public static final double ksDriveVoltSecondsPerMeter = 0.667 / 12;
@@ -173,7 +175,6 @@ public final class Constants {
     public static final double kvTurnVoltSecondsPerRadian = 1.47; // originally 1.5
     public static final double kaTurnVoltSecondsSquaredPerRadian = 0.348; // originally 0.3
 
-    
     public static double kMaxModuleAngularSpeedDegPerSec = 90;
 
     public static final double kMaxModuleAngularAccelerationDegreesPerSecondSquared = 90;
@@ -183,11 +184,11 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kCoDriverControllerPort = 1;
- 
+
   }
 
   public static final class TrapezoidConstants {
-    
+
     public static final double kMaxSpeedMetersPerSecond = 3;
 
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
@@ -211,4 +212,17 @@ public final class Constants {
     // Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecond),
     // Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecondSquared));
   }
+
+  /**
+   * Each april tag on the field has a tag number, x location, y location and z
+   * location(height)
+   * 
+   */
+
+   
+  int[] aprilTagNumbers = { 1, 2, 3 };
+
+  Translation3d[] aprilTagData = { new Translation3d(1, 2, 3), new Translation3d(1, 2, 3),
+      new Translation3d(1, 2, 3) };
+
 }

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -23,6 +25,8 @@ import frc.robot.commands.swerve.PositionTurnModule;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PhotonVisionCam;
+import frc.robot.utils.ShuffleboardVision;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -33,6 +37,10 @@ import frc.robot.subsystems.DriveSubsystem;
 public class RobotContainer {
   // The robot's subsystems
   final DriveSubsystem m_robotDrive = new DriveSubsystem();
+
+  final PhotonVisionCam picam;
+
+  final ShuffleboardVision vis;
 
   public final FieldSim m_fieldSim = new FieldSim(m_robotDrive);
 
@@ -55,21 +63,22 @@ public class RobotContainer {
     Pref.addMissing();
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     // Configure the button bindings
-
+    picam = new PhotonVisionCam("picamrpi4", 1);
+    vis = new ShuffleboardVision();
     m_fieldSim.initSim();
     initializeAutoChooser();
     // sc.showAll();
     // Configure default commands
-   // m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        // new SetSwerveDrive(
-        // m_robotDrive,
+    // m_robotDrive.setDefaultCommand(
+    // The left stick controls translation of the robot.
+    // Turning is controlled by the X axis of the right stick.
+    // new SetSwerveDrive(
+    // m_robotDrive,
 
-        // () -> -m_coDriverController.getRawAxis(1),
-        // () -> -m_coDriverController.getRawAxis(0),
-        // () -> -m_coDriverController.getRawAxis(4)));
-        m_robotDrive.setDefaultCommand(
+    // () -> -m_coDriverController.getRawAxis(1),
+    // () -> -m_coDriverController.getRawAxis(0),
+    // () -> -m_coDriverController.getRawAxis(4)));
+    m_robotDrive.setDefaultCommand(
         new SetSwerveDrive(
             m_robotDrive,
             () -> leftJoystick.getRawAxis(1),
@@ -101,11 +110,10 @@ public class RobotContainer {
         () -> m_coDriverController.getRawAxis(3),
         false));
 
+    JoystickButton button_8 = new JoystickButton(leftJoystick, 8);
+    JoystickButton button_7 = new JoystickButton(leftJoystick, 7);
 
-        JoystickButton button_8 = new JoystickButton(leftJoystick,8);
-        JoystickButton button_7 = new JoystickButton(leftJoystick, 7);       
-
-        button_8.whenPressed(new ToggleFieldOriented(m_robotDrive));
+    button_8.whenPressed(new ToggleFieldOriented(m_robotDrive));
     // position turn modules individually
     // driver.X_button.whenPressed(new PositionTurnModule(m_robotDrive,
     // ModulePosition.FRONT_LEFT));
