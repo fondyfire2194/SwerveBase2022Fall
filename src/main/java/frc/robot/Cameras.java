@@ -4,67 +4,103 @@
 
 package frc.robot;
 
-import org.opencv.core.Size;
+import java.util.List;
+
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.utils.ShuffleboardVision;
 
 /** Add your docs here. */
-public class Cameras extends SubsystemBase {
+public class Cameras {
 
-    public PhotonCamera picam = new PhotonCamera("picamrpi4");
-    public double yaw;
-    public int tagID;
-    public double pitch;
-    public double area;
-    public double skew;
-    public double X;
-    public double Y;
-    public double Z;
-    public String rotation;
-    public int targetsAvailable;
+    // public PhotonCamera picam = new PhotonCamera("picamrpi4");
+    public PhotonCamera picam = new PhotonCamera("limelight");
+    public double yaw[] = { 0, 0, 0 };;
+    public int tagID[] = { 0, 0, 0 };;
+    public double pitch[] = { 0, 0, 0 };
+    public double area[] = { 0, 0, 0 };;
+    public double skew[] = { 0, 0, 0 };;
+    public double X[] = { 0, 0, 0 };;
+    public double Y[] = { 0, 0, 0 };;
+    public double Z[] = { 0, 0, 0 };;
+    public String rotation[] = { "0", "0", "0" };
+    public int targetsAvailable = 0;
+    public boolean hasTargets;
+    public double latencySeconds;
+    public static int idx;
+    int i = 0;
+    int tst;
+
+    public boolean targetActive = true;
+    public List<PhotonTrackedTarget> trackedTargets;
+    public PhotonPipelineResult plr;
+    public PhotonTrackedTarget ptt0;
+    public PhotonTrackedTarget ptt1;
+    public PhotonTrackedTarget ptt2;
 
     public Cameras() {
         ShuffleboardVision.init(this);
     }
 
-    @Override
-    public void periodic() {
-        // Update the odometry in the periodic block
-        if (picam.getLatestResult().hasTargets()) {
-            targetsAvailable=picam.getLatestResult().targets.size();
-            PhotonTrackedTarget ptt = picam.getLatestResult().getBestTarget();
+    public PhotonPipelineResult getLatestResult() {
+        return picam.getLatestResult();
+    }
 
-            yaw = ptt.getYaw();
-            pitch = ptt.getPitch();
-            skew = ptt.getSkew();
-            area = ptt.getArea();
-            Transform3d ctoT = ptt.getCameraToTarget();
-            X = ctoT.getX();
-            Y = ctoT.getY();
-            Z = ctoT.getZ();
+    public boolean getHasTargets(PhotonPipelineResult plr) {
+        return plr.hasTargets();
+    }
 
-            rotation = ctoT.getRotation().toString();
+    public List<PhotonTrackedTarget> getTrackedTargets(PhotonPipelineResult plr) {
+        return plr.getTargets();
+    }
 
-        } else {
-            yaw = 0;
-            pitch = 0;
-            skew = 0;
-            area = 0;
-            tagID = 0;
-            X = 0;
-            Y = 0;
-            Z = 0;
-            rotation = "NoTarget";
-            targetsAvailable=0;
+    public int getNumberTargets(PhotonPipelineResult plr) {
+        return plr.targets.size();
+    }
+
+    public PhotonTrackedTarget getTrackedTarget(List<PhotonTrackedTarget> lptt, int targetNumber) {
+        return lptt.get(targetNumber);
+    }
+
+    public double getLatencySeconds(PhotonPipelineResult plr) {
+        return plr.getLatencyMillis();
+    }
+
+    public void grabTargetData(PhotonTrackedTarget ptt, int i) {
+        tagID[i] = ptt.getFiducialId();
+        yaw[i] = ptt.getYaw();
+        pitch[i] = ptt.getPitch();
+        skew[i] = ptt.getSkew();
+        area[i] = ptt.getArea();
+
+        // Transform3d ctoT = ptt.getCameraToTarget();
+        // X[i] = ctoT.getX();
+        // Y[i] = ctoT.getY();
+        // Z[i] = ctoT.getZ();
+
+        // rotation[i] = ctoT.getRotation().toString();
+    }
+
+    public void clearResults() {
+
+        for (int i = 0; i < yaw.length - 1; i++) {
+            yaw[i] = 0;
+            pitch[i] = 0;
+            skew[i] = 0;
+            area[i] = 0;
+            tagID[i] = 0;
+            X[i] = 0;
+            Y[i] = 0;
+            Z[i] = 0;
+            rotation[i] = "NoTarget";
+            targetsAvailable = 0;
         }
-
     }
-
-    @Override
-    public void simulationPeriodic() {
-    }
+    // double temp = 0;
+    // temp = viewTarget.getDouble(0);
+    // idx = (int) temp;
 }

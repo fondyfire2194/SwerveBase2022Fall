@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ToggleFieldOriented;
+import frc.robot.commands.Vision.GetVisionData1;
+import frc.robot.commands.Vision.GetVisionData2;
+import frc.robot.commands.Vision.GetVisionData3;
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.FiveBallAuto;
 import frc.robot.commands.swerve.JogDriveModule;
@@ -36,7 +39,7 @@ public class RobotContainer {
   // The robot's subsystems
   final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-  private Cameras cams = new Cameras();
+   Cameras cams = new Cameras();
 
   public final FieldSim m_fieldSim = new FieldSim(m_robotDrive);
 
@@ -70,6 +73,10 @@ public class RobotContainer {
     // Turning is controlled by the X axis of the right stick.
     // new SetSwerveDrive(
     // m_robotDrive,
+
+    SmartDashboard.putData("RunCAm1", new GetVisionData1(cams));
+    SmartDashboard.putData("RunCAm2", new GetVisionData2(cams));
+    SmartDashboard.putData("RunCAm3", new GetVisionData3(cams));
 
     // () -> -m_coDriverController.getRawAxis(1),
     // () -> -m_coDriverController.getRawAxis(0),
