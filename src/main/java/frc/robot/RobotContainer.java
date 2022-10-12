@@ -7,6 +7,7 @@ package frc.robot;
 import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,18 +15,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ToggleFieldOriented;
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.FiveBallAuto;
 import frc.robot.commands.swerve.JogDriveModule;
 import frc.robot.commands.swerve.JogTurnModule;
-import frc.robot.commands.swerve.PositionTurnModule;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.PhotonVisionCam;
 import frc.robot.utils.ShuffleboardVision;
 
 /*
@@ -38,9 +36,7 @@ public class RobotContainer {
   // The robot's subsystems
   final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-  final PhotonVisionCam picam;
-
-  final ShuffleboardVision vis;
+  private Cameras cams = new Cameras();
 
   public final FieldSim m_fieldSim = new FieldSim(m_robotDrive);
 
@@ -63,9 +59,9 @@ public class RobotContainer {
     Pref.addMissing();
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     // Configure the button bindings
-    picam = new PhotonVisionCam("picamrpi4", 1);
-    vis = new ShuffleboardVision();
+
     m_fieldSim.initSim();
+
     initializeAutoChooser();
     // sc.showAll();
     // Configure default commands

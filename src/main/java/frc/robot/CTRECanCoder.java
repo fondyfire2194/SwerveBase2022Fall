@@ -11,8 +11,6 @@ import com.ctre.phoenix.sensors.MagnetFieldStrength;
 
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 /** Add your docs here. */
 public class CTRECanCoder extends WPI_CANCoder {
     CANCoderFaults faults = new CANCoderFaults();

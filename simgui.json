@@ -3,6 +3,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/DriveSubsystem": "Subsystem",
+      "/LiveWindow/PhotonVisionCam": "Subsystem",
       "/LiveWindow/SwerveModuleSparkMax": "Subsystem",
       "/LiveWindow/SwerveModuleSparkMax4201": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",

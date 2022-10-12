@@ -5,3 +5,7 @@ double "/Preferences/SwerveTurnPoskD"=0
 double "/Preferences/SwerveTurnPoskI"=0
 double "/Preferences/SwerveTurnPoskIz"=0
 double "/Preferences/SwerveTurnPoskP"=0.1
+double "/Preferences/SwerveTurnVelkD"=0
+double "/Preferences/SwerveTurnVelkI"=0
+double "/Preferences/SwerveTurnVelkIz"=0
+double "/Preferences/SwerveTurnVelkP"=0.1

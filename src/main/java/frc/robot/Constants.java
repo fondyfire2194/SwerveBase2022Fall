@@ -6,12 +6,12 @@ package frc.robot;
 
 import java.util.Map;
 
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.robot.utils.AprilTagData;
 import frc.robot.utils.ModuleMap;
 
 /**
@@ -75,7 +75,7 @@ public final class Constants {
       BACK_RIGHT
     }
 
-    public static final Map<ModulePosition, Translation2d> kModuleTranslations = Map.of(
+     public static final Map<ModulePosition, Translation2d> kModuleTranslations = Map.of(
         ModulePosition.FRONT_LEFT, new Translation2d(kWheelBase / 2, kTrackWidth / 2),
         ModulePosition.FRONT_RIGHT, new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
         ModulePosition.BACK_LEFT, new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
@@ -206,23 +206,5 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxRotationRadiansPerSecond, kMaxRotationRadiansPerSecondSquared);
 
-    // // Constraint for the motion profiled robot angle controller
-    // public static final TrapezoidProfile.Constraints kThetaControllerConstraints
-    // = new TrapezoidProfile.Constraints(
-    // Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecond),
-    // Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecondSquared));
   }
-
-  /**
-   * Each april tag on the field has a tag number, x location, y location and z
-   * location(height)
-   * 
-   */
-
-   
-  int[] aprilTagNumbers = { 1, 2, 3 };
-
-  Translation3d[] aprilTagData = { new Translation3d(1, 2, 3), new Translation3d(1, 2, 3),
-      new Translation3d(1, 2, 3) };
-
 }

@@ -494,7 +494,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     driveMotorConnected = m_driveMotor.getFirmwareVersion() != 0;
     turnMotorConnected = m_turningMotor.getFirmwareVersion() != 0;
-    turnCoderConnected = m_turnCANcoder.getFirmwareVersion() > 0;
+    turnCoderConnected = m_turnCANcoder.getFirmwareVersion() > 0 || RobotBase.isSimulation();
 
     return driveMotorConnected && turnMotorConnected && turnCoderConnected;
 
