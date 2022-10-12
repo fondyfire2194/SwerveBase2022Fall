@@ -10,8 +10,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.math.geometry.Transform3d;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utils.ShuffleboardVision;
 
 /** Add your docs here. */
@@ -71,6 +70,7 @@ public class Cameras {
     }
 
     public void grabTargetData(PhotonTrackedTarget ptt, int i) {
+        SmartDashboard.putString("PTT" + String.valueOf(i), ptt.toString());
         tagID[i] = ptt.getFiducialId();
         yaw[i] = ptt.getYaw();
         pitch[i] = ptt.getPitch();

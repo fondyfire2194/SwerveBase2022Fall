@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Vision;
 
+import org.opencv.core.Size;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -35,6 +36,7 @@ public class GetVisionData1 extends CommandBase {
 
     m_cam.plr = m_cam.getLatestResult();
 
+
     m_cam.hasTargets = m_cam.getHasTargets(m_cam.plr);
 
     if (m_cam.hasTargets) {
@@ -46,6 +48,8 @@ public class GetVisionData1 extends CommandBase {
       m_cam.latencySeconds = m_cam.getLatencySeconds(m_cam.plr);
 
       m_cam.ptt0 = m_cam.getTrackedTarget(m_cam.trackedTargets, 0);
+
+      
 
       m_cam.grabTargetData(m_cam.ptt0, 0);
     }
