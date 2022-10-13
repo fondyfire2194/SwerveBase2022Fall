@@ -18,12 +18,12 @@ public class AprilTagData {
     public AprilTagData() {
     }
 
-    public void init() {
+    public static void init() {
 
-        tagData[0] = new Translation3d(1, 1, 1);
-        tagData[1] = new Translation3d(1, 1, 1);
-        tagData[2] = new Translation3d(1, 1, 1);
-        tagData[3] = new Translation3d(1, 1, 1);
+        tagData[0] = new Translation3d(2, 0, 1);
+        tagData[1] = new Translation3d(3, 0, 1);
+        tagData[2] = new Translation3d(0, 1, 1);
+        tagData[3] = new Translation3d(0, 1, 1);
 
     }
 

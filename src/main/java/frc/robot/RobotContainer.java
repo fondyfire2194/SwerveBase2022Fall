@@ -7,7 +7,6 @@ package frc.robot;
 import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,9 +16,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ToggleFieldOriented;
-import frc.robot.commands.Vision.GetVisionData1;
-import frc.robot.commands.Vision.GetVisionData2;
-import frc.robot.commands.Vision.GetVisionData3;
+
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.FiveBallAuto;
 import frc.robot.commands.swerve.JogDriveModule;
@@ -27,7 +24,6 @@ import frc.robot.commands.swerve.JogTurnModule;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.utils.ShuffleboardVision;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -74,9 +70,9 @@ public class RobotContainer {
     // new SetSwerveDrive(
     // m_robotDrive,
 
-    SmartDashboard.putData("RunCAm1", new GetVisionData1(cams));
-    SmartDashboard.putData("RunCAm2", new GetVisionData2(cams));
-    SmartDashboard.putData("RunCAm3", new GetVisionData3(cams));
+    
+
+    SmartDashboard.putData(CommandScheduler.getInstance());
 
     // () -> -m_coDriverController.getRawAxis(1),
     // () -> -m_coDriverController.getRawAxis(0),

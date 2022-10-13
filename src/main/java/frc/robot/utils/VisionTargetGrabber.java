@@ -26,27 +26,54 @@ public class VisionTargetGrabber {
                 while (!isStopped) {
 
                     SmartDashboard.putNumber("THRNG", t++);
+                    cam.plr = cam.getLatestResult();
 
-                  //  plr = cam.getLatestResult();
+                    cam.hasTargets = cam.getHasTargets(cam.plr);
 
-                    // if (plr.hasTargets()) {
-                    //     t++;
+                    SmartDashboard.putBoolean("HAsTgts", cam.hasTargets);
 
-                        // j = cam.getNumberTargets();
+                    if (cam.hasTargets) {
 
-                        // cam.grabTargetData(plr,0);
+                        cam.trackedTargets = cam.getTrackedTargets(cam.plr);
 
-                        // if (j >= 1)
-                        // cam.grabTargetData(plr,1);
+                        cam.targetsAvailable = cam.trackedTargets.size();
 
-                        // if (j >= 2)
-                        // cam.grabTargetData(plr,2);
+                        cam.latencySeconds = cam.getLatencySeconds(cam.plr);
 
-                  //  }
+                        cam.ptt0 = cam.getTrackedTarget(cam.trackedTargets, 0);
 
+                        cam.grabTargetData(cam.ptt0, 0);
+
+                        int temp = cam.tagID[0];
+
+                        cam.tag1 = AprilTagData.getTranslation3d(temp);
+
+                        if (cam.targetsAvailable >= 2) {
+
+                            cam.ptt1 = cam.trackedTargets.get(1);
+
+                            cam.grabTargetData(cam.ptt1, 1);
+
+                            temp = cam.tagID[1];
+
+                            cam.tag2 = AprilTagData.getTranslation3d(temp);
+                        }
+
+                        if (cam.targetsAvailable > 2) {
+
+                            cam.ptt2 = cam.trackedTargets.get(2);
+
+                            cam.grabTargetData(cam.ptt2, 2);
+
+                            temp = cam.tagID[2];
+
+                            cam.tag3 = AprilTagData.getTranslation3d(temp);
+                        }
+
+                    }
                     try {
 
-                        Thread.sleep(10);
+                        Thread.sleep(100);
 
                     } catch (InterruptedException e) {
                         SmartDashboard.putBoolean("OOPS", true);
@@ -58,7 +85,7 @@ public class VisionTargetGrabber {
 
         // Set up thread properties and start it off
         grabberThread.setName("PhotonTargetGrabTask");
-        grabberThread.setPriority(Thread.MAX_PRIORITY);
+        grabberThread.setPriority(Thread.MIN_PRIORITY);
         grabberThread.start();
     }
 
