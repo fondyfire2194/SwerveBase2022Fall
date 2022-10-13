@@ -4,7 +4,6 @@
 
 package frc.robot.utils;
 
-
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 
@@ -13,7 +12,6 @@ public class AprilTagData {
     public static int n;
 
     public static Translation3d tagData[] = new Translation3d[4];
- 
 
     public AprilTagData() {
     }
@@ -28,6 +26,12 @@ public class AprilTagData {
     }
 
     public static Translation3d getTranslation3d(int n) {
+
+        if (n < 0)
+            n = 0;
+
+        if (n > tagData.length - 1)
+            n = 0;
 
         return tagData[n];
     }
