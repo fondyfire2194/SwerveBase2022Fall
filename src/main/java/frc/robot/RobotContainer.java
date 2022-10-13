@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import org.photonvision.PhotonCamera;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,6 +22,8 @@ import frc.robot.commands.swerve.JogTurnModule;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.utils.ShuffleboardFieldLocation;
+import frc.robot.utils.ShuffleboardVision;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -35,7 +35,7 @@ public class RobotContainer {
   // The robot's subsystems
   final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-   Cameras cams = new Cameras();
+  Cameras cams;
 
   public final FieldSim m_fieldSim = new FieldSim(m_robotDrive);
 
@@ -59,9 +59,12 @@ public class RobotContainer {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     // Configure the button bindings
 
+    cams = new Cameras();
     m_fieldSim.initSim();
-
     initializeAutoChooser();
+    
+    ShuffleboardVision.init(cams);
+    ShuffleboardFieldLocation.init(cams,m_robotDrive);
     // sc.showAll();
     // Configure default commands
     // m_robotDrive.setDefaultCommand(
@@ -69,8 +72,6 @@ public class RobotContainer {
     // Turning is controlled by the X axis of the right stick.
     // new SetSwerveDrive(
     // m_robotDrive,
-
-    
 
     SmartDashboard.putData(CommandScheduler.getInstance());
 

@@ -26,50 +26,58 @@ public class VisionTargetGrabber {
                 while (!isStopped) {
 
                     SmartDashboard.putNumber("THRNG", t++);
+
                     cam.plr = cam.getLatestResult();
 
                     cam.hasTargets = cam.getHasTargets(cam.plr);
 
-                    SmartDashboard.putBoolean("HAsTgts", cam.hasTargets);
+                    SmartDashboard.putBoolean("HasTgts", cam.hasTargets);
 
                     if (cam.hasTargets) {
 
-                        cam.trackedTargets = cam.getTrackedTargets(cam.plr);
+                        if (!cam.bestTargetOnly) {
 
-                        cam.targetsAvailable = cam.trackedTargets.size();
+                            cam.trackedTargets = cam.getTrackedTargets(cam.plr);
 
-                        cam.latencySeconds = cam.getLatencySeconds(cam.plr);
+                            cam.targetsAvailable = cam.trackedTargets.size();
 
-                        cam.ptt0 = cam.getTrackedTarget(cam.trackedTargets, 0);
+                            cam.latencySeconds = cam.getLatencySeconds(cam.plr);
 
-                        cam.grabTargetData(cam.ptt0, 0);
+                            cam.ptt0 = cam.getTrackedTarget(cam.trackedTargets, 0);
 
-                        int temp = cam.tagID[0];
+                            cam.grabTargetData(cam.ptt0, 0);
 
-                        cam.tag1 = AprilTagData.getTranslation3d(temp);
+                            int temp = cam.tagID[0];
 
-                        if (cam.targetsAvailable >= 2) {
+                            cam.tag1 = AprilTagData.getTranslation3d(temp);
 
-                            cam.ptt1 = cam.trackedTargets.get(1);
+                            if (cam.targetsAvailable >= 2) {
 
-                            cam.grabTargetData(cam.ptt1, 1);
+                                cam.ptt1 = cam.trackedTargets.get(1);
 
-                            temp = cam.tagID[1];
+                                cam.grabTargetData(cam.ptt1, 1);
 
-                            cam.tag2 = AprilTagData.getTranslation3d(temp);
+                                temp = cam.tagID[1];
+
+                                cam.tag2 = AprilTagData.getTranslation3d(temp);
+                            }
+
+                            if (cam.targetsAvailable > 2) {
+
+                                cam.ptt2 = cam.trackedTargets.get(2);
+
+                                cam.grabTargetData(cam.ptt2, 2);
+
+                                temp = cam.tagID[2];
+
+                                cam.tag3 = AprilTagData.getTranslation3d(temp);
+                            }
+
+                            else {
+
+                                cam.getBestTargetData(cam.plr);
+                            }
                         }
-
-                        if (cam.targetsAvailable > 2) {
-
-                            cam.ptt2 = cam.trackedTargets.get(2);
-
-                            cam.grabTargetData(cam.ptt2, 2);
-
-                            temp = cam.tagID[2];
-
-                            cam.tag3 = AprilTagData.getTranslation3d(temp);
-                        }
-
                     }
                     try {
 

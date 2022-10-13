@@ -4,36 +4,43 @@
 
 package frc.robot.utils;
 
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 /** Add your docs here. */
 public class AprilTagData {
+
     public static int n;
 
-    public static Translation3d tagData[] = new Translation3d[4];
+    public static double[][] tagLocations = {
+
+            { 1, 2, 0 },
+            { 1, 2, 1 },
+            { 4, 5, 2 }, // x,y,z ,meters
+            { 7, 8, 3 },
+            { 7, 8, 4 },
+            { 1, 2, 5 },
+            { 1, 2, 6 },
+            { 1, 2, 7 },
+            { 1, 2, 8 },
+            { 1, 2, 9 }
+
+    };
 
     public AprilTagData() {
-    }
-
-    public static void init() {
-
-        tagData[0] = new Translation3d(2, 0, 1);
-        tagData[1] = new Translation3d(3, 0, 1);
-        tagData[2] = new Translation3d(0, 1, 1);
-        tagData[3] = new Translation3d(0, 1, 1);
 
     }
 
     public static Translation3d getTranslation3d(int n) {
 
-        if (n < 0)
-            n = 0;
+        if (n < 0 || n > tagLocations.length - 1)
+            return new Translation3d(9, 1, 1);
+        else {
+            double x = tagLocations[n][0];
+            double y = tagLocations[n][1];
+            double z = tagLocations[n][2];
 
-        if (n > tagData.length - 1)
-            n = 0;
-
-        return tagData[n];
+            return new Translation3d(x, y, z);
+        }
     }
 
 }
