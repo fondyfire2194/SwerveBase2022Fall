@@ -91,7 +91,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   public boolean driveMotorConnected;
   public boolean turnMotorConnected;
   public boolean turnCoderConnected;
-  private boolean useRRPid;
+  private boolean useRRPid =true;
   private double turnDeadband = .5;
 
   /**
@@ -253,10 +253,10 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   }
 
   public void tunePosGains() {
-    m_turnSMController.setP(Pref.getPref("SwerveTurnPoskP"), POS_SLOT);
-    m_turnSMController.setI(Pref.getPref("SwerveTurnPoskI"), POS_SLOT);
-    m_turnSMController.setD(Pref.getPref("SwerveTurnPoskD"), POS_SLOT);
-    m_turnSMController.setIZone(Pref.getPref("SwerveTurnPoskIz"), POS_SLOT);
+    m_turnController.setP(Pref.getPref("SwerveTurnPoskP"));
+    m_turnController.setI(Pref.getPref("SwerveTurnPoskI"));
+    m_turnController.setD(Pref.getPref("SwerveTurnPoskD"));
+  
   }
 
   public void tuneSMPosGains() {

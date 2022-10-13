@@ -38,7 +38,7 @@ public class Pref {
     prefDict.put("SwerveTune", 0.);
     
 
-    prefDict.put("SwerveTurnPoskP", .1);
+    prefDict.put("SwerveTurnPoskP", .008);
     prefDict.put("SwerveTurnPoskI", 0.);
     prefDict.put("SwerveTurnPoskD", 0.);
     prefDict.put("SwerveTurnPoskIz", 0.);
