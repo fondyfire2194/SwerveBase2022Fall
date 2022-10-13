@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -65,15 +66,15 @@ public class RobotContainer {
     
     ShuffleboardVision.init(cams);
     ShuffleboardFieldLocation.init(cams,m_robotDrive);
-    // sc.showAll();
-    // Configure default commands
-    // m_robotDrive.setDefaultCommand(
-    // The left stick controls translation of the robot.
-    // Turning is controlled by the X axis of the right stick.
-    // new SetSwerveDrive(
-    // m_robotDrive,
+     
 
     SmartDashboard.putData(CommandScheduler.getInstance());
+
+    PortForwarder.add(5800, "10.21.94.11", 5800);
+    PortForwarder.add(1181, "10.21.94.11", 1181);
+    PortForwarder.add(1182, "10.21.94.11", 1182);
+    PortForwarder.add(1183, "10.21.94,11", 1183);
+    PortForwarder.add(1184, "10.21.94.11", 1184);
 
     // () -> -m_coDriverController.getRawAxis(1),
     // () -> -m_coDriverController.getRawAxis(0),
