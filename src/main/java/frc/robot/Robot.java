@@ -68,6 +68,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.periodic();
 
     m_robotContainer.m_robotDrive.throttleValue = m_robotContainer.getThrottle();
+
+    m_robotContainer.cams.periodic();
     
    
   }

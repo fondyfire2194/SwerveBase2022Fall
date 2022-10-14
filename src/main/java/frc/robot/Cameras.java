@@ -13,15 +13,14 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import frc.robot.utils.AprilTagData;
-import frc.robot.utils.ShuffleboardVision;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utils.VisionTargetGrabber;
 
 /** Add your docs here. */
 public class Cameras {
 
-    // public PhotonCamera picam = new PhotonCamera("picamrpi4");
-    public PhotonCamera picam = new PhotonCamera("limelight");
+    public PhotonCamera llcam = new PhotonCamera("picam");
+    // public PhotonCamera llcam = new PhotonCamera("limelight");
 
     public boolean use3D = false;
 
@@ -56,17 +55,18 @@ public class Cameras {
 
     public Cameras() {
 
-        picam.setLED(VisionLEDMode.kOff);
+        llcam.setLED(VisionLEDMode.kOff);
 
         VisionTargetGrabber vis = new VisionTargetGrabber(this);
         tag1 = new Translation3d(9, 1, 1);
         tag2 = new Translation3d(9, 1, 1);
         tag3 = new Translation3d(9, 1, 1);
-
+        clear2dResults();
+        clear3dResults();
     }
 
     public PhotonPipelineResult getLatestResult() {
-        return picam.getLatestResult();
+        return llcam.getLatestResult();
     }
 
     public boolean getHasTargets(PhotonPipelineResult plr) {
@@ -134,7 +134,7 @@ public class Cameras {
         // rotation[i] = ctoT.getRotation().toString();
     }
 
-    public void clearResults() {
+    public void clear2dResults() {
 
         for (int i = 0; i < yaw.length - 1; i++) {
             yaw[i] = 0;
@@ -142,6 +142,13 @@ public class Cameras {
             skew[i] = 0;
             area[i] = 0;
             tagID[i] = 0;
+            targetsAvailable = 0;
+        }
+    }
+
+    public void clear3dResults() {
+
+        for (int i = 0; i < yaw.length - 1; i++) {
             X[i] = 0;
             Y[i] = 0;
             Z[i] = 0;
@@ -151,8 +158,18 @@ public class Cameras {
 
     }
 
-    public static void periodic() {
+    public void periodic() {
 
+        use3D = llcam.getPipelineIndex() == 1;
+
+        if (use3D && area[0] != 0)
+            clear2dResults();
+
+        if (!use3D && X[0] != 0)
+            clear3dResults();
+
+        SmartDashboard.putNumber("PIDX", llcam.getPipelineIndex());
+
+        SmartDashboard.putNumber("TSTN ",911);
     }
-
 }

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Cameras;
+import frc.robot.commands.Vision.PlayWithDriverMode;
 import frc.robot.commands.Vision.SetDriverMode;
 import frc.robot.commands.Vision.SetPhotonPipeline;
 
@@ -27,18 +28,18 @@ public class ShuffleboardVision {
 
         public static void init(Cameras cam) {
 
-                PhotonCamera picam = cam.picam;
+                PhotonCamera llcam = cam.llcam;
 
                 ShuffleboardLayout camLayout = Shuffleboard.getTab("Cameras")
                                 .getLayout("CameraLayout", BuiltInLayouts.kList)
                                 .withPosition(0, 0)
                                 .withSize(2, 2).withProperties(Map.of("Label position", "LEFT"));
 
-                camLayout.addNumber("ActivePipeline", () -> picam.getPipelineIndex());
+                camLayout.addNumber("ActivePipeline", () -> llcam.getPipelineIndex());
 
                 camLayout.addNumber("LatencySecs", () -> cam.latencySeconds);
 
-                camLayout.addBoolean("DriverMode", () -> picam.getDriverMode());
+                camLayout.addBoolean("DriverMode", () -> llcam.getDriverMode());
 
                 camLayout.addBoolean("HasTargets", () -> cam.hasTargets);
 
@@ -104,27 +105,27 @@ public class ShuffleboardVision {
 
                 ShuffleboardTab setPipeleine1 = Shuffleboard.getTab("Cameras");
 
-                setPipeleine1.add("3DPipe", new SetPhotonPipeline(picam, 1))
+                setPipeleine1.add("3DPipe", new SetPhotonPipeline(llcam, 1))
                                 .withPosition(2, 0).withSize(1, 1).withWidget(BuiltInWidgets.kCommand);
-                setPipeleine1.add("2DPipe", new SetPhotonPipeline(picam, 0))
+                setPipeleine1.add("2DPipe", new SetPhotonPipeline(llcam, 0))
                                 .withPosition(2, 1).withSize(1, 1).withWidget(BuiltInWidgets.kCommand);
-                setPipeleine1.add("TurnOnDriverMode", new SetDriverMode(picam, true))
+                setPipeleine1.add("TurnOnDriverMode", new SetDriverMode(llcam, true))
                                 .withPosition(3, 0).withSize(1, 1).withWidget(BuiltInWidgets.kCommand);
-                setPipeleine1.add("ResetDriverMode", new SetDriverMode(picam, false))
+                setPipeleine1.add("ResetDriverMode", new SetDriverMode(llcam, false))
                                 .withPosition(3, 1).withSize(1, 1).withWidget(BuiltInWidgets.kCommand);
-                setPipeleine1.addBoolean("DriverMode", ()->picam.getDriverMode())
+                setPipeleine1.addBoolean("DriverMode", () -> llcam.getDriverMode())
                                 .withPosition(3, 2).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
-              setPipeleine1.addNumber("Pipeline", ()->picam.getPipelineIndex())
+                setPipeleine1.addNumber("Pipeline", () -> llcam.getPipelineIndex())
                                 .withPosition(3, 3).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
-  
- 
-                                if (RobotBase.isReal())
+
+
+                if (RobotBase.isReal())
 
                 {
 
                         ShuffleboardTab llvFeed = Shuffleboard.getTab("Cameras");
 
-                        llvFeed.addCamera("LL", "limelight", "http://10.21.94.12:5800/stream.mjpg")
+                        llvFeed.addCamera("LL", "limelight", "http://10.21.94.11:5800/stream.mjpg")
                                         .withPosition(0, 2).withSize(2, 4)
                                         .withProperties(Map.of("Show Crosshair", true,
                                                         "Show Controls", true, "Rotation", "QUARTER_CW"));

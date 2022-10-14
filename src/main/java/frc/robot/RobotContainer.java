@@ -36,7 +36,7 @@ public class RobotContainer {
   // The robot's subsystems
   final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-  Cameras cams;
+  public Cameras cams;
 
   public final FieldSim m_fieldSim = new FieldSim(m_robotDrive);
 

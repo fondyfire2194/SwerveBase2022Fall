@@ -13,7 +13,7 @@ public class AprilTagData {
 
     public static double[][] tagLocations = {
 
-            { 1, 2, 0 },
+            { 1, 2, 0 }, // tag 0
             { 1, 2, 1 },
             { 4, 5, 2 }, // x,y,z ,meters
             { 7, 8, 3 },
@@ -22,7 +22,7 @@ public class AprilTagData {
             { 1, 2, 6 },
             { 1, 2, 7 },
             { 1, 2, 8 },
-            { 1, 2, 9 }
+            { 1, 2, 9 }// tag 9
 
     };
 
@@ -38,7 +38,6 @@ public class AprilTagData {
             double x = tagLocations[n][0];
             double y = tagLocations[n][1];
             double z = tagLocations[n][2];
-
             return new Translation3d(x, y, z);
         }
     }
