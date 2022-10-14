@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.Vision.PlayWithDriverMode;
+import frc.robot.commands.Vision.PlayWithDriverModeNT;
 import frc.robot.commands.Vision.SetDriverMode;
 import frc.robot.utils.ShuffleboardVision;
 
@@ -59,9 +61,14 @@ public class RobotContainer {
   SmartDashboard.putData("DMON",new SetDriverMode(cams.picam, true));
   SmartDashboard.putData("DMOFF", new SetDriverMode(cams.picam, false)); 
   
-  SmartDashboard.putData("DMON", new SetDriverMode(cams.picam, true));
-  SmartDashboard.putData("DMOFF", new SetDriverMode(cams.picam, false));
+  SmartDashboard.putData("DMONPW", new PlayWithDriverMode(cams.picam, true));
+  SmartDashboard.putData("DMOFFPW", new PlayWithDriverMode(cams.picam, false));
+ 
+  SmartDashboard.putData("DMONPWNT", new PlayWithDriverModeNT(cams.picam, true));
+  SmartDashboard.putData("DMOFFPWNT", new PlayWithDriverModeNT(cams.picam, false));
 
+SmartDashboard.putBoolean("DM",cams.picam.getDriverMode());
+SmartDashboard.putNumber("PLM", cams.picam.getPipelineIndex());
 
 
     JoystickButton button_8 = new JoystickButton(leftJoystick, 8);

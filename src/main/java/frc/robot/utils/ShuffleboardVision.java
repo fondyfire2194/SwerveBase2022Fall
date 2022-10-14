@@ -124,7 +124,7 @@ public class ShuffleboardVision {
 
                         ShuffleboardTab llvFeed = Shuffleboard.getTab("Cameras");
 
-                        llvFeed.addCamera("LL", "limelight", "http://10.21.94.12:5800/stream.mjpg")
+                        llvFeed.addCamera("LL", "limelight", "http://10.21.94.11:5800/stream.mjpg")
                                         .withPosition(0, 2).withSize(2, 4)
                                         .withProperties(Map.of("Show Crosshair", true,
                                                         "Show Controls", true, "Rotation", "QUARTER_CW"));
