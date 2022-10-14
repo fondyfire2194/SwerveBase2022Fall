@@ -13,32 +13,32 @@ public class PlayWithDriverMode extends CommandBase {
   private PhotonCamera m_cam;
   private boolean m_on;
 
-  
-  
-
   public PlayWithDriverMode(PhotonCamera cam, boolean on) {
-    // Use addRequirements() here to declare subsystem dependencies.  m_cam=cam;
-    m_on=on;m_cam=cam;
+    // Use addRequirements() here to declare subsystem dependencies. m_cam=cam;
+    m_on = on;
+    m_cam = cam;
   }
-
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_cam.setDriverMode(m_on);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_cam.getDriverMode() == m_on;
   }
 }

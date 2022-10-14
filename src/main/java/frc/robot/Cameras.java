@@ -58,7 +58,7 @@ public class Cameras {
 
         picam.setLED(VisionLEDMode.kOff);
 
-        VisionTargetGrabber vis = new VisionTargetGrabber(this);
+      //  VisionTargetGrabber vis = new VisionTargetGrabber(this);
         tag1 = new Translation3d(9, 1, 1);
         tag2 = new Translation3d(9, 1, 1);
         tag3 = new Translation3d(9, 1, 1);
@@ -152,6 +152,7 @@ public class Cameras {
     }
 
     public static void periodic() {
+        
 
     }
 
