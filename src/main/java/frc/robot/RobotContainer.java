@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Vision.PlayWithDriverMode;
 import frc.robot.commands.Vision.PlayWithDriverModeNT;
 import frc.robot.commands.Vision.SetDriverMode;
+import frc.robot.commands.Vision.SetPhotonPipeline;
 import frc.robot.utils.ShuffleboardVision;
 
 /*
@@ -25,11 +26,8 @@ import frc.robot.utils.ShuffleboardVision;
  */
 public class RobotContainer {
   // The robot's subsystems
-  
 
   Cameras cams;
-
-  
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
@@ -46,40 +44,35 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Preferences.removeAll();
-   
+
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     // Configure the button bindings
 
     cams = new Cameras();
-    
+
     ShuffleboardVision.init(cams);
-    
-     
 
     SmartDashboard.putData(CommandScheduler.getInstance());
 
-  SmartDashboard.putData("DMON",new SetDriverMode(cams.picam, true));
-  SmartDashboard.putData("DMOFF", new SetDriverMode(cams.picam, false)); 
-  
-  SmartDashboard.putData("DMONPW", new PlayWithDriverMode(cams.picam, true));
-  SmartDashboard.putData("DMOFFPW", new PlayWithDriverMode(cams.picam, false));
- 
-  SmartDashboard.putData("DMONPWNT", new PlayWithDriverModeNT(cams.picam, true));
-  SmartDashboard.putData("DMOFFPWNT", new PlayWithDriverModeNT(cams.picam, false));
+    SmartDashboard.putData("DMON", new SetDriverMode(cams.picam, true));
+    SmartDashboard.putData("DMOFF", new SetDriverMode(cams.picam, false));
 
-SmartDashboard.putBoolean("DM",cams.picam.getDriverMode());
-SmartDashboard.putNumber("PLM", cams.picam.getPipelineIndex());
+    SmartDashboard.putData("DMONPW", new PlayWithDriverMode(cams.picam, true));
+    SmartDashboard.putData("DMOFFPW", new PlayWithDriverMode(cams.picam, false));
 
+    SmartDashboard.putData("DMONPWNT", new PlayWithDriverModeNT(cams.picam, true));
+    SmartDashboard.putData("DMOFFPWNT", new PlayWithDriverModeNT(cams.picam, false));  
+
+    SmartDashboard.putBoolean("DM", cams.picam.getDriverMode());
+    SmartDashboard.putNumber("PLM", cams.picam.getPipelineIndex());
+
+    SmartDashboard.putData("SetPL0", new SetPhotonPipeline(cams.picam, 0));
+    SmartDashboard.putData("SetPL1", new SetPhotonPipeline(cams.picam, 1));
 
     JoystickButton button_8 = new JoystickButton(leftJoystick, 8);
     JoystickButton button_7 = new JoystickButton(leftJoystick, 7);
 
-  
   }
-
- 
-
- 
 
   public double getThrottle() {
     return -leftJoystick.getThrottle();
