@@ -16,7 +16,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Cameras;
 import frc.robot.commands.Vision.SetDriverMode;
-import frc.robot.commands.Vision.SetPhotonPipeline;
+
+import frc.robot.commands.Vision.SetPipeline;
 
 /** Add your docs here. */
 public class ShuffleboardVision {
@@ -104,9 +105,9 @@ public class ShuffleboardVision {
 
                 ShuffleboardTab setPipeleine1 = Shuffleboard.getTab("Cameras");
 
-                setPipeleine1.add("3DPipe", new SetPhotonPipeline(picam, 1))
+                setPipeleine1.add("3DPipe", new SetPipeline(picam, 1))
                                 .withPosition(2, 0).withSize(1, 1).withWidget(BuiltInWidgets.kCommand);
-                setPipeleine1.add("2DPipe", new SetPhotonPipeline(picam, 0))
+                setPipeleine1.add("2DPipe", new SetPipeline(picam, 0))
                                 .withPosition(2, 1).withSize(1, 1).withWidget(BuiltInWidgets.kCommand);
                 setPipeleine1.add("TurnOnDriverMode", new SetDriverMode(picam, true))
                                 .withPosition(3, 0).withSize(1, 1).withWidget(BuiltInWidgets.kCommand);

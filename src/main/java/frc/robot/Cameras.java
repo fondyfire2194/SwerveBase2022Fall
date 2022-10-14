@@ -21,7 +21,7 @@ import frc.robot.utils.VisionTargetGrabber;
 public class Cameras {
 
     // public PhotonCamera picam = new PhotonCamera("picamrpi4");
-    public PhotonCamera picam = new PhotonCamera("limelight");
+    public PhotonCamera picam = new PhotonCamera("camera");
 
     public boolean use3D = false;
 

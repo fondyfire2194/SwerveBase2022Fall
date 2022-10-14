@@ -11,24 +11,22 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class SetPhotonPipeline extends InstantCommand {
-  private PhotonCamera m_cam;
-  private int m_number;
 
-  public SetPhotonPipeline(PhotonCamera cam, int number) {
-    // Use addRequirements() here t can,o declare subsystem dependencies.
-    m_cam = cam;
-    m_number = number;
+public class SaveImage extends InstantCommand {
+  PhotonCamera m_cam;
+  boolean m_in;
+
+  public SaveImage(PhotonCamera cam, boolean in) {
+    m_in = in;m_cam=cam;
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_cam.setPipelineIndex(m_number);
-    m_cam.setPipelineIndex(m_number);
-    m_cam.setPipelineIndex(m_number);
-    m_cam.setPipelineIndex(m_number);
-    m_cam.setPipelineIndex(m_number);
-
+    if (m_in)
+      m_cam.takeInputSnapshot();
+    else
+      m_cam.takeOutputSnapshot();
   }
 }

@@ -37,7 +37,7 @@ public class PlayWithDriverModeNT extends CommandBase {
 
     // Get the entries within that table that correspond to the X and Y values
     // for some operation in your program.
-    xEntry = table.getEntry("driverMode");
+    xEntry = inst.getEntry("driverMode");
 
   }
 

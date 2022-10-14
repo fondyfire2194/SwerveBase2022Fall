@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -34,6 +36,8 @@ public class Robot extends TimedRobot {
     if (RobotBase.isReal())
 
       DataLogManager.start();
+
+      NetworkTableInstance.getDefault().flush();
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
