@@ -63,11 +63,6 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    m_robotContainer.m_fieldSim.periodic();
-
-    m_robotContainer.periodic();
-
-    m_robotContainer.m_robotDrive.throttleValue = m_robotContainer.getThrottle();
     
    
   }
@@ -136,8 +131,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {
-    m_robotContainer.m_fieldSim.periodic();
-    m_robotContainer.simulationPeriodic();
+    
   }
 
 }
