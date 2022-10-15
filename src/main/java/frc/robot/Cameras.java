@@ -11,6 +11,7 @@ import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,9 +48,9 @@ public class Cameras {
     public PhotonTrackedTarget ptt1;
     public PhotonTrackedTarget ptt2;
 
-    public Translation3d tag1;// field values
-    public Translation3d tag2;
-    public Translation3d tag3;
+    public Transform3d tag1;// field values
+    public Transform3d tag2;
+    public Transform3d tag3;
 
     public boolean bestTargetOnly = true;
 
@@ -58,9 +59,9 @@ public class Cameras {
         llcam.setLED(VisionLEDMode.kOff);
 
         VisionTargetGrabber vis = new VisionTargetGrabber(this);
-        tag1 = new Translation3d(9, 1, 1);
-        tag2 = new Translation3d(9, 1, 1);
-        tag3 = new Translation3d(9, 1, 1);
+        tag1 = new Transform3d(new Translation3d(0,0,0),new Rotation3d(0,0,0));
+        tag2 = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+        tag3 = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
         clear2dResults();
         clear3dResults();
     }

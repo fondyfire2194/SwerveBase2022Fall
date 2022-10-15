@@ -49,7 +49,7 @@ public class VisionTargetGrabber {
 
                             int temp = cam.tagID[0];
 
-                            cam.tag1 = AprilTagData.getTranslation3d(temp);
+                            cam.tag1 = AprilTagData.getTransform3d(temp);
 
                             if (cam.targetsAvailable >= 2) {
 
@@ -59,7 +59,7 @@ public class VisionTargetGrabber {
 
                                 temp = cam.tagID[1];
 
-                                cam.tag2 = AprilTagData.getTranslation3d(temp);
+                                cam.tag2 = AprilTagData.getTransform3d(temp);
                             }
 
                             if (cam.targetsAvailable > 2) {
@@ -70,7 +70,7 @@ public class VisionTargetGrabber {
 
                                 temp = cam.tagID[2];
 
-                                cam.tag3 = AprilTagData.getTranslation3d(temp);
+                                cam.tag3 = AprilTagData.getTransform3d(temp);
                             }
 
                             else {
