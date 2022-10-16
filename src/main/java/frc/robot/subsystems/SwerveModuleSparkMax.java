@@ -91,8 +91,9 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   public boolean driveMotorConnected;
   public boolean turnMotorConnected;
   public boolean turnCoderConnected;
-  private boolean useRRPid =true;
+  private boolean useRRPid = true;
   private double turnDeadband = .5;
+  private boolean showOnShuffleboard;
 
   /**
    * Constructs a SwerveModule.
@@ -214,11 +215,14 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     resetAngleToAbsolute();
 
-    ShuffleboardContent.initDriveShuffleboard(this);
-    ShuffleboardContent.initTurnShuffleboard(this);
-    ShuffleboardContent.initCANCoderShuffleboard(this);
-    ShuffleboardContent.initBooleanShuffleboard(this);
-    ShuffleboardContent.initCoderBooleanShuffleboard(this);
+    if (showOnShuffleboard) {
+
+      ShuffleboardContent.initDriveShuffleboard(this);
+      ShuffleboardContent.initTurnShuffleboard(this);
+      ShuffleboardContent.initCANCoderShuffleboard(this);
+      ShuffleboardContent.initBooleanShuffleboard(this);
+      ShuffleboardContent.initCoderBooleanShuffleboard(this);
+    }
   }
 
   @Override
@@ -256,7 +260,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
     m_turnController.setP(Pref.getPref("SwerveTurnPoskP"));
     m_turnController.setI(Pref.getPref("SwerveTurnPoskI"));
     m_turnController.setD(Pref.getPref("SwerveTurnPoskD"));
-   // m_turnController.setIZone(Pref.getPref("SwerveTurnPoskIz"));
+    // m_turnController.setIZone(Pref.getPref("SwerveTurnPoskIz"));
   }
 
   public void tuneSMPosGains() {
@@ -432,7 +436,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   }
 
   private void simTurnPosition(double angle) {
-    
+
     if (angle != actualAngleDegrees && angleIncrementPer20ms == 0) {
 
       angleDifference = angle - actualAngleDegrees;

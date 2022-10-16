@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ToggleFieldOriented;
-
+import frc.robot.commands.Vision.TestTargetData;
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.FiveBallAuto;
 import frc.robot.commands.swerve.JogDriveModule;
@@ -58,6 +59,8 @@ public class RobotContainer {
     Pref.deleteUnused();
     Pref.addMissing();
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
+
+    LiveWindow.disableAllTelemetry();
     // Configure the button bindings
 
     cams = new Cameras();
@@ -65,10 +68,11 @@ public class RobotContainer {
     initializeAutoChooser();
     
     ShuffleboardVision.init(cams);
+    
     ShuffleboardFieldLocation.init(cams,m_robotDrive);
      
 
-    SmartDashboard.putData(CommandScheduler.getInstance());
+    SmartDashboard.putData("TestRun",new TestTargetData());
 
     PortForwarder.add(5800, "10.21.94.11", 5800);
     PortForwarder.add(1181, "10.21.94.11", 1181);

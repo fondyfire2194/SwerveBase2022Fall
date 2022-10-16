@@ -12,6 +12,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -59,7 +60,7 @@ public class Cameras {
         llcam.setLED(VisionLEDMode.kOff);
 
         VisionTargetGrabber vis = new VisionTargetGrabber(this);
-        tag1 = new Transform3d(new Translation3d(0,0,0),new Rotation3d(0,0,0));
+        tag1 = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
         tag2 = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
         tag3 = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
         clear2dResults();
@@ -90,6 +91,10 @@ public class Cameras {
         return plr.getLatencyMillis();
     }
 
+    public Transform3d getCameraToTarget() {
+        return getLatestResult().getBestTarget().getCameraToTarget();
+    }
+
     public void getBestTargetData(PhotonPipelineResult plr) {
 
         PhotonTrackedTarget btt = plr.getBestTarget();
@@ -107,6 +112,7 @@ public class Cameras {
         }
 
         else {
+            tagID[i] = btt.getFiducialId();
             Transform3d ctoT = btt.getCameraToTarget();
             X[i] = ctoT.getX();
             Y[i] = ctoT.getY();
@@ -171,6 +177,6 @@ public class Cameras {
 
         SmartDashboard.putNumber("PIDX", llcam.getPipelineIndex());
 
-        SmartDashboard.putNumber("TSTN ",911);
+        SmartDashboard.putNumber("TSTN ", 911);
     }
 }

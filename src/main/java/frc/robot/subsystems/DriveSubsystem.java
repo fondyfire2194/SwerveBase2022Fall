@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Cameras;
 import frc.robot.Constants;
 import frc.robot.Constants.CanConstants;
 import frc.robot.Constants.DriveConstants;
@@ -107,7 +108,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double targetAngle;
 
-   public boolean m_fieldOriented;
+  public boolean m_fieldOriented;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -118,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     setIdleMode(true);
 
-    m_fieldOriented=false;
+    m_fieldOriented = false;
 
     if (RobotBase.isSimulation()) {
 
@@ -128,6 +129,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     ShuffleboardContent.initMisc(this);
+    
   }
 
   /**
@@ -146,13 +148,13 @@ public class DriveSubsystem extends SubsystemBase {
       double throttle,
       double strafe,
       double rotation,
-      
+
       boolean isOpenLoop) {
     throttle *= DriveConstants.kMaxSpeedMetersPerSecond;
     strafe *= DriveConstants.kMaxSpeedMetersPerSecond;
     rotation *= DriveConstants.kMaxRotationRadiansPerSecond;
     SmartDashboard.putNumber("Rotn1", rotation);
-    ChassisSpeeds chassisSpeeds =m_fieldOriented
+    ChassisSpeeds chassisSpeeds = m_fieldOriented
         ? ChassisSpeeds.fromFieldRelativeSpeeds(
             throttle, strafe, rotation, getHeadingRotation2d())
         : new ChassisSpeeds(throttle, strafe, rotation);
@@ -171,11 +173,24 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     updateOdometry();
-    SmartDashboard.putNumber("Yaw",-m_gyro.getYaw());
 
   }
 
+  // var res = cam.getLatestResult();if(res.hasTargets())
+  // {
+  // double imageCaptureTime = Timer.getFPGATimestamp() - res.getLatencyMillis();
+  // Transform2d camToTargetTrans = res.getBestTarget().getCameraToTarget();
+  // Pose2d camPose =
+  // Constants.kFarTargetPose.transformBy(camToTargetTrans.inverse());
+  // m_poseEstimator.addVisionMeasurement(
+  // camPose.transformBy(Constants.kCameraToRobot), imageCaptureTime);
+
+  public void getVisionCorrection() {
+    
+  }
+
   public void updateOdometry() {
+
     m_odometry.update(
         getHeadingRotation2d(),
         ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));

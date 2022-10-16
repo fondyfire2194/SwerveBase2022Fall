@@ -16,6 +16,10 @@
       "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/Shuffleboard/Cameras/2DPipe": "Command",
+      "/Shuffleboard/Cameras/3DPipe": "Command",
+      "/Shuffleboard/Cameras/ResetDriverMode": "Command",
+      "/Shuffleboard/Cameras/TurnOnDriverMode": "Command",
       "/SmartDashboard/Auto Selector": "String Chooser",
       "/SmartDashboard/BACK_LEFT": "Mechanism2d",
       "/SmartDashboard/BACK_RIGHT": "Mechanism2d",
@@ -23,7 +27,8 @@
       "/SmartDashboard/FRONT_RIGHT": "Mechanism2d",
       "/SmartDashboard/Field2d": "Field2d",
       "/SmartDashboard/ResetPose": "Command",
-      "/SmartDashboard/Scheduler": "Scheduler"
+      "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/TestRun": "Command"
     },
     "windows": {
       "/SmartDashboard/Auto Selector": {

@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Cameras;
-import frc.robot.commands.Vision.PlayWithDriverMode;
 import frc.robot.commands.Vision.SetDriverMode;
 import frc.robot.commands.Vision.SetPhotonPipeline;
 
@@ -125,7 +124,7 @@ public class ShuffleboardVision {
 
                         ShuffleboardTab llvFeed = Shuffleboard.getTab("Cameras");
 
-                        llvFeed.addCamera("LL", "limelight", "http://10.21.94.11:5800/stream.mjpg")
+                        llvFeed.addCamera("LL", "camera", "http://10.21.94.11:5800/stream.mjpg")
                                         .withPosition(0, 2).withSize(2, 4)
                                         .withProperties(Map.of("Show Crosshair", true,
                                                         "Show Controls", true, "Rotation", "QUARTER_CW"));
@@ -136,6 +135,8 @@ public class ShuffleboardVision {
         public static void writeValues(ShuffleboardLayout tnL, Cameras cam, int n) {
 
                 tnL.addNumber("TargetNumber", () -> n);
+
+                tnL.addString("Location", ()->AprilTagData.getTagLocation(n));
 
                 tnL.addNumber("AprilTagID", () -> cam.tagID[n]);
 
