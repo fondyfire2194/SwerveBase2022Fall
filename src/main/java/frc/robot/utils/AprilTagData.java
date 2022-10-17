@@ -7,6 +7,7 @@ package frc.robot.utils;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class AprilTagData {
@@ -15,6 +16,7 @@ public class AprilTagData {
     public static int highestTagNumber = 46;
     private static int lastLowTag = 17;
     private static int firstHighTag = 40;
+    private static int highLowTagGap = firstHighTag - lastLowTag;
     // from Rapid React post season
     public static double[][] tagLocationData = {
 
@@ -47,7 +49,7 @@ public class AprilTagData {
     };
 
     public static String[] tagLocations = {
-
+            "",
             "Blue Hangar Truss - Hub",
             "Blue Hangar Truss - Side",
             "Blue Station 2 Wall",
@@ -80,34 +82,56 @@ public class AprilTagData {
 
     public static Transform3d getTransform3d(int n) {
 
-        if (n < 0 || n == 0 || n > highestTagNumber
-
-                || n > lastLowTag && n < firstHighTag)
+        if (!getValidTargetNumber(n))
 
             return new Transform3d();
 
         else {
 
-            if (n >= 40) {
-                n -= 23;
-            }
+            if (n >= firstHighTag)
 
-            double x = tagLocationData[n][1];
-            double y = tagLocationData[n][2];
-            double z = tagLocationData[n][3];
-            // double roll = tagLocationData[n][4];
-            double Z_rot = tagLocationData[n][5];
-            double Y_rot = tagLocationData[n][6];
-
-            return new Transform3d(new Translation3d(x, y, z), new Rotation3d(0, Z_rot, Y_rot));
+                n -= highLowTagGap;
         }
+
+        double x = tagLocationData[n][1];
+        double y = tagLocationData[n][2];
+        double z = tagLocationData[n][3];
+         double roll = tagLocationData[n][4];
+        double Z_rot = tagLocationData[n][5];
+        double Y_rot = tagLocationData[n][6];
+
+        return new Transform3d(new Translation3d(x, y, z), new Rotation3d(0, Z_rot, Y_rot));
+    }
+
+    public static double[] get3dData(int n) {
+
+        double temp[] = { 0, 0, 0, 0, 0, 0, 0 };
+
+        if (!getValidTargetNumber(n))
+
+            return temp;
+
+        else {
+
+            if (n >= firstHighTag)
+
+                n -= highLowTagGap;
+        }
+
+        temp[0] = tagLocationData[n][0];
+        temp[1] = tagLocationData[n][1];
+        temp[2] = tagLocationData[n][2];
+        temp[3] = tagLocationData[n][3];
+        temp[4] = tagLocationData[n][4];
+        temp[5] = tagLocationData[n][5];
+        temp[6] = tagLocationData[n][6];
+
+        return temp;
     }
 
     public static String getTagLocation(int n) {
 
-        if (n <= 0 || n > highestTagNumber
-
-                || n > lastLowTag && n < firstHighTag)
+        if (!getValidTargetNumber(n))
 
             return "Not a Location";
 
@@ -115,11 +139,19 @@ public class AprilTagData {
 
             if (n >= firstHighTag)
 
-                n -= (firstHighTag - lastLowTag);
+                n -= highLowTagGap;
         }
 
         return tagLocations[n];
 
+    }
+
+    public static boolean getValidTargetNumber(int i) {
+        boolean lowTargetGood = i > 0 && i <= lastLowTag;
+        SmartDashboard.putBoolean("LO", lowTargetGood);
+        boolean highTargetGood = i >= firstHighTag && i <= highestTagNumber;
+        SmartDashboard.putBoolean("HI", highTargetGood);
+        return lowTargetGood || highTargetGood;
     }
 
 }

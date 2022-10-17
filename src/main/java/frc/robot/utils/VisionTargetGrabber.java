@@ -5,6 +5,7 @@
 package frc.robot.utils;
 
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Cameras;
@@ -13,12 +14,12 @@ import frc.robot.Cameras;
 public class VisionTargetGrabber {
     public volatile boolean isStopped = false;
     int j;
-    public PhotonPipelineResult plr;
 
     public VisionTargetGrabber(Cameras cam) {
 
         Thread grabberThread = new Thread(new Runnable() {
             int t;
+            int temp;
 
             @Override
             public void run() {
@@ -31,9 +32,30 @@ public class VisionTargetGrabber {
 
                     cam.hasTargets = cam.getHasTargets(cam.plr);
 
-                    SmartDashboard.putBoolean("HasTgts", cam.hasTargets);
+                    if (!cam.hasTargets)
+                        cam.targetsAvailable = 0;
 
                     if (cam.hasTargets) {
+                        cam.targetsAvailable = cam.plr.targets.size();
+
+                        temp = cam.plr.getBestTarget().getFiducialId();
+
+                        SmartDashboard.putNumber("TTTEE", temp);
+
+                        SmartDashboard.putNumber("OOO", temp);
+
+                        cam.latencySeconds = cam.getLatencySeconds(cam.plr);
+
+                        if (AprilTagData.getValidTargetNumber(temp)) {
+
+                            cam.targetLocationNames[0] = AprilTagData.getTagLocation(temp);
+
+                            cam.ptt0 = cam.plr.getBestTarget();
+
+                            cam.grabTargetData(cam.ptt0, 0);
+
+                        }
+                        // look for second target
 
                         if (!cam.bestTargetOnly) {
 
@@ -41,43 +63,45 @@ public class VisionTargetGrabber {
 
                             cam.targetsAvailable = cam.trackedTargets.size();
 
-                            cam.latencySeconds = cam.getLatencySeconds(cam.plr);
-
-                            cam.ptt0 = cam.getTrackedTarget(cam.trackedTargets, 0);
-
-                            cam.grabTargetData(cam.ptt0, 0);
-
-                            int temp = cam.tagID[0];
-
-                            cam.tag1 = AprilTagData.getTransform3d(temp);
-
-                            if (cam.targetsAvailable >= 2) {
+                            if (cam.targetsAvailable > 1) {
 
                                 cam.ptt1 = cam.trackedTargets.get(1);
 
-                                cam.grabTargetData(cam.ptt1, 1);
+                                temp = cam.ptt1.getFiducialId();
 
-                                temp = cam.tagID[1];
+                                if (AprilTagData.getValidTargetNumber(temp)) {
 
-                                cam.tag2 = AprilTagData.getTransform3d(temp);
+                                    cam.targetLocationNames[1] = AprilTagData.getTagLocation(temp);
+
+                                    cam.grabTargetData(cam.ptt1, 1);
+
+                                }
                             }
 
-                            if (cam.targetsAvailable > 2) {
+                            if (cam.targetsAvailable >= 2) {
 
                                 cam.ptt2 = cam.trackedTargets.get(2);
 
-                                cam.grabTargetData(cam.ptt2, 2);
+                                temp = cam.ptt2.getFiducialId();
 
-                                temp = cam.tagID[2];
+                                if (AprilTagData.getValidTargetNumber(temp)) {
 
-                                cam.tag3 = AprilTagData.getTransform3d(temp);
+                                    cam.targetLocationNames[temp] = AprilTagData.getTagLocation(temp);
+
+                                    cam.grabTargetData(cam.ptt2, 2);
+
+                                }
+
                             }
 
-                            else {
+                        } else {
 
-                                cam.getBestTargetData(cam.plr);
-                            }
+                            SmartDashboard.putNumber("nnn", 911);
                         }
+                    } else {
+                        cam.clear2dResults();
+                        cam.clear3dResults();
+                        cam.targetsAvailable = 0;
                     }
                     try {
 
@@ -96,5 +120,4 @@ public class VisionTargetGrabber {
         grabberThread.setPriority(Thread.MIN_PRIORITY);
         grabberThread.start();
     }
-
 }

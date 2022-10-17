@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,6 +26,7 @@ import frc.robot.commands.swerve.JogTurnModule;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.SimVisionSystem;
 import frc.robot.utils.ShuffleboardFieldLocation;
 import frc.robot.utils.ShuffleboardVision;
 
@@ -51,6 +54,8 @@ public class RobotContainer {
 
   final GamepadButtons driver = new GamepadButtons(m_coDriverController, true);
 
+  SimVisionSystem simVision;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -66,13 +71,16 @@ public class RobotContainer {
     cams = new Cameras();
     m_fieldSim.initSim();
     initializeAutoChooser();
-    
-    ShuffleboardVision.init(cams);
-    
-    ShuffleboardFieldLocation.init(cams,m_robotDrive);
-     
 
-    SmartDashboard.putData("TestRun",new TestTargetData());
+    if (RobotBase.isSimulation())
+
+      simVision = new SimVisionSystem();
+
+    ShuffleboardVision.init(cams);
+
+    ShuffleboardFieldLocation.init(cams, m_robotDrive);
+
+    SmartDashboard.putData("TestRun", new TestTargetData());
 
     PortForwarder.add(5800, "10.21.94.11", 5800);
     PortForwarder.add(1181, "10.21.94.11", 1181);

@@ -12,16 +12,16 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.utils.AprilTagData;
 import frc.robot.utils.VisionTargetGrabber;
 
 /** Add your docs here. */
 public class Cameras {
 
-    public PhotonCamera llcam = new PhotonCamera("picam");
+    public PhotonCamera llcam = new PhotonCamera("camera");
     // public PhotonCamera llcam = new PhotonCamera("limelight");
 
     public boolean use3D = false;
@@ -34,6 +34,8 @@ public class Cameras {
     public double X[] = { 0, 0, 0 };
     public double Y[] = { 0, 0, 0 };
     public double Z[] = { 0, 0, 0 };
+    public double A[] = { 0, 0, 0 };
+
     public double poseAmbiguity[] = { 0, 0, 0, 0 };
     public String rotation[] = { "0", "0", "0", "0" };
     public int targetsAvailable = 0;
@@ -41,6 +43,7 @@ public class Cameras {
     public double latencySeconds;
     int i = 0;
     int tst;
+    public int targetToProcess;
 
     public boolean targetActive = true;
     public List<PhotonTrackedTarget> trackedTargets;
@@ -49,21 +52,26 @@ public class Cameras {
     public PhotonTrackedTarget ptt1;
     public PhotonTrackedTarget ptt2;
 
-    public Transform3d tag1;// field values
-    public Transform3d tag2;
-    public Transform3d tag3;
+    public Transform3d[] tag = new Transform3d[3];
 
-    public boolean bestTargetOnly = true;
+    public boolean bestTargetOnly = false;
+
+    public String[] targetLocationNames = { "", "", "" };
 
     public Cameras() {
 
         llcam.setLED(VisionLEDMode.kOff);
 
-        VisionTargetGrabber vis = new VisionTargetGrabber(this);
-        tag1 = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
-        tag2 = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
-        tag3 = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+        VisionTargetGrabber visGrab = new VisionTargetGrabber(this);
+
+        // VisionTargetProcessing visPorc = new VisionTargetProcessing(this);
+
+        tag[0] = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+        tag[1] = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+        tag[2] = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+
         clear2dResults();
+
         clear3dResults();
     }
 
@@ -83,10 +91,6 @@ public class Cameras {
         return plr.targets.size();
     }
 
-    public PhotonTrackedTarget getTrackedTarget(List<PhotonTrackedTarget> lptt, int targetNumber) {
-        return lptt.get(targetNumber);
-    }
-
     public double getLatencySeconds(PhotonPipelineResult plr) {
         return plr.getLatencyMillis();
     }
@@ -95,33 +99,7 @@ public class Cameras {
         return getLatestResult().getBestTarget().getCameraToTarget();
     }
 
-    public void getBestTargetData(PhotonPipelineResult plr) {
-
-        PhotonTrackedTarget btt = plr.getBestTarget();
-
-        // SmartDashboard.putString("PTT" + String.valueOf(i), btt.toString());
-
-        if (!use3D) {
-
-            tagID[i] = btt.getFiducialId();
-            yaw[i] = btt.getYaw();
-            pitch[i] = btt.getPitch();
-            skew[i] = btt.getSkew();
-            area[i] = btt.getArea();
-            poseAmbiguity[i] = btt.getPoseAmbiguity();
-        }
-
-        else {
-            tagID[i] = btt.getFiducialId();
-            Transform3d ctoT = btt.getCameraToTarget();
-            X[i] = ctoT.getX();
-            Y[i] = ctoT.getY();
-            Z[i] = ctoT.getZ();
-        }
-    }
-
     public void grabTargetData(PhotonTrackedTarget ptt, int i) {
-        // SmartDashboard.putString("PTT" + String.valueOf(i), ptt.toString());
 
         if (!use3D) {
             tagID[i] = ptt.getFiducialId();
@@ -137,8 +115,9 @@ public class Cameras {
             X[i] = ctoT.getX();
             Y[i] = ctoT.getY();
             Z[i] = ctoT.getZ();
+
         }
-        // rotation[i] = ctoT.getRotation().toString();
+        tag[i] = AprilTagData.getTransform3d(tagID[i]);
     }
 
     public void clear2dResults() {
@@ -150,6 +129,8 @@ public class Cameras {
             area[i] = 0;
             tagID[i] = 0;
             targetsAvailable = 0;
+            targetLocationNames[i] = "Not a Location";
+
         }
     }
 
@@ -161,6 +142,7 @@ public class Cameras {
             Z[i] = 0;
             rotation[i] = "NoTarget";
             targetsAvailable = 0;
+            targetLocationNames[i] = "Not a Location";
         }
 
     }

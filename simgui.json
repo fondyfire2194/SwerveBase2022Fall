@@ -61,6 +61,12 @@
   },
   "NetworkTables": {
     "Shuffleboard": {
+      "Cameras": {
+        "CameraLayout": {
+          "open": true
+        },
+        "open": true
+      },
       "Drivetrain": {
         "BACK_LEFT": {
           "open": true
@@ -87,16 +93,20 @@
           "open": true
         },
         "open": true
-      }
+      },
+      "open": true
     },
     "SmartDashboard": {
       "ResetPose": {
         "open": true
       },
-      "Scheduler": {
-        "open": true
-      },
       "open": true
+    },
+    "photonvision": {
+      "open": true,
+      "picam": {
+        "open": true
+      }
     }
   },
   "Plot": {
