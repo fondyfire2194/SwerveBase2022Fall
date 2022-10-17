@@ -20,6 +20,7 @@
       "/Shuffleboard/Cameras/3DPipe": "Command",
       "/Shuffleboard/Cameras/ResetDriverMode": "Command",
       "/Shuffleboard/Cameras/TurnOnDriverMode": "Command",
+      "/Shuffleboard/Drivetrain/Field": "Field2d",
       "/SmartDashboard/Auto Selector": "String Chooser",
       "/SmartDashboard/BACK_LEFT": "Mechanism2d",
       "/SmartDashboard/BACK_RIGHT": "Mechanism2d",
