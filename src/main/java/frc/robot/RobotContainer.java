@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ToggleFieldOriented;
-import frc.robot.commands.Vision.TestTargetData;
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.FiveBallAuto;
 import frc.robot.commands.swerve.JogDriveModule;
@@ -26,6 +25,7 @@ import frc.robot.commands.swerve.JogTurnModule;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.SimVisionSystem;
 import frc.robot.utils.ShuffleboardFieldLocation;
 import frc.robot.utils.ShuffleboardVision;
@@ -40,7 +40,10 @@ public class RobotContainer {
   // The robot's subsystems
   final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
+ 
   public Cameras cams;
+  
+ final PoseEstimatorSubsystem poseEst;
 
   public final FieldSim m_fieldSim = new FieldSim(m_robotDrive);
 
@@ -69,7 +72,11 @@ public class RobotContainer {
     // Configure the button bindings
 
     cams = new Cameras();
+
+    poseEst = new PoseEstimatorSubsystem(cams.llcam, m_robotDrive);
+
     m_fieldSim.initSim();
+    
     initializeAutoChooser();
 
     if (RobotBase.isSimulation())
@@ -78,9 +85,9 @@ public class RobotContainer {
 
     ShuffleboardVision.init(cams);
 
-    ShuffleboardFieldLocation.init(cams, m_robotDrive);
+    ShuffleboardFieldLocation.init(cams, m_robotDrive,poseEst);
 
-    SmartDashboard.putData("TestRun", new TestTargetData());
+   
 
     PortForwarder.add(5800, "10.21.94.11", 5800);
     PortForwarder.add(1181, "10.21.94.11", 1181);

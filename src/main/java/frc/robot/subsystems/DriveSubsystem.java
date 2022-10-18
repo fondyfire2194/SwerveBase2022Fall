@@ -12,6 +12,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -22,6 +23,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -90,13 +94,18 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kD_Theta,
       Constants.TrapezoidConstants.kThetaControllerConstraints);
 
-  private final SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
+  public static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1,
+      Units.degreesToRadians(5));
+  public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.01));
+  public static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
+
+  public final SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
       getHeadingRotation2d(),
       new Pose2d(),
       kSwerveKinematics,
-      VecBuilder.fill(0.1, 0.1, 0.1),
-      VecBuilder.fill(0.05),
-      VecBuilder.fill(0.1, 0.1, 0.1));
+      stateStdDevs,
+      localMeasurementStdDevs,
+      visionMeasurementStdDevs);
 
   private boolean showOnShuffleboard = true;
 
@@ -109,6 +118,8 @@ public class DriveSubsystem extends SubsystemBase {
   public double targetAngle;
 
   public boolean m_fieldOriented;
+
+  public boolean useVisionOdometry;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -129,7 +140,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     ShuffleboardContent.initMisc(this);
-    
+
   }
 
   /**
@@ -172,7 +183,9 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    updateOdometry();
+
+    if (!useVisionOdometry)
+      updateOdometry();
 
   }
 
@@ -186,7 +199,7 @@ public class DriveSubsystem extends SubsystemBase {
   // camPose.transformBy(Constants.kCameraToRobot), imageCaptureTime);
 
   public void getVisionCorrection() {
-    
+
   }
 
   public void updateOdometry() {
@@ -243,8 +256,14 @@ public class DriveSubsystem extends SubsystemBase {
     return map;
   }
 
+  public SwerveModuleState[] getModState() {
+    SwerveModuleState temp[] = new SwerveModuleState[4];
+    temp = ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]);
+    return temp;
+  }
+
   /**
-   * Sets the swerve ModuleStates.
+   * Sets the swerve ModuleStates.rotation2d
    *
    * @param desiredStates The desired SwerveModule states.
    */
@@ -261,8 +280,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /** Zeroes the heading of the robot. */
-  public void zeroHeading() {
-    // m_gyro.reset();
+  public void resetGyro() {
+    m_gyro.reset();
     // m_gyro.setAngleAdjustment(0);
 
   }
