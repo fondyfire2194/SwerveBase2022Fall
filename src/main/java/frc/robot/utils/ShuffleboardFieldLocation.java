@@ -4,7 +4,6 @@
 
 package frc.robot.utils;
 
-
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -66,58 +65,55 @@ public class ShuffleboardFieldLocation {
 
                 ft1Layout.addNumber("FiducialD1", () -> pos.target[0].getFiducialId());
 
-                ft1Layout.addNumber("XtoT1", () -> pos.target[0].getCameraToTarget().getX());
+                ft1Layout.addNumber("CtoT1-X", () -> pos.camToTarget[0].getX());
 
-                ft1Layout.addNumber("YtoT1", () -> pos.target[0].getCameraToTarget().getY());
+                ft1Layout.addNumber("CtoT1-Y", () -> pos.camToTarget[0].getY());
 
-                ft1Layout.addNumber("ZtoT1", () -> pos.target[0].getCameraToTarget().getZ());
+                ft1Layout.addNumber("CtoT1-Z", () -> pos.camToTarget[0].getZ());
 
-                ft1Layout.addNumber("AngletoT1", () -> pos.target[0].getCameraToTarget().getRotation().getAngle());
+                ft1Layout.addNumber("CToTIAngle", () -> pos.camToTarget[0].getRotation().getAngle());
 
                 ShuffleboardLayout ft2Layout = Shuffleboard.getTab("FieldTags")
                                 .getLayout("CamToTarget 2", BuiltInLayouts.kList)
                                 .withPosition(4, 2)
                                 .withSize(2, 2).withProperties(Map.of("Label position", "LEFT"));
 
-                // ft2Layout.addNumber("FiducialD1", () -> pos.target[0].getFiducialId());
+                ft2Layout.addNumber("FiducialD2", () -> pos.target[1].getFiducialId());
 
-                // ft2Layout.addNumber("XtoT1", () -> pos.target[0].getCameraToTarget().getX());
+                ft2Layout.addNumber("CtoT2-X", () -> pos.camToTarget[1].getX());
 
-                // ft2Layout.addNumber("YtoT1", () -> pos.target[0].getCameraToTarget().getY());
+                ft2Layout.addNumber("CtoT2-Y", () -> pos.camToTarget[1].getY());
 
-                // ft2Layout.addNumber("ZtoT1", () -> pos.target[0].getCameraToTarget().getZ());
+                ft2Layout.addNumber("CtoT2-Z", () -> pos.camToTarget[1].getZ());
 
-                // ft2Layout.addNumber("AngletoT1", () -> pos.target[0].getCameraToTarget().getRotation().getAngle());
+                ft2Layout.addNumber("CtoT2Angle", () -> pos.camToTarget[1].getRotation().getAngle());
+                
 
                 ShuffleboardLayout ft11Layout = Shuffleboard.getTab("FieldTags")
                                 .getLayout("RobToTarget 1", BuiltInLayouts.kList)
                                 .withPosition(2, 0)
                                 .withSize(2, 2).withProperties(Map.of("Label position", "LEFT"));
 
-             //   ft11Layout.addNumber("FiducialD1", () -> pos.target[0].getFiducialId());
+                ft11Layout.addNumber("RobtoT1X", () -> pos.target[0].getCameraToTarget().getX());
 
-                ft11Layout.addNumber("XtoT1", () -> pos.target[0].getCameraToTarget().getX());
+                ft11Layout.addNumber("RobtoT1Y", () -> pos.target[0].getCameraToTarget().getY());
 
-                ft11Layout.addNumber("YtoT1", () -> pos.target[0].getCameraToTarget().getY());
+                ft11Layout.addNumber("RobtoT1Z", () -> pos.target[0].getCameraToTarget().getZ());
 
-                ft11Layout.addNumber("ZtoT1", () -> pos.target[0].getCameraToTarget().getZ());
-
-                ft11Layout.addNumber("AngletoT1", () -> pos.target[0].getCameraToTarget().getRotation().getAngle());
+                ft11Layout.addNumber("RobtoT1Agle", () -> pos.target[0].getCameraToTarget().getRotation().getAngle());
 
                 ShuffleboardLayout ft21Layout = Shuffleboard.getTab("FieldTags")
                                 .getLayout("RobToTarget 2", BuiltInLayouts.kList)
                                 .withPosition(2, 2)
                                 .withSize(2, 2).withProperties(Map.of("Label position", "LEFT"));
 
-          //      ft21Layout.addNumber("FiducialD1", () -> pos.target[0].getFiducialId());
+                ft21Layout.addNumber("RobtoT2X", () -> pos.target[1].getCameraToTarget().getX());
 
-                // ft21Layout.addNumber("XtoT1", () -> pos.target[0].getCameraToTarget().getX());
+                ft21Layout.addNumber("RobtoT2Y", () -> pos.target[1].getCameraToTarget().getY());
 
-                // ft21Layout.addNumber("YtoT1", () -> pos.target[0].getCameraToTarget().getY());
+                ft21Layout.addNumber("RobtoT2Z", () -> pos.target[1].getCameraToTarget().getZ());
 
-                // ft21Layout.addNumber("ZtoT1", () -> pos.target[0].getCameraToTarget().getZ());
-
-                // ft21Layout.addNumber("AngletoT1", () -> pos.target[0].getCameraToTarget().getRotation().getAngle());
+                ft21Layout.addNumber("RobtoT2Angle", () -> pos.target[1].getCameraToTarget().getRotation().getAngle());
 
         }
 

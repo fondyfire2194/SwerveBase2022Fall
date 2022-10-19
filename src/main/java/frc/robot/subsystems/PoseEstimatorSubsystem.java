@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PoseEstimatorSubsystem extends SubsystemBase {
@@ -32,6 +34,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   public final List<Pose2d> targetPoses = Collections.unmodifiableList(List.of(
       new Pose2d(Units.inchesToMeters(84), Units.inchesToMeters(39.4375), Rotation2d.fromDegrees(180)),
       new Pose2d(Units.inchesToMeters(84), 0.0, Rotation2d.fromDegrees(180))));
+
+  public final List<Integer> targetPoseIDs = new ArrayList<>();
 
   // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
   // you trust your various sensors. Smaller numbers will cause the filter to
@@ -60,7 +64,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   public Transform2d[] transform = new Transform2d[2];
   public Pose2d[] camPose = new Pose2d[2];
 
-
   public PoseEstimatorSubsystem(PhotonCamera photonCamera, DriveSubsystem drivetrainSubsystem) {
     this.photonCamera = photonCamera;
     this.drivetrainSubsystem = drivetrainSubsystem;
@@ -71,8 +74,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     target[1] = new PhotonTrackedTarget();
     camToTarget[0] = new Transform3d();
 
-    transform[0]=new Transform2d();
+    transform[0] = new Transform2d();
     transform[1] = new Transform2d();
+
+    targetPoseIDs.add(0);
+    targetPoseIDs.add(1);
   }
 
   @Override
@@ -82,23 +88,29 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
       // Update pose estimator with visible targets
       plr = photonCamera.getLatestResult();
 
+      SmartDashboard.putBoolean("PLHTG", plr.hasTargets());
+
       if (plr.hasTargets()) {
 
         numberOfTargets = plr.targets.size();
 
+        SmartDashboard.putNumber("RTGT", numberOfTargets);
+
         double imageCaptureTime = Timer.getFPGATimestamp() - (plr.getLatencyMillis() / 1000d);
 
-        for (int i = 0; i < numberOfTargets - 1; i++) {
+        for (int i = 0; i < numberOfTargets; i++) {
+
+          target[i] = plr.targets.get(i);
 
           fiducialID[i] = target[i].getFiducialId();
 
-          if (fiducialID[i] >= 0 && fiducialID[i] < targetPoses.size()) {
+          if (fiducialID[i] >= 0) {
 
-            targetPose[i] = targetPoses.get(fiducialID[i]);
+            targetPose[i] = targetPoses.get(i);
 
             camToTarget[i] = target[i].getCameraToTarget();
 
-          transform[1]  = new Transform2d(
+            transform[i] = new Transform2d(
 
                 camToTarget[i].getTranslation().toTranslation2d(),
 
@@ -113,7 +125,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             drivetrainSubsystem.m_odometry.addVisionMeasurement(visionMeasurement, imageCaptureTime);
           }
         }
-      
+
       }
 
     }

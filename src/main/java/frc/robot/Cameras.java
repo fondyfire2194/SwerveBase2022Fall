@@ -12,14 +12,15 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class Cameras {
 
     public PhotonCamera llcam = new PhotonCamera("camera");
     // public PhotonCamera llcam = new PhotonCamera("limelight");
-
- 
+PhotonCamera mshdcam = new PhotonCamera("cam2");
+    public boolean testdm;
 
     public double poseAmbiguity[] = { 0, 0, 0, 0 };
     public String rotation[] = { "0", "0", "0", "0" };
@@ -35,7 +36,6 @@ public class Cameras {
     public PhotonPipelineResult plr;
     public PhotonTrackedTarget ptt0;
     public PhotonTrackedTarget ptt1;
-  
 
     public Transform3d[] tag = new Transform3d[3];
 
@@ -45,7 +45,7 @@ public class Cameras {
 
         llcam.setLED(VisionLEDMode.kOff);
 
-          }
+    }
 
     public PhotonPipelineResult getLatestResult() {
         return llcam.getLatestResult();
@@ -71,11 +71,7 @@ public class Cameras {
         return getLatestResult().getBestTarget().getCameraToTarget();
     }
 
-
-    
-
-
     public void periodic() {
-
-           }
+        SmartDashboard.putBoolean("TSTDM", testdm);
+    }
 }

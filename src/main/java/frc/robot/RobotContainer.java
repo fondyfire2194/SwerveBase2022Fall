@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ToggleFieldOriented;
+import frc.robot.commands.Vision.PlayWithDriverMode;
+import frc.robot.commands.Vision.SetDriverMode;
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.FiveBallAuto;
 import frc.robot.commands.swerve.JogDriveModule;
@@ -87,7 +89,8 @@ public class RobotContainer {
 
     ShuffleboardFieldLocation.init(cams, m_robotDrive,poseEst);
 
-   
+    SmartDashboard.putData("pwdon", new SetDriverMode(cams.mshdcam,true));
+    SmartDashboard.putData("pwdoff", new SetDriverMode(cams.mshdcam, false));
 
     PortForwarder.add(5800, "10.21.94.11", 5800);
     PortForwarder.add(1181, "10.21.94.11", 1181);

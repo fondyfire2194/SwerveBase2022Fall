@@ -38,10 +38,7 @@ public class ShuffleboardVision {
 
                 camLayout.addBoolean("DriverMode", () -> cam.llcam.getDriverMode());
 
-                camLayout.addBoolean("HasTargets", () -> cam.hasTargets);
-
-                camLayout.addNumber("TargetsAvailable", () -> cam.targetsAvailable);            
-      
+                camLayout.addNumber("TargetsAvailable", () -> cam.targetsAvailable);
 
                 ShuffleboardTab setPipeleine1 = Shuffleboard.getTab("Cameras");
 
@@ -71,8 +68,5 @@ public class ShuffleboardVision {
                 // }
 
         }
-
-       
-
 
 }

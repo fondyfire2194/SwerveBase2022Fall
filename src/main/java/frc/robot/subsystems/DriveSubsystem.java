@@ -119,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public boolean m_fieldOriented;
 
-  public boolean useVisionOdometry;
+  public boolean useVisionOdometry=true;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {

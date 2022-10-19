@@ -31,8 +31,9 @@ public class SetPhotonPipeline extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_cam.setPipelineIndex(m_number);
-    loopctr++;
+    if (m_cam.getPipelineIndex() != m_number)
+      m_cam.setPipelineIndex(m_number);
+
   }
 
   // Called once the command ends or is interrupted.
@@ -44,7 +45,7 @@ public class SetPhotonPipeline extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_cam.getPipelineIndex() == m_number || loopctr > 10;
+    return m_cam.getPipelineIndex() == m_number;
   }
 
 }
