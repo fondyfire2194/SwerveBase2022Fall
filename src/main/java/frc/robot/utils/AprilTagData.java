@@ -4,8 +4,11 @@
 
 package frc.robot.utils;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -103,6 +106,28 @@ public class AprilTagData {
         double Y_rot = tagLocationData[n][6];
 
         return new Transform3d(new Translation3d(x, y, z), new Rotation3d(0, Z_rot, Y_rot));
+    }
+
+    public static Pose2d getPose2d(int n) {
+
+        if (!getValidTargetNumber(n))
+
+            return new Pose2d();
+
+        else {
+
+            if (n >= firstHighTag)
+
+                n -= highLowTagGap;
+        }
+
+        double x = tagLocationData[n][1];
+        double y = tagLocationData[n][2];
+        
+        double Z_rot = tagLocationData[n][5];
+
+
+        return new Pose2d(new Translation2d(x,y), new Rotation2d(Z_rot));
     }
 
     public static double[] get3dData(int n) {

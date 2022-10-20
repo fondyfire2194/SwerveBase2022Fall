@@ -29,7 +29,6 @@ import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.SimVisionSystem;
-import frc.robot.utils.ShuffleboardFieldLocation;
 import frc.robot.utils.ShuffleboardVision;
 
 /*
@@ -42,10 +41,9 @@ public class RobotContainer {
   // The robot's subsystems
   final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
- 
   public Cameras cams;
-  
- final PoseEstimatorSubsystem poseEst;
+
+  final PoseEstimatorSubsystem poseEst;
 
   public final FieldSim m_fieldSim = new FieldSim(m_robotDrive);
 
@@ -78,18 +76,18 @@ public class RobotContainer {
     poseEst = new PoseEstimatorSubsystem(cams.llcam, m_robotDrive);
 
     m_fieldSim.initSim();
-    
+
     initializeAutoChooser();
 
     if (RobotBase.isSimulation())
 
       simVision = new SimVisionSystem();
 
-    ShuffleboardVision.init(cams);
+    // ShuffleboardVision.init(cams);
 
-    ShuffleboardFieldLocation.init(cams, m_robotDrive,poseEst);
+    // ShuffleboardFieldLocation.init(cams, m_robotDrive,poseEst);
 
-    SmartDashboard.putData("pwdon", new SetDriverMode(cams.mshdcam,true));
+    SmartDashboard.putData("pwdon", new SetDriverMode(cams.mshdcam, true));
     SmartDashboard.putData("pwdoff", new SetDriverMode(cams.mshdcam, false));
 
     PortForwarder.add(5800, "10.21.94.11", 5800);

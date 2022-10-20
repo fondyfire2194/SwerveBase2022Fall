@@ -11,6 +11,7 @@ import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -19,11 +20,11 @@ public class Cameras {
 
     public PhotonCamera llcam = new PhotonCamera("camera");
     // public PhotonCamera llcam = new PhotonCamera("limelight");
-PhotonCamera mshdcam = new PhotonCamera("cam2");
+    // PhotonCamera mshdcam = new PhotonCamera("cam2");
     public boolean testdm;
 
-    public double poseAmbiguity[] = { 0, 0, 0, 0 };
-    public String rotation[] = { "0", "0", "0", "0" };
+    public double poseAmbiguity[] = { 0, 0 };
+    public String rotation[] = { "0", "0" };
     public int targetsAvailable = 0;
     public boolean hasTargets;
     public double latencySeconds;
@@ -32,14 +33,22 @@ PhotonCamera mshdcam = new PhotonCamera("cam2");
     public int targetToProcess;
 
     public boolean targetActive = true;
+
     public List<PhotonTrackedTarget> trackedTargets;
+
     public PhotonPipelineResult plr;
-    public PhotonTrackedTarget ptt0;
-    public PhotonTrackedTarget ptt1;
 
-    public Transform3d[] tag = new Transform3d[3];
+    public PhotonTrackedTarget[] ptt = new PhotonTrackedTarget[2];
 
-    public String[] targetLocationNames = { "", "", "" };
+    public Pose2d[] pose = new Pose2d[2];
+
+    public Transform3d[] tagToCam = new Transform3d[2];
+
+    public String[] targetLocationNames = { "", "" };
+
+    public int[] fiducialID = { 0, 0 };
+
+    public List<Pose2d> targetPoses;
 
     public Cameras() {
 

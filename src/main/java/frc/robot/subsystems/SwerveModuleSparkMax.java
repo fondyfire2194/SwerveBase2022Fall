@@ -37,6 +37,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   public final CANSparkMax m_turningMotor;
 
   public final RelativeEncoder m_driveEncoder;
+
   private final RelativeEncoder m_turningEncoder;
 
   private final SparkMaxPIDController m_driveVelController;
@@ -93,7 +94,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   public boolean turnCoderConnected;
   private boolean useRRPid = true;
   private double turnDeadband = .5;
-  private boolean showOnShuffleboard;
+  private boolean showOnShuffleboard = true;
 
   /**
    * Constructs a SwerveModule.

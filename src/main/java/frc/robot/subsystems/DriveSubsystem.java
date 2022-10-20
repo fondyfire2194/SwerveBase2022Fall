@@ -28,9 +28,9 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Cameras;
 import frc.robot.Constants;
 import frc.robot.Constants.CanConstants;
 import frc.robot.Constants.DriveConstants;
@@ -99,13 +99,13 @@ public class DriveSubsystem extends SubsystemBase {
   public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.01));
   public static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
 
-  public final SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
+  final SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
       getHeadingRotation2d(),
       new Pose2d(),
       kSwerveKinematics,
-      stateStdDevs,
-      localMeasurementStdDevs,
-      visionMeasurementStdDevs);
+      VecBuilder.fill(0.1, 0.1, 0.1),
+      VecBuilder.fill(0.05),
+      VecBuilder.fill(0.0, 0.1, 0.1));
 
   private boolean showOnShuffleboard = true;
 
@@ -117,9 +117,15 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double targetAngle;
 
-  public boolean m_fieldOriented;
+  public boolean m_fieldOriented=true;
 
-  public boolean useVisionOdometry=true;
+  public boolean useVisionOdometry;
+
+  private double startTime;
+
+  private double positionStart;
+
+  private double positionChange;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -186,38 +192,74 @@ public class DriveSubsystem extends SubsystemBase {
 
     if (!useVisionOdometry)
       updateOdometry();
+    SmartDashboard.putNumber("Xpos", getX());
+    SmartDashboard.putNumber("Ypos", getY());
+    SmartDashboard.putNumber("Angle", getHeadingDegrees());
+
+    if (startTime == 0) {
+
+      startTime = Timer.getFPGATimestamp();
+
+      positionStart = m_odometry.getEstimatedPosition().getX();
+
+    }
+
+    if (Timer.getFPGATimestamp() > startTime + 5) {
+
+      positionChange = m_odometry.getEstimatedPosition().getX() - positionStart;
+
+      SmartDashboard.putNumber("ESTVEL ", positionChange / 5);
+
+      startTime = 0;
+
+      positionStart = m_odometry.getEstimatedPosition().getX();
+
+    }
 
   }
-
-  // var res = cam.getLatestResult();if(res.hasTargets())
-  // {
-  // double imageCaptureTime = Timer.getFPGATimestamp() - res.getLatencyMillis();
-  // Transform2d camToTargetTrans = res.getBestTarget().getCameraToTarget();
-  // Pose2d camPose =
-  // Constants.kFarTargetPose.transformBy(camToTargetTrans.inverse());
-  // m_poseEstimator.addVisionMeasurement(
-  // camPose.transformBy(Constants.kCameraToRobot), imageCaptureTime);
 
   public void getVisionCorrection() {
 
   }
 
+  // Translation2d updatedPositions = DriveConstants.kModuleTranslations
+  // .get(i)
+  // .rotateBy(m_swerveDrive.getPoseMeters().getRotation())
+  // .plus(m_swerveDrive.getPoseMeters().getTranslation());
+  // m_swerveModulePoses.put(
+  // i,
+  // new Pose2d(
+  // updatedPositions,
+  // m_swerveDrive
+  // .getSwerveModule(i)
+  // .getHeadingRotation2d()
+  // .plus(m_swerveDrive.getHeadingRotation2d())));
   public void updateOdometry() {
-
     m_odometry.update(
+
         getHeadingRotation2d(),
+
         ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
 
     for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules)) {
+
       Translation2d modulePositionFromChassis = DriveConstants.kModuleTranslations
+
           .get(module.getModulePosition())
+
           .rotateBy(getHeadingRotation2d())
+
           .plus(getPoseMeters().getTranslation());
+
       module.setModulePose(
+
           new Pose2d(
+
               modulePositionFromChassis,
+
               module.getHeadingRotation2d().plus(getHeadingRotation2d())));
     }
+
   }
 
   public Pose2d getPoseMeters() {
@@ -257,9 +299,9 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public SwerveModuleState[] getModState() {
-    SwerveModuleState temp[] = new SwerveModuleState[4];
-    temp = ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]);
-    return temp;
+    // SwerveModuleState temp[] = new SwerveModuleState[4];
+    return ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]);
+
   }
 
   /**

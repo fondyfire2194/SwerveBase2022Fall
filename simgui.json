@@ -29,7 +29,9 @@
       "/SmartDashboard/Field2d": "Field2d",
       "/SmartDashboard/ResetPose": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
-      "/SmartDashboard/TestRun": "Command"
+      "/SmartDashboard/TestRun": "Command",
+      "/SmartDashboard/pwdoff": "Command",
+      "/SmartDashboard/pwdon": "Command"
     },
     "windows": {
       "/SmartDashboard/Auto Selector": {
@@ -94,10 +96,12 @@
           "open": true
         },
         "open": true
-      },
-      "open": true
+      }
     },
     "SmartDashboard": {
+      "Field2d": {
+        "open": true
+      },
       "ResetPose": {
         "open": true
       },
