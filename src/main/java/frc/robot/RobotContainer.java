@@ -73,7 +73,7 @@ public class RobotContainer {
 
     cams = new Cameras();
 
-    poseEst = new PoseEstimatorSubsystem(cams.llcam, m_robotDrive);
+    poseEst = new PoseEstimatorSubsystem(cams, m_robotDrive);
 
     m_fieldSim.initSim();
 
@@ -83,13 +83,11 @@ public class RobotContainer {
 
       simVision = new SimVisionSystem();
 
-    // ShuffleboardVision.init(cams);
+    ShuffleboardVision.init(cams);
 
     // ShuffleboardFieldLocation.init(cams, m_robotDrive,poseEst);
-
-    SmartDashboard.putData("pwdon", new SetDriverMode(cams.mshdcam, true));
-    SmartDashboard.putData("pwdoff", new SetDriverMode(cams.mshdcam, false));
-
+SmartDashboard.putData("DCPlay",new PlayWithDriverMode(cams.llcam, false));
+   
     PortForwarder.add(5800, "10.21.94.11", 5800);
     PortForwarder.add(1181, "10.21.94.11", 1181);
     PortForwarder.add(1182, "10.21.94.11", 1182);

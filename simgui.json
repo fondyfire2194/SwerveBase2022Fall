@@ -24,6 +24,7 @@
       "/SmartDashboard/Auto Selector": "String Chooser",
       "/SmartDashboard/BACK_LEFT": "Mechanism2d",
       "/SmartDashboard/BACK_RIGHT": "Mechanism2d",
+      "/SmartDashboard/DCPlay": "Command",
       "/SmartDashboard/FRONT_LEFT": "Mechanism2d",
       "/SmartDashboard/FRONT_RIGHT": "Mechanism2d",
       "/SmartDashboard/Field2d": "Field2d",

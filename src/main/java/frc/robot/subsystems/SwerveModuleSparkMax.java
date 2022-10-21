@@ -94,7 +94,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   public boolean turnCoderConnected;
   private boolean useRRPid = true;
   private double turnDeadband = .5;
-  private boolean showOnShuffleboard = true;
+  private boolean showOnShuffleboard = false;
 
   /**
    * Constructs a SwerveModule.
@@ -282,7 +282,9 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     if (RobotBase.isReal())
 
-      return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(getHeadingDegrees()));
+      return new SwerveModuleState(m_driveEncoder.getVelocity(),
+      
+          getHeadingRotation2d());
 
     else
 
