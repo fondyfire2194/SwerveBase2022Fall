@@ -277,7 +277,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     if (RobotBase.isReal())
 
-      return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(getHeadingDegrees()));
+      return new SwerveModuleState(m_driveEncoder.getVelocity(), getHeadingRotation2d());
 
     else
 
