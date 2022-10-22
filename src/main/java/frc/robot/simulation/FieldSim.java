@@ -38,6 +38,7 @@ public class FieldSim {
   }
 
   public Field2d getField2d() {
+
     return m_field2d;
   }
 
@@ -66,6 +67,7 @@ public class FieldSim {
 
     m_field2d
         .getObject("Swerve Modules")
+        
         .setPoses(ModuleMap.orderedValues(m_swerveModulePoses, new Pose2d[0]));
   }
 

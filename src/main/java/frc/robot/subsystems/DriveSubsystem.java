@@ -99,7 +99,7 @@ public class DriveSubsystem extends SubsystemBase {
   public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.01));
   public static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
 
-  final SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
+  public final SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
       getHeadingRotation2d(),
       new Pose2d(),
       kSwerveKinematics,
@@ -117,7 +117,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double targetAngle;
 
-  public boolean m_fieldOriented=false;
+  public boolean m_fieldOriented = false;
 
   public boolean useVisionOdometry;
 
@@ -222,19 +222,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   }
 
-  // Translation2d updatedPositions = DriveConstants.kModuleTranslations
-  // .get(i)
-  // .rotateBy(m_swerveDrive.getPoseMeters().getRotation())
-  // .plus(m_swerveDrive.getPoseMeters().getTranslation());
-  // m_swerveModulePoses.put(
-  // i,
-  // new Pose2d(
-  // updatedPositions,
-  // m_swerveDrive
-  // .getSwerveModule(i)
-  // .getHeadingRotation2d()
-  // .plus(m_swerveDrive.getHeadingRotation2d())));
   public void updateOdometry() {
+
+    SmartDashboard.putString(("EstPosn"), m_odometry.getEstimatedPosition().toString());
+    SmartDashboard.putString("RobPosn", getPoseMeters().toString());
+
     m_odometry.update(
 
         getHeadingRotation2d(),

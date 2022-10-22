@@ -8,7 +8,6 @@ import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Cameras;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -28,20 +27,14 @@ public class SetDriverMode extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    startTime = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    if (!m_cam.getDriverMode() == m_on)
-      m_cam.setDriverMode(m_on);
-
-    if (m_cam.getDriverMode() == m_on && startTime == 0) {
-      startTime = Timer.getFPGATimestamp();
-    } else
-      startTime = 0;
+    m_cam.setDriverMode(m_on);
 
   }
 
@@ -55,6 +48,6 @@ public class SetDriverMode extends CommandBase {
   @Override
   public boolean isFinished() {
 
-    return startTime != 0 && Timer.getFPGATimestamp() > startTime + 1 &&m_cam.getDriverMode()==m_on;
+    return m_cam.getDriverMode() == m_on;
   }
 }

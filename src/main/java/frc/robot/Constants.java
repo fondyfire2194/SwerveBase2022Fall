@@ -6,7 +6,12 @@ package frc.robot;
 
 import java.util.Map;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -73,15 +78,11 @@ public final class Constants {
       BACK_RIGHT
     }
 
-
-     public static final Map<ModulePosition, Translation2d> kModuleTranslations = Map.of(
+    public static final Map<ModulePosition, Translation2d> kModuleTranslations = Map.of(
         ModulePosition.FRONT_LEFT, new Translation2d(kWheelBase / 2, kTrackWidth / 2),
         ModulePosition.FRONT_RIGHT, new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
         ModulePosition.BACK_LEFT, new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
         ModulePosition.BACK_RIGHT, new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
-
- 
-
 
     public static final SwerveDriveKinematics kSwerveKinematics = new SwerveDriveKinematics(
         ModuleMap.orderedValues(kModuleTranslations, new Translation2d[0]));
@@ -136,15 +137,16 @@ public final class Constants {
 
     public static final double kDriveMetersPerEncRev =
 
-        (kWheelDiameterMeters * Math.PI) / mk4iL1DriveGearRatio;
+        (kWheelDiameterMeters * Math.PI) / mk4iL1DriveGearRatio;// 0.039198257811106
 
-    // in 1 minute at 1 rpm encoder drive moves kDriveMetersPerEncRev
-    // so in 1 second encoder travels 1/60 revs = kDriveMetersPerEncRev/60
-    // so MPS
+    public static final double kDriveEncRPMperMPS = kDriveMetersPerEncRev / 60;// 0.000653304296852
 
-    public static final double kDriveEncRPMperMPS = 60 / kDriveMetersPerEncRev;
+    public static double kEncoderRevsPerMeter = 1 / kDriveMetersPerEncRev;// 25.511337897182322
 
-    public static double kFreeMetersPerSecond = 5600 / kDriveEncRPMperMPS;
+    public static double kFreeMetersPerSecond = 5600 * kDriveEncRPMperMPS;//3.6
+
+
+
 
     public static final double kTurningDegreesPerEncRev =
 
@@ -206,7 +208,27 @@ public final class Constants {
     public static final double kPThetaController = 1;
 
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+
         kMaxRotationRadiansPerSecond, kMaxRotationRadiansPerSecondSquared);
 
+  }
+
+  public static class VisionConstants {
+
+    /**
+     * Physical location of the camera on the robot, relative to the center of the
+     * robot.
+     */
+    public static final Transform2d CAMERA_TO_ROBOT = new Transform2d(new Translation2d(-0.3425, 0.0),
+        new Rotation2d(0.0));
+
+    // 15"up and 15"forward
+
+    private double camHeight = Units.inchesToMeters(15);
+
+    private double camXfromCemter = Units.inchesToMeters(15);
+
+    public static final Transform3d CAMERA_TO_ROBOT_3D = new Transform3d(new Translation3d(-0.3425, 0.0, -0.233),
+        new Rotation3d());
   }
 }
