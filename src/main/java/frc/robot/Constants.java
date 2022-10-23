@@ -138,10 +138,12 @@ public final class Constants {
     // so in 1 second encoder travels 1/60 revs = kDriveMetersPerEncRev/60
     // so MPS
 
-    public static final double kDriveEncRPMperMPS = 60 / kDriveMetersPerEncRev;
+    public static final double kDriveEncRPMperMPS = kDriveMetersPerEncRev / 60;// 0.000653304296852
 
-    public static double kFreeMetersPerSecond = 5600 / kDriveEncRPMperMPS;
+    public static double kEncoderRevsPerMeter = 1 / kDriveMetersPerEncRev;// 25.511337897182322
 
+    public static double kFreeMetersPerSecond = 5600 * kDriveEncRPMperMPS;// 3.6
+  
     public static final double kTurningDegreesPerEncRev =
 
         360 / mk4iL1TurnGearRatio;
