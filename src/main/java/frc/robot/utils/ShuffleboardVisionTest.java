@@ -4,20 +4,14 @@
 
 package frc.robot.utils;
 
-import java.util.Map;
-
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.Vision.SetEstPosition;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionPoseEstimatorSubsystem;
 
 /** Add your docs here. */
 public class ShuffleboardVisionTest {
-
-        
 
         public static void init(VisionPoseEstimatorSubsystem vpe, DriveSubsystem drive) {
                 // NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -25,27 +19,109 @@ public class ShuffleboardVisionTest {
                 // NetworkTableEntry xEntry = table.getEntry("x");
                 // NetworkTableEntry yEntry = table.getEntry("y");
 
-                ShuffleboardLayout camLayout = Shuffleboard.getTab("CamerasTest")
-                                .getLayout("CameraLayout", BuiltInLayouts.kList)
-                                .withPosition(0, 0)
-                                .withSize(7, 1).withProperties(Map.of("Label position", "LEFT"));
+                ShuffleboardTab camLayout = Shuffleboard.getTab("CamerasTest");
 
-                camLayout.addString("Target 1", () -> VisionPoseEstimatorSubsystem.targetPoses.get(4).toString());
-              //  camLayout.addString("Target 2", () -> VisionPoseEstimatorSubsystem.targetPoses.get(1).toString());
-                camLayout.addString("Cam2Rob", () -> VisionConstants.CAMERA_TO_ROBOT_3D.toString());
+                
+                int r = 0;
 
-                // camLayout.addString("Cam2Target", () ->
-                // VisionPoseEstimatorSubsystem.camToTarget.toString());
-                camLayout.addString("Cam2TargetCorr", () -> VisionPoseEstimatorSubsystem.camToTarget.toString());
-                camLayout.addString("CamPose", () -> VisionPoseEstimatorSubsystem.camPose.toString());
-                camLayout.addString("VisCorr", () -> VisionPoseEstimatorSubsystem.visionMeasurement.toString());
+                camLayout.addNumber("Target X", () -> vpe.targetPoses.get(4).getX())
+                                .withPosition(0, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
 
-                ShuffleboardLayout datLayout = Shuffleboard.getTab("CamerasTest")
-                                .getLayout("DataLayout", BuiltInLayouts.kList)
-                                .withPosition(7, 0)
-                                .withSize(7, 4).withProperties(Map.of("Label position", "LEFT"));
+                camLayout.addNumber("Target Y", () -> vpe.targetPoses.get(4).getY())
+                                .withPosition(1, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
 
-                datLayout.add("SetEstPosn", new SetEstPosition(drive, 1, 2, 3));
+                camLayout.addNumber("Target Z", () -> vpe.targetPoses.get(4).getZ())
+                                .withPosition(2, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("Target Angle",
+                                () -> vpe.targetPoses.get(4).getRotation().getAngle())
+                                .withPosition(3, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+                // cam to target
+                r = 1;
+                camLayout.addNumber("CamToTarget X", () -> vpe.camToTarget[0].getX())
+                                .withPosition(0, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("CamToTarget Y", () -> vpe.camToTarget[0].getY())
+                                .withPosition(1, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("CamToTarget Z", () -> vpe.camToTarget[0].getZ())
+                                .withPosition(2, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("CamToTarget Angle",
+                                () -> vpe.camToTarget[0].getRotation().getAngle())
+                                .withPosition(3, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                // cam to target
+                r = 2;
+                camLayout.addNumber("InvCamToTgtX", () -> vpe.camToTarget[0].inverse().getX())
+                                .withPosition(0, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("InvCamToTgtY", () -> vpe.camToTarget[0].inverse().getY())
+                                .withPosition(1, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("InvCamToTgtZ", () -> vpe.camToTarget[0].inverse().getZ())
+                                .withPosition(2, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("InvCamToTgtAngle",
+                                () -> vpe.camToTarget[0].inverse().getRotation().getAngle())
+                                .withPosition(3, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                // cam pose
+                r = 3;
+                camLayout.addNumber("CamPose X", () -> vpe.camPose[0].getX())
+                                .withPosition(0, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("CamPose Y", () -> vpe.camPose[0].getY())
+                                .withPosition(1, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("CamPose Z", () -> vpe.camPose[0].getZ())
+                                .withPosition(2, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("CamPose Angle",
+                                () -> vpe.camPose[0].getRotation().getAngle())
+                                .withPosition(3, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                // cam to target
+                r = 0;
+                camLayout.addNumber("VisCorr X", () -> vpe.visionMeasurement[0].getX())
+                                .withPosition(4, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("VisCorr Y", () -> vpe.visionMeasurement[0].getY())
+                                .withPosition(5, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("VisCorr Z", () -> vpe.visionMeasurement[0].getZ())
+                                .withPosition(6, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("VisCorr Angle",
+                                () -> vpe.visionMeasurement[0].getRotation().getAngle())
+                                .withPosition(7, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                // robot
+
+                r = 1;
+                camLayout.addNumber("Robot X", () -> drive.getX())
+                                .withPosition(4, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("Robot Y Y", () -> drive.getY())
+                                .withPosition(5, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("Robot Angle",
+                                () -> drive.getHeadingDegrees())
+                                .withPosition(7, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+
+                                // robot
+
+                r = 2;
+                camLayout.addNumber("Est X", () -> drive.m_odometry.getEstimatedPosition().getX())
+                                .withPosition(4, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("Est Y ", () -> drive.m_odometry.getEstimatedPosition().getY())
+                                .withPosition(5, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
+
+                camLayout.addNumber("Est Angle",
+                                () -> drive.m_odometry.getEstimatedPosition().getRotation().getDegrees())
+                                .withPosition(7, r).withSize(1, 1).withWidget(BuiltInWidgets.kTextView);
 
         }
 

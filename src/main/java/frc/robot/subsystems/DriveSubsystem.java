@@ -107,7 +107,7 @@ public class DriveSubsystem extends SubsystemBase {
       VecBuilder.fill(0.05),
       VecBuilder.fill(0.0, 0.1, 0.1));
 
-  private boolean showOnShuffleboard = true;
+  private boolean showOnShuffleboard = false;
 
   private SimDouble m_simAngle;// navx sim
 
@@ -119,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public boolean m_fieldOriented = false;
 
-  public boolean useVisionOdometry;
+  public boolean useVisionOdometry = true;
 
   private double startTime;
 
@@ -145,7 +145,9 @@ public class DriveSubsystem extends SubsystemBase {
       m_simAngle = new SimDouble((SimDeviceDataJNI.getSimValueHandle(dev, "Yaw")));
     }
 
-    ShuffleboardContent.initMisc(this);
+    if (showOnShuffleboard)
+
+      ShuffleboardContent.initMisc(this);
 
   }
 
@@ -170,7 +172,7 @@ public class DriveSubsystem extends SubsystemBase {
     throttle *= DriveConstants.kMaxSpeedMetersPerSecond;
     strafe *= DriveConstants.kMaxSpeedMetersPerSecond;
     rotation *= DriveConstants.kMaxRotationRadiansPerSecond;
-    SmartDashboard.putNumber("Rotn1", rotation);
+    // SmartDashboard.putNumber("Rotn1", rotation);
     ChassisSpeeds chassisSpeeds = m_fieldOriented
         ? ChassisSpeeds.fromFieldRelativeSpeeds(
             throttle, strafe, rotation, getHeadingRotation2d())
@@ -208,8 +210,6 @@ public class DriveSubsystem extends SubsystemBase {
 
       positionChange = m_odometry.getEstimatedPosition().getX() - positionStart;
 
-      SmartDashboard.putNumber("ESTVEL ", positionChange / 5);
-
       startTime = 0;
 
       positionStart = m_odometry.getEstimatedPosition().getX();
@@ -225,6 +225,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void updateOdometry() {
 
     SmartDashboard.putString(("EstPosn"), m_odometry.getEstimatedPosition().toString());
+
     SmartDashboard.putString("RobPosn", getPoseMeters().toString());
 
     m_odometry.update(
@@ -271,6 +272,14 @@ public class DriveSubsystem extends SubsystemBase {
 
   public SwerveModuleSparkMax getSwerveModule(ModulePosition modulePosition) {
     return m_swerveModules.get(modulePosition);
+  }
+
+  public void setAngleAdjustment(double adjustment) {
+    m_gyro.setAngleAdjustment(adjustment);
+  }
+
+  public double getAngleAdjustment() {
+    return m_gyro.getAngleAdjustment();
   }
 
   public double getHeadingDegrees() {
@@ -333,7 +342,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void setSwerveModuleStatesAuto(SwerveModuleState[] states) {
-    setSwerveModuleStates(states, false);
+    setSwerveModuleStates(states, true);
   }
 
   public ProfiledPIDController getThetaPidController() {

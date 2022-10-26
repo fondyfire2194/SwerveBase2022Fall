@@ -4,15 +4,10 @@
 
 package frc.robot.commands.Vision;
 
-import org.ejml.dense.block.MatrixOps_FDRB;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionPoseEstimatorSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -35,7 +30,7 @@ public class SetEstPosition extends InstantCommand {
   @Override
   public void initialize() {
 
-    var poseMeters = new Pose2d(m_xValue, m_yValue, new Rotation2d(0, m_yaw));
+    var poseMeters = new Pose2d(m_xValue, m_yValue, new Rotation2d(m_yaw));
 
     m_drive.resetModuleEncoders();
 

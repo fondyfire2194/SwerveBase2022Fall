@@ -4,9 +4,7 @@
 
 package frc.robot;
 
-import org.photonvision.PhotonCamera;
 
-import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -19,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.ToggleFieldOriented;
 import frc.robot.commands.Vision.SetDriverMode;
 import frc.robot.commands.auto.DriveForward;
 import frc.robot.commands.auto.FiveBallAuto;
@@ -27,6 +24,7 @@ import frc.robot.commands.swerve.JogDriveModule;
 import frc.robot.commands.swerve.JogTurnModule;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.simulation.FieldSim;
+import frc.robot.simulation.VisionSim;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.SimVisionSystem;
 /*
@@ -46,7 +44,9 @@ public class RobotContainer {
 
   final VisionPoseEstimatorSubsystem m_visEst = new VisionPoseEstimatorSubsystem(m_drive);
 
-  public final FieldSim m_fieldSim = new FieldSim(m_drive);
+ // public final FieldSim m_fieldSim = new FieldSim(m_drive);
+
+  public final VisionSim m_VisionSim = new VisionSim(m_drive,m_visEst);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
@@ -60,13 +60,15 @@ public class RobotContainer {
 
   SimVisionSystem simVision;
 
-  private Cameras m_cams = new Cameras();
+  public Cameras m_cams = new Cameras();
 
   private ShuffleboardVision m_vis = new ShuffleboardVision();
 
   private ShuffleboardVisionTest m_svt = new ShuffleboardVisionTest();
 
   private VisionPoseEstimatorSubsystem vpe = new VisionPoseEstimatorSubsystem(m_drive);
+
+  private boolean useShuffleboardVision = false;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -77,18 +79,20 @@ public class RobotContainer {
     Pref.addMissing();
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
 
-    SmartDashboard.putNumber("ENCRAt", ModuleConstants.kDriveMetersPerEncRev);
+    // SmartDashboard.putNumber("ENCRAt", ModuleConstants.kDriveMetersPerEncRev);
 
-    SmartDashboard.putNumber("EncREVPerMeter", ModuleConstants.kEncoderRevsPerMeter);
+    // SmartDashboard.putNumber("EncREVPerMeter", ModuleConstants.kEncoderRevsPerMeter);
 
-    SmartDashboard.putNumber("ENCVE:RAT", ModuleConstants.kDriveEncRPMperMPS);
+    // SmartDashboard.putNumber("ENCVE:RAT", ModuleConstants.kDriveEncRPMperMPS);
 
-    SmartDashboard.putNumber("Free Speed", ModuleConstants.kFreeMetersPerSecond);
+    // SmartDashboard.putNumber("Free Speed", ModuleConstants.kFreeMetersPerSecond);
 
     LiveWindow.disableAllTelemetry();
     // Configure the button bindings
 
-    m_fieldSim.initSim();
+    //m_fieldSim.initSim();
+
+    m_VisionSim.initSim();
 
     initializeAutoChooser();
 
@@ -96,9 +100,11 @@ public class RobotContainer {
 
       simVision = new SimVisionSystem();
 
+      if(useShuffleboardVision){
+
     ShuffleboardVision.init(m_cams);
 
-     ShuffleboardVisionTest.init(vpe,m_drive);
+     ShuffleboardVisionTest.init(vpe,m_drive);}
 
     // PortForwarder.add(5800, "10.21.94.11", 5800);
     // PortForwarder.add(1181, "10.21.94.11", 1181);
@@ -169,12 +175,16 @@ public class RobotContainer {
   }
 
   public void simulationPeriodic() {
-    m_fieldSim.periodic();
+m_VisionSim.periodic();;
+
+  //  m_fieldSim.periodic();
     periodic();
   }
 
   public void periodic() {
-    m_fieldSim.periodic();
+
+    m_VisionSim.periodic();
+   // m_fieldSim.periodic();
   }
 
   public double getThrottle() {

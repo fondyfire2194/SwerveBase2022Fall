@@ -94,7 +94,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   public boolean turnCoderConnected;
   private boolean useRRPid = true;
   private double turnDeadband = .5;
-  private boolean showOnShuffleboard = true;
+  private boolean showOnShuffleboard = false;
 
   /**
    * Constructs a SwerveModule.
@@ -158,9 +158,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     m_driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveMetersPerEncRev);
 
-    m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveMetersPerEncRev/60);
-
-    SmartDashboard.putNumber("FREE", ModuleConstants.kFreeMetersPerSecond);
+    m_driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveMetersPerEncRev / 60);
 
     m_driveVelController = m_driveMotor.getPIDController();
 
@@ -281,7 +279,6 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   }
 
   public SwerveModuleState getState() {
-
 
     if (RobotBase.isReal())
 

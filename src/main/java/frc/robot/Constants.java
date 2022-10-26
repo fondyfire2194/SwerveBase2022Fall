@@ -143,10 +143,7 @@ public final class Constants {
 
     public static double kEncoderRevsPerMeter = 1 / kDriveMetersPerEncRev;// 25.511337897182322
 
-    public static double kFreeMetersPerSecond = 5600 * kDriveEncRPMperMPS;//3.6
-
-
-
+    public static double kFreeMetersPerSecond = 5600 * kDriveEncRPMperMPS;// 3.6
 
     public static final double kTurningDegreesPerEncRev =
 
@@ -224,11 +221,11 @@ public final class Constants {
 
     // 15"up and 15"forward
 
-    private double camHeight = Units.inchesToMeters(15);
+    private static double camHeight = Units.inchesToMeters(15);
 
-    private double camXfromCemter = Units.inchesToMeters(15);
+    public static double camXFromCenter = -Units.inchesToMeters(15);
 
-    public static final Transform3d CAMERA_TO_ROBOT_3D = new Transform3d(new Translation3d(-0.3425, 0.0, -0.233),
+    public static final Transform3d CAMERA_TO_ROBOT_3D = new Transform3d(new Translation3d(camXFromCenter, 0.0, camHeight),
         new Rotation3d());
   }
 }

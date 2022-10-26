@@ -63,7 +63,9 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    m_robotContainer.m_fieldSim.periodic();
+    // m_robotContainer.m_fieldSim.periodic();
+
+    m_robotContainer.m_VisionSim.periodic();
 
     m_robotContainer.periodic();
 
@@ -137,7 +139,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {
-    m_robotContainer.m_fieldSim.periodic();
+
+    m_robotContainer.m_VisionSim.periodic();
+
+   // m_robotContainer.m_fieldSim.periodic();
     m_robotContainer.simulationPeriodic();
   }
 

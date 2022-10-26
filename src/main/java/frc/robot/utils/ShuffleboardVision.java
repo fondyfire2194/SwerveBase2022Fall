@@ -60,7 +60,7 @@ public class ShuffleboardVision {
 
                 // ShuffleboardContainer llvFeed = Shuffleboard.getTab("Cameras");
 
-                // llvFeed.addCamera("LL", "camera", "http://10.21.94.12:5800/stream.mjpg")
+                // llvFeed.addCamera("picam", "picam-output", "http://10.21.94.11:1182/stream.mjpg")
                 // .withPosition(4,0).withSize(4,3)
                 // .withProperties(Map.of("Show Crosshair", true,
                 // "Show Controls", true, "Rotation", "QUARTER_CW"));

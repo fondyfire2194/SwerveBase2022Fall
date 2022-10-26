@@ -20,6 +20,7 @@
       "/Shuffleboard/Cameras/3DPipe": "Command",
       "/Shuffleboard/Cameras/ResetDriverMode": "Command",
       "/Shuffleboard/Cameras/TurnOnDriverMode": "Command",
+      "/Shuffleboard/CamerasTest/DataLayout/SetEstPosn": "Command",
       "/Shuffleboard/Drivetrain/Field": "Field2d",
       "/SmartDashboard/Auto Selector": "String Chooser",
       "/SmartDashboard/BACK_LEFT": "Mechanism2d",
@@ -31,6 +32,7 @@
       "/SmartDashboard/ResetPose": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/TestRun": "Command",
+      "/SmartDashboard/VisField2d": "Field2d",
       "/SmartDashboard/pwdoff": "Command",
       "/SmartDashboard/pwdon": "Command"
     },
@@ -41,8 +43,18 @@
         }
       },
       "/SmartDashboard/Field2d": {
+        "Cam": {
+          "image": "C:\\Users\\John\\Desktop\\black-and-white-triangle-png-16.png",
+          "length": 0.25,
+          "width": 0.25
+        },
+        "CamCalcPose 1": {
+          "image": "C:\\Users\\John\\Desktop\\Triangle.jpg"
+        },
+        "CamCalcPose 2": {
+          "image": "C:\\Users\\John\\Desktop\\Triangle.jpg"
+        },
         "Robot": {
-          "image": "resources/images/robot.png",
           "length": 0.6850000023841858,
           "width": 0.5
         },
@@ -51,7 +63,20 @@
           "length": 0.4000000059604645,
           "width": 0.4000000059604645
         },
-        "image": "resources/images/field22.png",
+        "Target": {
+          "image": "C:\\Users\\John\\Desktop\\Rectangle.png",
+          "length": 0.4000000059604645,
+          "weight": 10.0,
+          "width": 0.20000000298023224
+        },
+        "Target 1": {
+          "image": "C:\\Users\\John\\Desktop\\Rectangle.png",
+          "width": 0.10000000149011612
+        },
+        "Target 2": {
+          "image": "C:\\Users\\John\\Desktop\\Rectangle.png",
+          "width": 0.10000000149011612
+        },
         "window": {
           "visible": true
         }

@@ -13,12 +13,11 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class Cameras {
 
-    public PhotonCamera llcam = new PhotonCamera("picam");
+    public static PhotonCamera llcam = new PhotonCamera("camera");
     // public PhotonCamera llcam = new PhotonCamera("limelight");
     // PhotonCamera mshdcam = new PhotonCamera("cam2");
     public boolean testdm;
@@ -81,6 +80,6 @@ public class Cameras {
     }
 
     public void periodic() {
-        SmartDashboard.putBoolean("TSTDM", testdm);
+       // SmartDashboard.putBoolean("TSTDM", testdm);
     }
 }
