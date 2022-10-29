@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Vision.SetDriverMode;
 import frc.robot.commands.auto.DriveForward;
@@ -23,9 +22,9 @@ import frc.robot.commands.auto.FiveBallAuto;
 import frc.robot.commands.swerve.JogDriveModule;
 import frc.robot.commands.swerve.JogTurnModule;
 import frc.robot.commands.swerve.SetSwerveDrive;
-import frc.robot.simulation.FieldSim;
 import frc.robot.simulation.VisionSim;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.SimVisionSystem;
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -41,6 +40,8 @@ import frc.robot.utils.ShuffleboardVisionTest;
 public class RobotContainer {
   // The robot's subsystems
   final DriveSubsystem m_drive = new DriveSubsystem();
+
+  final LightStrip m_ls;
 
   final VisionPoseEstimatorSubsystem m_visEst = new VisionPoseEstimatorSubsystem(m_drive);
 
@@ -93,6 +94,8 @@ public class RobotContainer {
     //m_fieldSim.initSim();
 
     m_VisionSim.initSim();
+
+    m_ls = new LightStrip(9, 60);
 
     initializeAutoChooser();
 

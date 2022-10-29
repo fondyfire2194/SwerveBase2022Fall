@@ -95,7 +95,7 @@ public class VisionPoseEstimatorSubsystem extends SubsystemBase {
 
       SmartDashboard.putNumber("ImCapTime", imageCaptureTime);
 
-      SmartDashboard.putNumber("TargetsSeen", pipelineResult.targets.size());    
+      SmartDashboard.putNumber("TargetsSeen", pipelineResult.targets.size());
 
       n = 0;
 
@@ -106,7 +106,7 @@ public class VisionPoseEstimatorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("FidID " + String.valueOf(n), fiducialId[n]);
 
         if (fiducialId[n] >= 0 && fiducialId[n] < 10) {
-
+        
           targetPose[n] = targetPoses.get(fiducialId[n]);
 
           SmartDashboard.putString("TargetPoseFound " + String.valueOf(n), targetPose[n].toString());
@@ -114,12 +114,19 @@ public class VisionPoseEstimatorSubsystem extends SubsystemBase {
           camToTarget[n] = target.getCameraToTarget();
 
           // Workaround until PhotonVision changes Rotation
-          camToTarget[n] = camToTarget[n].plus(new Transform3d(new Translation3d(), new Rotation3d(0, 0, Math.PI / 2)));
+          // camToTarget[n] = camToTarget[n].plus(new Transform3d(new Translation3d(), new
+          // Rotation3d(0, 0, Math.PI / 1)));
+
+          SmartDashboard.putString("TargetTransformFound " + String.valueOf(n), camToTarget[n].toString());
 
           camPose[n] = targetPose[n].transformBy(camToTarget[n].inverse());
 
+          SmartDashboard.putString("CamPos  " + String.valueOf(n), camPose[n].toString());
+
           double tempx = targetPose[n].getX() - camToTarget[n].getX();
+
           double tempy = targetPose[n].getY() - camToTarget[n].getY();
+
           double tempA = targetPose[n].getRotation().getAngle();
 
           temp[n] = new Pose2d(tempx, tempy, new Rotation2d(tempA));
@@ -129,6 +136,7 @@ public class VisionPoseEstimatorSubsystem extends SubsystemBase {
           if (m_drive.useVisionOdometry)
 
             m_drive.m_odometry.addVisionMeasurement(visionMeasurement[n].toPose2d(),
+
                 imageCaptureTime);
 
           n++;
