@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -33,7 +32,8 @@ import frc.robot.subsystems.SimVisionSystem;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 import frc.robot.subsystems.VisionPoseEstimatorSubsystem;
-
+import frc.robot.utils.LEDController;
+import frc.robot.utils.LEDControllerI2C;
 import frc.robot.utils.ShuffleboardVision;
 import frc.robot.utils.ShuffleboardVisionTest;
 
@@ -41,13 +41,16 @@ public class RobotContainer {
   // The robot's subsystems
   final DriveSubsystem m_drive = new DriveSubsystem();
 
-  final LightStrip m_ls;
+  // final LightStrip m_ls;
 
-  final VisionPoseEstimatorSubsystem m_visEst = new VisionPoseEstimatorSubsystem(m_drive);
+  LEDController lc;
+  LEDControllerI2C lcI2;
 
- // public final FieldSim m_fieldSim = new FieldSim(m_drive);
+  final VisionPoseEstimatorSubsystem m_visEst;// = new VisionPoseEstimatorSubsystem(m_drive,m_cams);
 
-  public final VisionSim m_VisionSim = new VisionSim(m_drive,m_visEst);
+  // public final FieldSim m_fieldSim = new FieldSim(m_drive);
+
+  public final VisionSim m_VisionSim ;//= new VisionSim(m_drive, m_visEst);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
@@ -67,7 +70,7 @@ public class RobotContainer {
 
   private ShuffleboardVisionTest m_svt = new ShuffleboardVisionTest();
 
-  private VisionPoseEstimatorSubsystem vpe = new VisionPoseEstimatorSubsystem(m_drive);
+
 
   private boolean useShuffleboardVision = false;
 
@@ -79,10 +82,13 @@ public class RobotContainer {
     Pref.deleteUnused();
     Pref.addMissing();
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
-
+    m_visEst = new VisionPoseEstimatorSubsystem(m_drive, m_cams);
+    ShuffleboardVision.init(m_cams);
+    m_VisionSim = new VisionSim(m_drive, m_visEst);
     // SmartDashboard.putNumber("ENCRAt", ModuleConstants.kDriveMetersPerEncRev);
 
-    // SmartDashboard.putNumber("EncREVPerMeter", ModuleConstants.kEncoderRevsPerMeter);
+    // SmartDashboard.putNumber("EncREVPerMeter",
+    // ModuleConstants.kEncoderRevsPerMeter);
 
     // SmartDashboard.putNumber("ENCVE:RAT", ModuleConstants.kDriveEncRPMperMPS);
 
@@ -91,23 +97,27 @@ public class RobotContainer {
     LiveWindow.disableAllTelemetry();
     // Configure the button bindings
 
-    //m_fieldSim.initSim();
+    // m_fieldSim.initSim();
 
     m_VisionSim.initSim();
 
-    m_ls = new LightStrip(9, 60);
+    // m_ls = new LightStrip(9, 60);
 
+  //  lc = LEDController.getInstance();
+    lcI2 = LEDControllerI2C.getInstance();
+  
     initializeAutoChooser();
 
     if (RobotBase.isSimulation())
 
       simVision = new SimVisionSystem();
 
-      if(useShuffleboardVision){
+    if (useShuffleboardVision) {
 
-    ShuffleboardVision.init(m_cams);
+      ShuffleboardVision.init(m_cams);
 
-     ShuffleboardVisionTest.init(vpe,m_drive);}
+      ShuffleboardVisionTest.init(m_visEst, m_drive);
+    }
 
     // PortForwarder.add(5800, "10.21.94.11", 5800);
     // PortForwarder.add(1181, "10.21.94.11", 1181);
@@ -153,9 +163,9 @@ public class RobotContainer {
     JoystickButton button_8 = new JoystickButton(leftJoystick, 8);
     JoystickButton button_7 = new JoystickButton(leftJoystick, 7);
 
-    codriver.Y_button    .whenPressed(new SetDriverMode(m_cams.llcam, true));
+    codriver.Y_button.whenPressed(new SetDriverMode(m_cams.llcam, true));
     codriver.X_button.whenPressed(new SetDriverMode(m_cams.llcam, false));
-  
+
     // position turn modules individually
     // driver.X_button.whenPressed(new PositionTurnModule(m_drive,
     // ModulePosition.FRONT_LEFT));
@@ -178,16 +188,17 @@ public class RobotContainer {
   }
 
   public void simulationPeriodic() {
-m_VisionSim.periodic();;
+    m_VisionSim.periodic();
+    ;
 
-  //  m_fieldSim.periodic();
+    // m_fieldSim.periodic();
     periodic();
   }
 
   public void periodic() {
 
     m_VisionSim.periodic();
-   // m_fieldSim.periodic();
+    // m_fieldSim.periodic();
   }
 
   public double getThrottle() {

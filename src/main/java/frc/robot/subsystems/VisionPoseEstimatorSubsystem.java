@@ -25,6 +25,8 @@ public class VisionPoseEstimatorSubsystem extends SubsystemBase {
 
   private final DriveSubsystem m_drive;
 
+  private final Cameras m_cam;
+
   // Ordered list of target poses by ID (WPILib is adding some functionality for
   // this)
   public final List<Pose3d> targetPoses =
@@ -63,9 +65,11 @@ public class VisionPoseEstimatorSubsystem extends SubsystemBase {
 
   public int n;
 
-  public VisionPoseEstimatorSubsystem(DriveSubsystem drive) {
+  public VisionPoseEstimatorSubsystem(DriveSubsystem drive,Cameras cam) {
 
     m_drive = drive;
+
+    m_cam=cam;
 
     for (int i = 0; i < 2; i++) {
       camPose[i] = new Pose3d();
@@ -82,8 +86,8 @@ public class VisionPoseEstimatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    // Update pose estimator with visible targets
-    var pipelineResult = Cameras.llcam.getLatestResult();
+    // Update pose estimator with visible targets, 
+    var pipelineResult = m_cam.llcam.getLatestResult();
 
     SmartDashboard.putBoolean("HASTARGETS", pipelineResult.hasTargets());
 
@@ -111,7 +115,7 @@ public class VisionPoseEstimatorSubsystem extends SubsystemBase {
 
           SmartDashboard.putString("TargetPoseFound " + String.valueOf(n), targetPose[n].toString());
 
-          camToTarget[n] = target.getCameraToTarget();
+          camToTarget[n] = target.getBestCameraToTarget();
 
           // Workaround until PhotonVision changes Rotation
           // camToTarget[n] = camToTarget[n].plus(new Transform3d(new Translation3d(), new

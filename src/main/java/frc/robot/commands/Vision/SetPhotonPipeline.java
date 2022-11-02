@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class SetPhotonPipeline extends CommandBase {
   private PhotonCamera m_cam;
   private int m_number;
-  private int loopctr;
 
   public SetPhotonPipeline(PhotonCamera cam, int number) {
     // Use addRequirements() here t can,o declare subsystem dependencies.
@@ -25,7 +24,7 @@ public class SetPhotonPipeline extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    loopctr = 0;
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.

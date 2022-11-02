@@ -1,9 +1,22 @@
 {
+  "HALProvider": {
+    "Addressable LEDs": {
+      "0": {
+        "columns": 4,
+        "start": 1
+      },
+      "window": {
+        "visible": true
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/DriveSubsystem": "Subsystem",
+      "/LiveWindow/LightStrip": "Subsystem",
       "/LiveWindow/PhotonVisionCam": "Subsystem",
+      "/LiveWindow/SimVisionSystem": "Subsystem",
       "/LiveWindow/SwerveModuleSparkMax": "Subsystem",
       "/LiveWindow/SwerveModuleSparkMax4201": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
@@ -16,6 +29,7 @@
       "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/LiveWindow/VisionPoseEstimatorSubsystem": "Subsystem",
       "/Shuffleboard/Cameras/2DPipe": "Command",
       "/Shuffleboard/Cameras/3DPipe": "Command",
       "/Shuffleboard/Cameras/ResetDriverMode": "Command",
@@ -37,6 +51,11 @@
       "/SmartDashboard/pwdon": "Command"
     },
     "windows": {
+      "/FMSInfo": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Auto Selector": {
         "window": {
           "visible": true
@@ -76,9 +95,6 @@
         "Target 2": {
           "image": "C:\\Users\\John\\Desktop\\Rectangle.png",
           "width": 0.10000000149011612
-        },
-        "window": {
-          "visible": true
         }
       },
       "/SmartDashboard/Scheduler": {
@@ -130,8 +146,7 @@
       },
       "ResetPose": {
         "open": true
-      },
-      "open": true
+      }
     },
     "photonvision": {
       "open": true,
@@ -144,7 +159,7 @@
     "Plot <0>": {
       "plots": [
         {
-          "height": -26,
+          "height": 414,
           "series": [
             {
               "color": [
@@ -158,7 +173,7 @@
           ]
         },
         {
-          "height": -26,
+          "height": 414,
           "series": [
             {
               "color": [
@@ -172,7 +187,7 @@
           ]
         },
         {
-          "height": -26,
+          "height": 414,
           "series": [
             {
               "color": [

@@ -17,7 +17,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 /** Add your docs here. */
 public class Cameras {
 
-    public static PhotonCamera llcam = new PhotonCamera("camera");
+    public PhotonCamera llcam = new PhotonCamera("picam");
     // public PhotonCamera llcam = new PhotonCamera("limelight");
     // PhotonCamera mshdcam = new PhotonCamera("cam2");
     public boolean testdm;
@@ -76,7 +76,7 @@ public class Cameras {
     }
 
     public Transform3d getCameraToTarget() {
-        return getLatestResult().getBestTarget().getCameraToTarget();
+        return getLatestResult().getBestTarget().getBestCameraToTarget();
     }
 
     public void periodic() {

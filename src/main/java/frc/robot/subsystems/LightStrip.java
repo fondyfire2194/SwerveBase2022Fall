@@ -26,8 +26,8 @@ public class LightStrip extends SubsystemBase {
   private AddressableLEDBuffer m_ledBuffer;
   // Store what the last hue of the first pixel is
   private int m_rainbowFirstPixelHue;
-  private boolean allianceColorSetRed;
-  private boolean allianceColorSetBlue;
+  public boolean allianceColorSet;
+
   int red;
   int green;
   int blue;
@@ -72,7 +72,7 @@ public class LightStrip extends SubsystemBase {
   }
 
   public void forceAllianceColor(boolean blueAlliance) {
-
+    allianceColorSet = false;
     if (blueAlliance) {
       red = 0;
       green = 0;
@@ -82,16 +82,17 @@ public class LightStrip extends SubsystemBase {
       green = 0;
       blue = 0;
     }
-    if (blueAlliance && !allianceColorSetBlue || !blueAlliance && !allianceColorSetRed)
-      for (int i = 0; i < m_numOfLEDs; i++) {
 
-        m_ledBuffer.setRGB(i, red, green, blue);
-        m_led.setData(m_ledBuffer);
-      }
+    for (int i = 0; i < m_numOfLEDs; i++) {
+      SmartDashboard.putNumber("LEDI", i);
+      SmartDashboard.putNumber("LEDCol ", red);
 
-    allianceColorSetRed = !blueAlliance;
+      m_ledBuffer.setRGB(i, red, green, blue);
 
-    allianceColorSetBlue = blueAlliance;
+      m_led.setData(m_ledBuffer);
+    }
+
+    allianceColorSet = true;
 
   }
 
@@ -100,7 +101,7 @@ public class LightStrip extends SubsystemBase {
 
   {
     if (ledCtr == 0) {
-      ledCtrLast=-1;
+      ledCtrLast = -1;
       if (blueStart) {
         red = 0;
         green = 0;

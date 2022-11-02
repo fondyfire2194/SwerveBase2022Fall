@@ -85,12 +85,12 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     if (DriverStation.getAlliance() == Alliance.Blue) {
-      m_robotContainer.m_ls.forceAllianceColor(true);
+     // m_robotContainer.m_ls.forceAllianceColor(true);
 
     }
 
     if (DriverStation.getAlliance() != Alliance.Blue) {
-      m_robotContainer.m_ls.forceAllianceColor(false);
+     // m_robotContainer.m_ls.forceAllianceColor(false);
 
     }
   }
@@ -134,7 +134,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.m_ls.rainbow();
+   // m_robotContainer.m_ls.rainbow();
   }
 
   @Override
@@ -147,7 +147,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
 
-    m_robotContainer.m_ls.lightsaber(true);
+  //  m_robotContainer.m_ls.lightsaber(true);
   }
 
   @Override

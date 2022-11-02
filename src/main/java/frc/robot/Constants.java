@@ -228,4 +228,6 @@ public final class Constants {
     public static final Transform3d CAMERA_TO_ROBOT_3D = new Transform3d(new Translation3d(camXFromCenter, 0.0, camHeight),
         new Rotation3d());
   }
+
+public static final int LED_CONTROLLER_PORT = 1;
 }
